@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default async function Navbar() {
   return (
-    <div className="flex flex-col w-full items-center justify-between sticky top-0 z-50">
+    <div className="flex flex-col w-full items-center justify-between sticky top-0 z-10">
       <div
         className="flex flex-row h-16 w-full items-center justify-between px-6 sm:px-12 backdrop-blur-2xl shadow-md">
         <div className="flex items-center">
