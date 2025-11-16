@@ -6,28 +6,28 @@ import { useDebouncedCallback } from "use-debounce";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 
-export default function Search({ placeholder }: { placeholder: string }) {
+export default function Search( { placeholder }: { placeholder: string } ) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams);
+  const handleSearch = useDebouncedCallback( ( term: string ) => {
+    const params = new URLSearchParams( searchParams );
 
     if (term) {
-      params.set(SearchParams.QUERY, term);
+      params.set( SearchParams.QUERY, term );
     } else {
-      params.delete(SearchParams.QUERY);
+      params.delete( SearchParams.QUERY );
     }
 
-    router.replace(`${ pathname }?${ params.toString() }`);
-  }, 300);
+    router.replace( `${ pathname }?${ params.toString() }` );
+  }, 300 );
 
   return (
     <Input
       placeholder={ placeholder }
-      onChange={ (e) => handleSearch(e.target.value) }
-      defaultValue={ searchParams.get(SearchParams.QUERY)?.toString() }
+      onChange={ ( e ) => handleSearch( e.target.value ) }
+      defaultValue={ searchParams.get( SearchParams.QUERY )?.toString() }
       startContent={
         <MagnifyingGlassIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400"/>
       }

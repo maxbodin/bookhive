@@ -13,16 +13,16 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet: { name: any; value: any; options: any }[]): void {
+        setAll( cookiesToSet: { name: any; value: any; options: any }[] ): void {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+            cookiesToSet.forEach( ( { name, value, options } ) =>
+              cookieStore.set( name, value, options )
             );
           } catch (e) {
             // The `setAll` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
-            console.log(`Error setting cookies. More info ${ JSON.stringify(e) }`);
+            console.log( `Error setting cookies. More info ${ JSON.stringify( e ) }` );
           }
         },
       },

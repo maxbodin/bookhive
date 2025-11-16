@@ -6,9 +6,9 @@ interface InputProps extends React.ComponentProps<"input"> {
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, startContent, ...props }, ref) => {
+  ( { className, type, startContent, ...props }, ref ) => {
     return (
-      <div className={ cn("relative flex items-center", className) }>
+      <div className={ cn( "relative flex items-center", className ) }>
         { startContent && (
           <div className="absolute left-3 flex items-center pointer-events-none">
             { startContent }
