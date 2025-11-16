@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { AuthButtonsSkeleton } from "@/components/skeletons/auth-buttons-skeleton";
 
 const supabase = createClient();
 
@@ -76,7 +77,7 @@ export function AuthButtons() {
   };
 
   if (initialLoading) {
-    return null;
+    return <AuthButtonsSkeleton />;
   }
 
   return (
