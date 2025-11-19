@@ -2,7 +2,7 @@
 import { createClient } from "@/app/utils/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { Session } from "@supabase/supabase-js";
 
 const supabase = createClient();
 
@@ -19,23 +19,37 @@ function getUsername( user: { email?: string } | null ): string {
     .join( " " ); // Rejoin into a single string.
 }
 
-
 export function Username() {
-  const [session, setSession] = useState<any>( null );
+  const [session, setSession] = useState<Session | null>( null );
+  const [loading, setLoading] = useState<boolean>( true );
 
   useEffect( () => {
-    setSession( supabase.auth.getSession() );
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession( session );
+      setLoading( false );
+    };
 
-    supabase.auth.onAuthStateChange( ( _event, session ) => {
+    getSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange( ( _event, session ) => {
       setSession( session );
     } );
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
   }, [] );
+
+  if (loading) {
+    return null;
+  }
 
   const username = session?.user ? getUsername( session.user ) : null;
 
   return (
     <div className="flex items-center">
-      { username ? (
+      { username && session?.user?.email ? (
         <p className="text-lg font-semibold">
           Hi{ " " }
           <Link
@@ -46,10 +60,7 @@ export function Username() {
           </Link>
           !
         </p>
-      ) : (
-        // TODO : Allow user to enter its email directly in this area then he can click on sign-in to log in.
-        <p>Welcome ...... !</p>
-      ) }
+      ) : null }
     </div>
   );
 }
