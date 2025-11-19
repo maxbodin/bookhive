@@ -3,12 +3,13 @@ import { Suspense } from "react";
 import { BooksGrid } from "@/components/books/books-grid";
 
 
-export default async function Home( {
-                                      searchParams,
-                                    }: {
-  searchParams?: { query?: string; user?: string; displayShown?: string }
-} ) {
-  const query: string | undefined = searchParams?.query;
+interface HomePageProps {
+  searchParams?: Promise<{ query?: string; user?: string; displayShown?: string }>;
+}
+
+export default async function Home({ searchParams }: HomePageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const query: string | undefined = resolvedSearchParams?.query;
 
   return (
     <div

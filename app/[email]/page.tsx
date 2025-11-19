@@ -35,7 +35,7 @@ async function getUserProfileAndBooks( email: string ) {
   }
 
   // Reshape the data to match our UserBook type.
-  // @ts-ignore
+  // @ts-expect-error RAM
   const formattedBooks: UserBook[] = userBooksData.map( item => ( {
     ...item.books,
     state: item.state
@@ -44,11 +44,17 @@ async function getUserProfileAndBooks( email: string ) {
   return { profile, userBooks: formattedBooks };
 }
 
+interface UserProfilePageProps {
+  params?: Promise<{ email: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-export default async function UserProfile( { params }: { params: { email: string } } ) {
+
+export default async function UserProfile({ params }: UserProfilePageProps) {
   try {
-    const decodedEmail = decodeURIComponent( params.email );
-    const { profile, userBooks } = await getUserProfileAndBooks( decodedEmail );
+    const resolvedParams = params ? await params : undefined;
+    const decodedEmail = decodeURIComponent(resolvedParams?.email ?? "");
+    const { profile, userBooks } = await getUserProfileAndBooks(decodedEmail);
 
     return (
       <div className="container mx-auto p-4 md:p-8">
@@ -60,11 +66,17 @@ export default async function UserProfile( { params }: { params: { email: string
         { userBooks.length > 0 ? (
           <UserBookshelf userBooks={ userBooks }/>
         ) : (
-          <p>{ profile.email } hasn't added any books yet. :(</p>
+          <p>{ profile.email } hasn&apos;t added any books yet. :(</p>
         ) }
       </div>
     );
-  } catch (error: any) {
-    return <div className="container mx-auto p-4">{ error.message }</div>;
+  } catch (error: unknown) {
+    let errorMessage = "An unexpected error occurred.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return <div className="container mx-auto p-4 text-center text-red-600">
+      <strong>Error:</strong> { errorMessage }
+    </div>;
   }
 }

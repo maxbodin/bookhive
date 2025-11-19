@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { AuthButtonsSkeleton } from "@/components/skeletons/auth-buttons-skeleton";
+import { Session } from "@supabase/supabase-js";
 
 const supabase = createClient();
 
 export function AuthButtons() {
-  const [session, setSession] = useState<any>( null );
+  const [session, setSession] = useState<Session | null>(null);
   const [email, setEmail] = useState<string>( "" );
   const [initialLoading, setInitialLoading] = useState<boolean>( true );
 
@@ -53,8 +54,12 @@ export function AuthButtons() {
       if (error) throw error;
 
       toast.success( "Check your email for the login link!" );
-    } catch (error: any) {
-      toast.error( error.error_description || error.message );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     } finally {
       setIsSigningIn( false );
     }
@@ -66,8 +71,12 @@ export function AuthButtons() {
     setTimeout( async () => {
       try {
         await supabase.auth.signOut();
-      } catch (error: any) {
-        toast.error( error.error_description || error.message );
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error("An unexpected error occurred during sign out.");
+        }
       } finally {
         setIsSigningOut( false );
       }

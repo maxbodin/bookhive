@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Username } from "@/components/username";
 import Search from "@/components/search";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function Navbar() {
   return (
@@ -18,7 +19,9 @@ export default async function Navbar() {
           </Link></h1>
         </div>
         <div className="w-full max-w-56 flex justify-center sm:justify-end">
-          <Search placeholder="Search a book..."/>
+          <Suspense>
+            <Search placeholder="Search a book..."/>
+          </Suspense>
         </div>
         <div className="flex items-center gap-4 sm:gap-6">
           <div className="hidden md:block">

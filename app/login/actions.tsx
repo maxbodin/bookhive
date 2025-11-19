@@ -1,3 +1,4 @@
+/*
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -56,11 +57,11 @@ export async function signInWithEmail( formData: FormData ) {
   // in practice, you should validate your inputs
   const { data, error } = await supabase.auth.signInWithOtp( {
     email: formData.get( "email" ) as string,
-    /*    options: {
+    /!*    options: {
           // set this to false if you do not want the user to be automatically signed up
           shouldCreateUser: false,
           emailRedirectTo: "https://example.com/welcome",
-        },*/
+        },*!/
   } );
 
   if (error) {
@@ -68,3 +69,4 @@ export async function signInWithEmail( formData: FormData ) {
     redirect( "/error" );
   }
 }
+*/
