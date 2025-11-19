@@ -1,6 +1,6 @@
 import { searchBooks } from "@/app/services/books";
 import { Suspense } from "react";
-import { BooksGrid } from "@/components/books/booksGrid";
+import { BooksGrid } from "@/components/books/books-grid";
 
 
 export default async function Home( {
