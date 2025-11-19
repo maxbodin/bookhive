@@ -10,96 +10,94 @@ import { AuthButtonsSkeleton } from "@/components/skeletons/auth-buttons-skeleto
 const supabase = createClient();
 
 export function AuthButtons() {
-  const [session, setSession] = useState<any>(null);
-  const [email, setEmail] = useState<string>("");
-  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const [session, setSession] = useState<any>( null );
+  const [email, setEmail] = useState<string>( "" );
+  const [initialLoading, setInitialLoading] = useState<boolean>( true );
 
-  const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
-  const [isSigningOut, setIsSigningOut] = useState<boolean>(false);
+  const [isSigningIn, setIsSigningIn] = useState<boolean>( false );
+  const [isSigningOut, setIsSigningOut] = useState<boolean>( false );
 
-  useEffect(() => {
+  useEffect( () => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setInitialLoading(false);
+      setSession( session );
+      setInitialLoading( false );
     };
 
     getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange( ( _event, session ) => {
+      setSession( session );
+    } );
 
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, []);
+  }, [] );
 
   const handleSignIn = async () => {
     if (!email) {
-      toast.warning("Please enter your email address.");
+      toast.warning( "Please enter your email address." );
       return;
     }
 
-    setIsSigningIn(true);
+    setIsSigningIn( true );
 
-    setTimeout(async () => {
-      try {
-        const { error } = await supabase.auth.signInWithOtp({
-          email: email,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-          },
-        });
-        if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signInWithOtp( {
+        email: email,
+        options: {
+          emailRedirectTo: `${ window.location.origin }/`,
+        },
+      } );
+      if (error) throw error;
 
-        toast.success("Check your email for the login link!");
-      } catch (error: any) {
-        toast.error(error.error_description || error.message);
-      } finally {
-        setIsSigningIn(false);
-      }
-    }, 30000);
+      toast.success( "Check your email for the login link!" );
+    } catch (error: any) {
+      toast.error( error.error_description || error.message );
+    } finally {
+      setIsSigningIn( false );
+    }
   };
 
   const handleSignOut = async () => {
-    setIsSigningOut(true);
+    setIsSigningOut( true );
 
-    setTimeout(async () => {
+    setTimeout( async () => {
       try {
         await supabase.auth.signOut();
       } catch (error: any) {
-        toast.error(error.error_description || error.message)
+        toast.error( error.error_description || error.message );
       } finally {
-        setIsSigningOut(false);
+        setIsSigningOut( false );
       }
-    }, 1500);
+    }, 1500 );
   };
 
   if (initialLoading) {
-    return <AuthButtonsSkeleton />;
+    return <AuthButtonsSkeleton/>;
   }
 
   return (
     <div>
-      {session ? (
-        <Button onClick={handleSignOut} disabled={isSigningOut}>
-          {isSigningOut ? <Spinner /> : "Sign out"}
+      { session ? (
+        <Button onClick={ handleSignOut } disabled={ isSigningOut }>
+          { isSigningOut ? <Spinner/> : "Sign out" }
         </Button>
       ) : (
         <div className="flex flex-row gap-2">
           <Input
             type="email"
             placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={isSigningIn}
+            value={ email }
+            onChange={ ( e ) => setEmail( e.target.value ) }
+            disabled={ isSigningIn }
           />
-          <Button onClick={handleSignIn} disabled={isSigningIn}>
-            {isSigningIn ? <Spinner /> : "Sign in"}
+          <Button onClick={ handleSignIn } disabled={ isSigningIn }>
+            { isSigningIn ? <Spinner/> : "Sign in" }
           </Button>
         </div>
-      )}
+      ) }
     </div>
   );
 }
