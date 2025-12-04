@@ -8,27 +8,31 @@ import { Suspense } from "react";
 
 export default async function Navbar() {
   return (
-    <div className="flex flex-col w-full items-center justify-between sticky top-0 z-10">
+    <div className="sticky top-0 z-10 flex w-full flex-col items-center justify-between">
       <div
-        className="flex flex-row h-16 w-full items-center justify-between px-6 sm:px-12 backdrop-blur-2xl shadow-md">
+        className="flex h-auto w-full flex-wrap items-center justify-between gap-x-6 gap-y-4 px-6 py-4 shadow-md backdrop-blur-2xl lg:h-20 lg:flex-nowrap lg:py-0">
         <div className="flex items-center">
-          <h1 className="text-2xl sm:text-3xl font-bold"><Link
-            href={ `/` }
-          >
-            BookHive
-          </Link></h1>
+          <h1 className="text-2xl font-bold md:text-3xl">
+            <Link href={ `/` }>
+              BookHive
+            </Link>
+          </h1>
         </div>
-        <div className="w-full max-w-56 flex justify-center sm:justify-end">
+
+        <div className="order-last w-full lg:order-none lg:flex-1 max-w-md">
           <Suspense>
             <Search placeholder="Search a book..."/>
           </Suspense>
         </div>
-        <div className="flex items-center gap-4 sm:gap-6">
+
+        <div className="flex items-center gap-4">
           <div className="hidden md:block">
             <Username/>
           </div>
           <AuthButtons/>
-          <ModeToggle/>
+          <div className="hidden lg:flex">
+            <ModeToggle/>
+          </div>
         </div>
       </div>
       <Separator/>
