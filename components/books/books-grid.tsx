@@ -2,6 +2,7 @@ import { Book } from "@/app/types/book";
 import { createClient } from "@/app/utils/supabase/server";
 import { BookStateMap } from "@/app/types/book-state";
 import { BookStateDropdown } from "@/components/books/book-state-dropdown";
+import { NoResults } from "@/components/books/no-results";
 
 interface BooksGridProps {
   books: Book[];
@@ -30,6 +31,10 @@ async function getUserBookStates(): Promise<BookStateMap> {
 }
 
 export async function BooksGrid( { books }: BooksGridProps ) {
+  if (!books || books.length === 0) {
+    return <NoResults/>;
+  }
+
   const userBookStates = await getUserBookStates();
 
   return (
