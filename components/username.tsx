@@ -3,21 +3,9 @@ import { createClient } from "@/app/utils/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Session } from "@supabase/supabase-js";
+import { getUsername } from "@/lib/getUsername";
 
 const supabase = createClient();
-
-function getUsername( user: { email?: string } | null ): string {
-  if (!user?.email) {
-    return "Guest"; // Fallback if user or email is undefined.
-  }
-
-  return user.email
-    .split( "@" )[0] // Get the part before the '@'.
-    .replace( ".", " " ) // Replace '.' with spaces.
-    .split( " " ) // Split by spaces.
-    .map( ( part ) => part.charAt( 0 ).toUpperCase() + part.slice( 1 ).toLowerCase() ) // Capitalize each part.
-    .join( " " ); // Rejoin into a single string.
-}
 
 export function Username() {
   const [session, setSession] = useState<Session | null>( null );
@@ -45,7 +33,7 @@ export function Username() {
     return null;
   }
 
-  const username = session?.user ? getUsername( session.user ) : null;
+  const username = session?.user ? getUsername( session.user.email ) : null;
 
   return (
     <div className="flex items-center">

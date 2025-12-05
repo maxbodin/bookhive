@@ -1,6 +1,8 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { UserBook } from "@/app/types/user-book";
 import { UserBookshelf } from "@/components/books/user-bookshelf";
+import { UserAvatar } from "@/components/profile/user-avatar";
+import { getUsername } from "@/lib/getUsername";
 
 /**
  * Fetches a user's profile and their entire book collection.
@@ -44,6 +46,16 @@ async function getUserProfileAndBooks( email: string ) {
   return { profile, userBooks: formattedBooks };
 }
 
+/**
+ * Fetch the current user's session from the server.
+ */
+async function getCurrentUser() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
+
+
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -54,19 +66,36 @@ export default async function UserProfile({ params }: UserProfilePageProps) {
   try {
     const resolvedParams = params ? await params : undefined;
     const decodedEmail = decodeURIComponent(resolvedParams?.email ?? "");
-    const { profile, userBooks } = await getUserProfileAndBooks(decodedEmail);
+
+    const [
+      // @ts-ignore
+      { profile, userBooks },
+      currentUser
+    ] = await Promise.all( [
+      getUserProfileAndBooks( decodedEmail ),
+      getCurrentUser()
+    ] );
+
 
     return (
       <div className="container mx-auto p-4 md:p-8">
-        <div className="mb-12">
-          <h1 className="text-3xl font-bold">Shelves for { profile.email }</h1>
-          <p className="text-md text-gray-500">Joined: { new Date( profile.created_at ).toLocaleDateString() }</p>
+        <div className="mb-12 flex flex-col md:flex-row items-center gap-6">
+          <UserAvatar profile={ profile } currentUser={ currentUser }/>
+          <div>
+            <h1 className="text-3xl font-bold">{ getUsername(profile.email) }'s shelves</h1>
+            <p className="text-md text-gray-500">
+              Joined: { new Date( profile.created_at ).toLocaleDateString() }
+            </p>
+          </div>
         </div>
 
         { userBooks.length > 0 ? (
           <UserBookshelf userBooks={ userBooks }/>
         ) : (
-          <p>{ profile.email } hasn&apos;t added any books yet. :(</p>
+          // TODO : Improve with dedicated component.
+          <p className="text-center text-gray-500 py-8">
+            { profile.email } hasn&apos;t added any books yet.
+          </p>
         ) }
       </div>
     );
