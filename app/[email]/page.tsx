@@ -68,7 +68,6 @@ export default async function UserProfile({ params }: UserProfilePageProps) {
     const decodedEmail = decodeURIComponent(resolvedParams?.email ?? "");
 
     const [
-      // @ts-ignore
       { profile, userBooks },
       currentUser
     ] = await Promise.all( [
@@ -82,7 +81,7 @@ export default async function UserProfile({ params }: UserProfilePageProps) {
         <div className="mb-12 flex flex-col md:flex-row items-center gap-6">
           <UserAvatar profile={ profile } currentUser={ currentUser }/>
           <div>
-            <h1 className="text-3xl font-bold">{ getUsername(profile.email) }'s shelves</h1>
+            <h1 className="text-3xl font-bold">{ getUsername(profile.email) }&apos;s shelves</h1>
             <p className="text-md text-gray-500">
               Joined: { new Date( profile.created_at ).toLocaleDateString() }
             </p>

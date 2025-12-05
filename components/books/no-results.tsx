@@ -31,7 +31,7 @@ export function NoResults() {
       <FileSearch className="w-16 h-16 text-primary mb-4"/>
       <h2 className="text-2xl font-bold mb-2">No Books Found</h2>
       <blockquote className="text-lg italic border-l-4 border-input pl-4">
-        <p>"{ randomQuote.quote }"</p>
+        <p>&quot;{randomQuote.quote }&quot;</p>
         <cite className="block text-right not-italic text-sm text-muted-foreground mt-2">— { randomQuote.author }</cite>
       </blockquote>
     </div>
