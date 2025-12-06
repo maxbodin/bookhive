@@ -1,42 +1,50 @@
 "use server";
 
 import { createClient } from "@/app/utils/supabase/server";
-import { revalidatePath } from "next/cache";
 import { BookState } from "@/app/types/book-state";
+import { revalidatePath } from "next/cache";
 
 /**
- * Adds or updates a book's state in the current user's collection.
- *
- * @param bookId The ID of the book.
- * @param state The new state of the book.
+ * Creates or updates the state of a book for the current user.
  */
-export async function upsertBookState( bookId: number, state: BookState ) {
+export async function upsertBookState(
+  bookId: number,
+  newState: BookState | null, // Allow null to remove the book from shelves.
+  updates: Record<string, any> = {}
+) {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "You must be logged in to manage your books." };
+    return { error: "You must be logged in to modify your bookshelf." };
   }
 
-  const { error } = await supabase.from( "users_books" ).upsert( {
-    uid: user.id,
-    book_id: bookId,
-    state: state,
-  } );
+  // If the new state is null, we are removing the book entry.
+  if (newState === null) {
+    const { error } = await supabase
+      .from( "users_books" )
+      .delete()
+      .match( { uid: user.id, book_id: bookId } );
 
-  if (error) {
-    console.error( "Error upserting book state:", error );
-    return { error: "Could not update your book's state." };
+    if (error) return { error: "Failed to remove book from shelf." };
+  } else {
+    // Combine base data with additional updates (dates).
+    const dataToUpsert = {
+      ...updates,
+      uid: user.id,
+      book_id: bookId,
+      state: newState,
+    };
+
+    const { error } = await supabase.from( "users_books" ).upsert( dataToUpsert );
+    if (error) return { error: "Failed to update book state." };
   }
 
   // Revalidate the pages where the book grids are displayed.
   revalidatePath( "/" );
 
   if (user.email) {
-    revalidatePath( `/${ user.email }` );
+    revalidatePath( `/${ encodeURIComponent( user.email ) }` ); // Revalidate user's profile.
   }
 
   return { success: true };

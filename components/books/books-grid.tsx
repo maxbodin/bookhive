@@ -1,33 +1,33 @@
 import { Book } from "@/app/types/book";
 import { createClient } from "@/app/utils/supabase/server";
-import { BookStateMap } from "@/app/types/book-state";
 import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { NoResults } from "@/components/books/no-results";
+import { UserBookRecordMap } from "@/app/types/book-state";
+import { UserBook } from "@/app/types/user-book";
 
 interface BooksGridProps {
   books: Book[];
 }
 
 /**
- * Fetches the current user's book states to populate the dropdowns correctly.
+ * Fetches the current user's full book records to populate the dropdowns correctly.
  */
-async function getUserBookStates(): Promise<BookStateMap> {
+async function getUserBookRecords(): Promise<UserBookRecordMap> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return {};
 
   const { data: userBooks } = await supabase
     .from( "users_books" )
-    .select( "book_id, state" )
+    .select( "*" )
     .eq( "uid", user.id );
 
   if (!userBooks) return {};
 
-  // Create a map for quick lookup: { bookId: state }
-  return userBooks.reduce( ( acc, book ) => {
-    acc[book.book_id] = book.state;
+  return userBooks.reduce( ( acc, bookRecord ) => {
+    acc[bookRecord.book_id] = bookRecord as UserBook;
     return acc;
-  }, {} as BookStateMap );
+  }, {} as UserBookRecordMap );
 }
 
 export async function BooksGrid( { books }: BooksGridProps ) {
@@ -35,10 +35,10 @@ export async function BooksGrid( { books }: BooksGridProps ) {
     return <NoResults/>;
   }
 
-  const userBookStates = await getUserBookStates();
+  const userBookRecords = await getUserBookRecords();
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-4 p-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-4 p-4">
       { books.map( ( book ) => (
         <div key={ book.id }
              className="flex flex-col justify-between group border rounded-lg shadow-md hover:shadow-xl transition-shadow">
@@ -66,7 +66,7 @@ export async function BooksGrid( { books }: BooksGridProps ) {
           <div className="p-3 pt-0">
             <BookStateDropdown
               bookId={ book.id }
-              currentState={ userBookStates[book.id] }
+              currentStateRecord={ userBookRecords[book.id] }
             />
           </div>
         </div>
