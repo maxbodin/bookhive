@@ -2,12 +2,12 @@
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,8 @@ export function UserAvatar( { profile, currentUser }: UserAvatarProps ) {
   return (
     <Dialog open={ isDialogOpen } onOpenChange={ setIsDialogOpen }>
       <DialogTrigger asChild>
-        <button className="rounded-full transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+        <button
+          className="rounded-full transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
           { avatar }
         </button>
       </DialogTrigger>
@@ -84,7 +85,7 @@ export function UserAvatar( { profile, currentUser }: UserAvatarProps ) {
               placeholder="https://example.com/image.png"
               required
             />
-            {/* Hidden input to pass the email to the server action for revalidation. */}
+            {/* Hidden input to pass the email to the server action for revalidation. */ }
             <input type="hidden" name="userEmail" value={ profile.email }/>
           </div>
           <DialogFooter>

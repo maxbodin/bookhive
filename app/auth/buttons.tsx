@@ -11,7 +11,7 @@ import { Session } from "@supabase/supabase-js";
 const supabase = createClient();
 
 export function AuthButtons() {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<Session | null>( null );
   const [email, setEmail] = useState<string>( "" );
   const [initialLoading, setInitialLoading] = useState<boolean>( true );
 
@@ -56,9 +56,9 @@ export function AuthButtons() {
       toast.success( "Check your email for the login link!" );
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        toast.error( error.message );
       } else {
-        toast.error("An unexpected error occurred.");
+        toast.error( "An unexpected error occurred." );
       }
     } finally {
       setIsSigningIn( false );
@@ -73,9 +73,9 @@ export function AuthButtons() {
         await supabase.auth.signOut();
       } catch (error: unknown) {
         if (error instanceof Error) {
-          toast.error(error.message);
+          toast.error( error.message );
         } else {
-          toast.error("An unexpected error occurred during sign out.");
+          toast.error( "An unexpected error occurred during sign out." );
         }
       } finally {
         setIsSigningOut( false );

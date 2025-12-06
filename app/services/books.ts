@@ -65,5 +65,5 @@ export async function searchBooks( query?: string ): Promise<Book[]> {
     return [];
   }
 
-  return !books ? [] : sortNatural(books) as Book[];
+  return !books ? [] : sortNatural( books ) as Book[];
 }

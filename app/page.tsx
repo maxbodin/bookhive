@@ -7,7 +7,7 @@ interface HomePageProps {
   searchParams?: Promise<{ query?: string; user?: string; displayShown?: string }>;
 }
 
-export default async function Home({ searchParams }: HomePageProps) {
+export default async function Home( { searchParams }: HomePageProps ) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const query: string | undefined = resolvedSearchParams?.query;
 

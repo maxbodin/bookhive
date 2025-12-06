@@ -6,8 +6,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { BookPlus, Check, ChevronDown, Trash2 } from "lucide-react";
@@ -18,10 +18,22 @@ import { UserBook } from "@/app/types/user-book";
 
 // Configuration for dialogs triggered by state changes.
 const DIALOG_CONFIG = {
-  reading: { title: "Start Reading", description: "When did you start reading this book?", column: "start_reading_date" },
-  read_from_reading: { title: "Finish Reading", description: "When did you finish this book?", column: "end_reading_date" },
+  reading: {
+    title: "Start Reading",
+    description: "When did you start reading this book?",
+    column: "start_reading_date"
+  },
+  read_from_reading: {
+    title: "Finish Reading",
+    description: "When did you finish this book?",
+    column: "end_reading_date"
+  },
   read: { title: "Add to Read", description: "When did you read this book?", column: "read_date" },
-  wishlist: { title: "Add to Wishlist", description: "When did you add this to your wishlist?", column: "start_wishlist_date" },
+  wishlist: {
+    title: "Add to Wishlist",
+    description: "When did you add this to your wishlist?",
+    column: "start_wishlist_date"
+  },
   later: { title: "Add to Read Later", description: "When did you save this for later?", column: "start_later_date" },
 };
 
@@ -41,7 +53,10 @@ interface BookStateDropdownProps {
 export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDropdownProps ) {
   const [isPending, startTransition] = useTransition();
   const [optimisticState, setOptimisticState] = useState( currentStateRecord?.state );
-  const [dialog, setDialog] = useState<{ config: typeof DIALOG_CONFIG[keyof typeof DIALOG_CONFIG]; newState: BookState } | null>( null );
+  const [dialog, setDialog] = useState<{
+    config: typeof DIALOG_CONFIG[keyof typeof DIALOG_CONFIG];
+    newState: BookState
+  } | null>( null );
 
   /**
    *
@@ -51,9 +66,9 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
     // If removing the current book state.
     if (newState === null) {
       return runUpsert( null, {
-        end_reading_date: optimisticState === 'reading' ? new Date().toISOString() : null,
-        end_wishlist_date: optimisticState === 'wishlist' ? new Date().toISOString() : null,
-        end_later_date: optimisticState === 'later' ? new Date().toISOString() : null,
+        end_reading_date: optimisticState === "reading" ? new Date().toISOString() : null,
+        end_wishlist_date: optimisticState === "wishlist" ? new Date().toISOString() : null,
+        end_later_date: optimisticState === "later" ? new Date().toISOString() : null,
       } );
     }
 
@@ -71,8 +86,8 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
     } else {
       // No dialog needed, but we might need to set an 'end' date automatically.
       const updates = {
-        end_wishlist_date: optimisticState === 'wishlist' ? new Date().toISOString() : currentStateRecord?.end_wishlist_date,
-        end_later_date: optimisticState === 'later' ? new Date().toISOString() : currentStateRecord?.end_later_date,
+        end_wishlist_date: optimisticState === "wishlist" ? new Date().toISOString() : currentStateRecord?.end_wishlist_date,
+        end_later_date: optimisticState === "later" ? new Date().toISOString() : currentStateRecord?.end_later_date,
       };
       runUpsert( newState, updates );
     }
@@ -112,8 +127,8 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
     const updates = {
       [config.column]: date,
       // When moving state, automatically close out the previous state's timeline.
-      end_wishlist_date: optimisticState === 'wishlist' ? new Date().toISOString() : currentStateRecord?.end_wishlist_date,
-      end_later_date: optimisticState === 'later' ? new Date().toISOString() : currentStateRecord?.end_later_date,
+      end_wishlist_date: optimisticState === "wishlist" ? new Date().toISOString() : currentStateRecord?.end_wishlist_date,
+      end_later_date: optimisticState === "later" ? new Date().toISOString() : currentStateRecord?.end_later_date,
     };
 
     runUpsert( newState, updates );
@@ -155,7 +170,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
 
   return (
     <>
-      <DropdownMenu modal={false}>
+      <DropdownMenu modal={ false }>
         <DropdownMenuTrigger asChild>
           <TriggerButton/>
         </DropdownMenuTrigger>
@@ -173,7 +188,8 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
           { optimisticState && (
             <>
               <DropdownMenuSeparator/>
-              <DropdownMenuItem onSelect={ () => handleStateChange( null ) } disabled={ isPending } className="text-red-500">
+              <DropdownMenuItem onSelect={ () => handleStateChange( null ) } disabled={ isPending }
+                                className="text-red-500">
                 <Trash2 className="w-4 h-4 mr-2"/>
                 Remove from Shelf
               </DropdownMenuItem>

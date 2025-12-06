@@ -52,8 +52,8 @@ async function getUserProfileAndBooks( email: string, query?: string ) {
     ...item.books,
     state: item.state
   } ) )
-  // @ts-expect-error RAM
-  .filter( book => book.id );
+    // @ts-expect-error RAM
+    .filter( book => book.id );
 
   if (!formattedBooks) {
     return { profile, userBooks: [] };
@@ -81,7 +81,7 @@ interface UserProfilePageProps {
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
   try {
     const resolvedParams = params ? await params : undefined;
-    const decodedEmail = decodeURIComponent(resolvedParams?.email ?? "");
+    const decodedEmail = decodeURIComponent( resolvedParams?.email ?? "" );
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
     const query: string = resolvedSearchParams?.query ?? "";
 
@@ -93,7 +93,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       getCurrentUser()
     ] );
 
-    const username: string = getUsername(profile.email);
+    const username: string = getUsername( profile.email );
 
     return (
       <div className="container mx-auto p-4 md:p-8">

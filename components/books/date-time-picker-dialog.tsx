@@ -1,22 +1,18 @@
 "use client";
 
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogClose,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,7 +53,7 @@ export function DateTimePickerDialog( {
       const minutes = String( now.getMinutes() ).padStart( 2, "0" );
       setTime( `${ hours }:${ minutes }` );
       // Also reset the date to today, in case it was changed previously
-      setSelectedDate(new Date());
+      setSelectedDate( new Date() );
     }
   }, [isOpen] );
 
@@ -88,14 +84,13 @@ export function DateTimePickerDialog( {
             <DialogDescription>{ description }</DialogDescription>
           </DialogHeader>
 
-          {/* New Date and Time Picker UI */}
           <div className="flex items-end gap-4 py-4">
             <div className="flex flex-col gap-2 flex-grow">
               <Label htmlFor="date-picker">
                 Date
               </Label>
-              <Popover open={ isPopoverOpen } onOpenChange={ setIsPopoverOpen } >
-                <PopoverTrigger asChild >
+              <Popover open={ isPopoverOpen } onOpenChange={ setIsPopoverOpen }>
+                <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     id="date-picker"
@@ -105,17 +100,17 @@ export function DateTimePickerDialog( {
                     <ChevronDownIcon className="h-4 w-4 text-muted-foreground"/>
                   </Button>
                 </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start" >
-                    <Calendar
-                      mode="single"
-                      selected={ selectedDate }
-                      onSelect={ ( date ) => {
-                        setSelectedDate( date );
-                        setIsPopoverOpen( false );
-                      } }
-                      initialFocus
-                    />
-                  </PopoverContent>
+                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={ selectedDate }
+                    onSelect={ ( date ) => {
+                      setSelectedDate( date );
+                      setIsPopoverOpen( false );
+                    } }
+                    initialFocus
+                  />
+                </PopoverContent>
               </Popover>
             </div>
             <div className="flex flex-col gap-2">
@@ -134,7 +129,7 @@ export function DateTimePickerDialog( {
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="secondary" className={"m-2 sm:m-0"}>
+              <Button type="button" variant="secondary" className={ "m-2 sm:m-0" }>
                 Cancel
               </Button>
             </DialogClose>
