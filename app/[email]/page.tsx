@@ -3,11 +3,16 @@ import { UserBook } from "@/app/types/user-book";
 import { UserBookshelf } from "@/components/books/user-bookshelf";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { getUsername } from "@/lib/getUsername";
+import { EmptyShelves } from "@/components/profile/empty-shelves";
+import { sortNatural } from "@/lib/sortNatural";
 
 /**
- * Fetches a user's profile and their entire book collection.
+ * Fetches a user's profile and their book collection,
+ * optionally filtering by a search query.
+ * @param email - The email of the user to fetch.
+ * @param query - An optional search term to filter books by title.
  */
-async function getUserProfileAndBooks( email: string ) {
+async function getUserProfileAndBooks( email: string, query?: string ) {
   const supabase = await createClient();
   const { data: profile, error: profileError } = await supabase
     .from( "profiles" )
@@ -19,8 +24,7 @@ async function getUserProfileAndBooks( email: string ) {
     throw new Error( profileError?.message || "User not found" );
   }
 
-  // Fetch all books for this user, joining with the books table.
-  const { data: userBooksData, error: booksError } = await supabase
+  let queryBuilder = supabase
     .from( "users_books" )
     .select( `
       state,
@@ -28,22 +32,34 @@ async function getUserProfileAndBooks( email: string ) {
     ` )
     .eq( "uid", profile.id );
 
+  // If a search query is provided, filter the results on the joined 'books' table's title.
+  if (query) {
+    queryBuilder = queryBuilder.ilike( "books.title", `%${ query }%` );
+  }
+
+  const { data: userBooksData, error: booksError } = await queryBuilder;
+
   if (booksError) {
-    throw new Error( booksError?.message || `Failed to fetch user's books: ${ booksError.message }` );
+    throw new Error( booksError.message || `Failed to fetch user's books.` );
   }
 
   if (!userBooksData) {
     return { profile, userBooks: [] };
   }
 
-  // Reshape the data to match our UserBook type.
   // @ts-expect-error RAM
   const formattedBooks: UserBook[] = userBooksData.map( item => ( {
     ...item.books,
     state: item.state
-  } ) );
+  } ) )
+  // @ts-expect-error RAM
+  .filter( book => book.id );
 
-  return { profile, userBooks: formattedBooks };
+  if (!formattedBooks) {
+    return { profile, userBooks: [] };
+  }
+
+  return { profile, userBooks: sortNatural( formattedBooks ) };
 }
 
 /**
@@ -58,30 +74,33 @@ async function getCurrentUser() {
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams?: Promise<{ query: string }>;
 }
 
 
-export default async function UserProfile({ params }: UserProfilePageProps) {
+export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
   try {
     const resolvedParams = params ? await params : undefined;
     const decodedEmail = decodeURIComponent(resolvedParams?.email ?? "");
+    const resolvedSearchParams = searchParams ? await searchParams : undefined;
+    const query: string = resolvedSearchParams?.query ?? "";
 
     const [
       { profile, userBooks },
       currentUser
     ] = await Promise.all( [
-      getUserProfileAndBooks( decodedEmail ),
+      getUserProfileAndBooks( decodedEmail, query ),
       getCurrentUser()
     ] );
 
+    const username: string = getUsername(profile.email);
 
     return (
       <div className="container mx-auto p-4 md:p-8">
         <div className="mb-12 flex flex-col md:flex-row items-center gap-6">
           <UserAvatar profile={ profile } currentUser={ currentUser }/>
           <div>
-            <h1 className="text-3xl font-bold">{ getUsername(profile.email) }&apos;s shelves</h1>
+            <h1 className="text-3xl font-bold">{ username }&apos;s shelves</h1>
             <p className="text-md text-gray-500">
               Joined: { new Date( profile.created_at ).toLocaleDateString() }
             </p>
@@ -91,10 +110,7 @@ export default async function UserProfile({ params }: UserProfilePageProps) {
         { userBooks.length > 0 ? (
           <UserBookshelf userBooks={ userBooks }/>
         ) : (
-          // TODO : Improve with dedicated component.
-          <p className="text-center text-gray-500 py-8">
-            { profile.email } hasn&apos;t added any books yet.
-          </p>
+          <EmptyShelves username={ username } query={ query }/>
         ) }
       </div>
     );

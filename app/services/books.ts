@@ -2,6 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { Book } from "@/app/types/book";
+import { sortNatural } from "@/lib/sortNatural";
 
 /**
  * Fetches all book.
@@ -64,5 +65,5 @@ export async function searchBooks( query?: string ): Promise<Book[]> {
     return [];
   }
 
-  return books as Book[];
+  return !books ? [] : sortNatural(books) as Book[];
 }
