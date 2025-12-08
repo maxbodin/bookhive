@@ -17,4 +17,13 @@ export interface Book {
   categories?: string[] | null;
   publication_date?: string | null;
   isbn_13?: string | null;
+  type?: BookType | null;
 }
+
+export type BookType = "bd" | "manga" | "roman";
+
+export const BOOK_TYPE_MAP: Record<BookType, string> = {
+  bd: "Comic",
+  manga: "Manga",
+  roman: "Novel",
+};

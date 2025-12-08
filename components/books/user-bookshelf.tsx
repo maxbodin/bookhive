@@ -30,14 +30,17 @@ export function UserBookshelf( { userBooks }: UserBookshelfProps ) {
       { SHELVES_ORDER.map( ( shelf ) => {
         const booksOnShelf = booksByState[shelf];
         if (!booksOnShelf || booksOnShelf.length === 0) {
-          return null; // Don't render empty shelves.
+          return null;
         }
+
+        const gridView = shelf === "reading" ? "list" : "poster";
+
         return (
           <section key={ shelf }>
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">
               { SHELF_TITLES[shelf] } ({ booksOnShelf.length })
             </h2>
-            <BooksGrid books={ booksOnShelf }/>
+            <BooksGrid books={ booksOnShelf } view={ gridView }/>
           </section>
         );
       } ) }
