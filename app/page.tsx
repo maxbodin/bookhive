@@ -1,7 +1,8 @@
 import { searchBooks } from "@/app/services/books";
 import { Suspense } from "react";
 import { BooksGrid } from "@/components/books/books-grid";
-
+import { UserBanner } from "@/components/profile/user-banner";
+import { Separator } from "@/components/ui/separator";
 
 interface HomePageProps {
   searchParams?: Promise<{ query?: string; user?: string; displayShown?: string }>;
@@ -12,12 +13,22 @@ export default async function Home( { searchParams }: HomePageProps ) {
   const query: string | undefined = resolvedSearchParams?.query;
 
   return (
-    <div
-      className="items-center justify-items-center min-h-screen pb-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen pb-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 items-center">
-        <Suspense key={ query } fallback={ <div>Loading...</div> }>
-          <BooksGrid books={ await searchBooks( query ) }/>
-        </Suspense>
+
+        <div className="w-full max-w-7xl mx-auto px-4 py-6">
+          <h2 className="text-xl font-bold mb-4">Utilisateurs</h2>
+          <Suspense fallback={ <div className="h-28 w-full animate-pulse bg-muted"></div> }>
+            <UserBanner/>
+          </Suspense>
+
+          <Separator className="w-full mx-auto my-6"/>
+
+          <h2 className="text-xl font-bold mb-4">Tous les Livres</h2>
+          <Suspense key={ query } fallback={ <div>Chargement des livres...</div> }>
+            <BooksGrid books={ await searchBooks( query ) }/>
+          </Suspense>
+        </div>
       </main>
     </div>
   );
