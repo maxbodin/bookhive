@@ -1,0 +1,1 @@
+export const getInitial = ( email: string ) => email.charAt( 0 ).toUpperCase();

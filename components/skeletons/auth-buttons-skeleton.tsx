@@ -1,5 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
+/**
+ * Skeleton component for authentication buttons.
+ * @constructor
+ */
 export function AuthButtonsSkeleton() {
   return (
     <div className="flex flex-row items-center gap-2">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUsername } from "@/lib/getUsername";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { getInitial } from "@/lib/getInitial";
 
 /**
  * Récupère les profils utilisateurs depuis la base de données.
@@ -32,8 +33,6 @@ export async function UserBanner() {
     return null;
   }
 
-
-
   return (
     <section className="w-full max-w-7xl mx-auto px-4">
       <TooltipProvider delayDuration={ 100 }>
@@ -44,7 +43,7 @@ export async function UserBanner() {
                 <Link href={ `/${ encodeURIComponent( profile.email ) }` }>
                   <Avatar className="h-20 w-20 hover:ring-2 hover:ring-primary transition-all">
                     <AvatarImage src={ profile.picture ?? undefined } alt={ getUsername( profile.email ) }/>
-                    <AvatarFallback>{ getUsername( profile.email ) }</AvatarFallback>
+                    <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
                   </Avatar>
                 </Link>
               </TooltipTrigger>

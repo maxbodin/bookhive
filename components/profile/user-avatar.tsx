@@ -17,6 +17,7 @@ import { FormEvent, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { User } from "@supabase/supabase-js";
 import { updateProfilePicture } from "@/app/[email]/actions";
+import { getInitial } from "@/lib/getInitial";
 
 interface UserAvatarProps {
   profile: {
@@ -31,8 +32,6 @@ export function UserAvatar( { profile, currentUser }: UserAvatarProps ) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>( false );
   const [isSubmitting, setIsSubmitting] = useState<boolean>( false );
   const isOwner = currentUser?.id === profile.id;
-
-  const getInitials = ( email: string ) => email.charAt( 0 ).toUpperCase();
 
   const handleSubmit = async ( event: FormEvent<HTMLFormElement> ) => {
     event.preventDefault();
@@ -53,7 +52,7 @@ export function UserAvatar( { profile, currentUser }: UserAvatarProps ) {
   const avatar = (
     <Avatar className="h-24 w-24 md:h-32 md:w-32 text-4xl">
       <AvatarImage src={ profile.picture ?? undefined } alt={ profile.email }/>
-      <AvatarFallback>{ getInitials( profile.email ) }</AvatarFallback>
+      <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
     </Avatar>
   );
 
