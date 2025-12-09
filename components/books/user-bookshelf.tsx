@@ -3,6 +3,7 @@ import { BooksGrid } from "@/components/books/books-grid";
 
 interface UserBookshelfProps {
   userBooks: UserBook[];
+  isOwner: boolean;
 }
 
 const SHELVES_ORDER = ["reading", "read", "later", "wishlist"] as const;
@@ -14,7 +15,7 @@ const SHELF_TITLES: Record<typeof SHELVES_ORDER[number], string> = {
   wishlist: "Wishlist",
 };
 
-export function UserBookshelf( { userBooks }: UserBookshelfProps ) {
+export function UserBookshelf( { userBooks, isOwner }: UserBookshelfProps ) {
   // Group books by their state.
   const booksByState = userBooks.reduce( ( acc, book ) => {
     const state = book.state;
@@ -40,7 +41,7 @@ export function UserBookshelf( { userBooks }: UserBookshelfProps ) {
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">
               { SHELF_TITLES[shelf] } ({ booksOnShelf.length })
             </h2>
-            <BooksGrid books={ booksOnShelf } view={ gridView }/>
+            <BooksGrid books={ booksOnShelf } view={ gridView } isOwner={isOwner}/>
           </section>
         );
       } ) }

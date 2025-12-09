@@ -28,7 +28,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
 
           <h2 className="text-xl font-bold mb-4">Tous les Livres</h2>
           <Suspense key={ query } fallback={ <BooksGridSkeleton/> }>
-            <BooksGrid books={ await searchBooks( query ) }/>
+            <BooksGrid books={ await searchBooks( query ) } view={ "poster" } isOwner={ true }/>
           </Suspense>
         </div>
       </main>

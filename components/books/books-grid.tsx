@@ -8,7 +8,8 @@ import { UserBook } from "@/app/types/user-book";
 
 interface BooksGridProps {
   books: Book[];
-  view?: "poster" | "list";
+  view: "poster" | "list";
+  isOwner: boolean;
 }
 
 /**
@@ -35,7 +36,7 @@ async function getUserBookRecords(): Promise<UserBookRecordMap> {
 /**
  * Flexible component that fetches user book data and renders a collection of books.
  */
-export async function BooksGrid( { books, view = "poster" }: BooksGridProps ) {
+export async function BooksGrid( { books, view = "poster", isOwner = false }: BooksGridProps ) {
   if (!books || books.length === 0) {
     return <NoResults/>;
   }
@@ -53,7 +54,7 @@ export async function BooksGrid( { books, view = "poster" }: BooksGridProps ) {
         const userBookRecord = userBookRecords[book.id];
 
         return view === "poster" ? (
-          <BookPosterCard key={ book.id } book={ book } userBook={ userBookRecord }/>
+          <BookPosterCard key={ book.id } book={ book } userBook={ userBookRecord } isOwner={ isOwner }/>
         ) : (
           <BookHorizontalCard key={ book.id } book={ book } userBook={ userBookRecord }/>
         );

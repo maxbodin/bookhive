@@ -5,6 +5,8 @@ import { UserAvatar } from "@/components/profile/user-avatar";
 import { getUsername } from "@/lib/getUsername";
 import { EmptyShelves } from "@/components/profile/empty-shelves";
 import { sortNatural } from "@/lib/sortNatural";
+import { FavoriteBookshelf } from "@/components/profile/favorite-bookshelf";
+import { getCurrentUser } from "@/app/services/getCurrentUser";
 
 /**
  * Fetches a user's profile and their book collection,
@@ -27,7 +29,7 @@ async function getUserProfileAndBooks( email: string, query?: string ) {
   let queryBuilder = supabase
     .from( "users_books" )
     .select( `
-      state,
+      *,
       books (*)
     ` )
     .eq( "uid", profile.id );
@@ -47,12 +49,11 @@ async function getUserProfileAndBooks( email: string, query?: string ) {
     return { profile, userBooks: [] };
   }
 
-  // @ts-expect-error RAM
   const formattedBooks: UserBook[] = userBooksData.map( item => ( {
     ...item.books,
-    state: item.state
+    state: item.state,
+    is_favorite: item.is_favorite,
   } ) )
-    // @ts-expect-error RAM
     .filter( book => book.id );
 
   if (!formattedBooks) {
@@ -62,21 +63,10 @@ async function getUserProfileAndBooks( email: string, query?: string ) {
   return { profile, userBooks: sortNatural( formattedBooks ) };
 }
 
-/**
- * Fetch the current user's session from the server.
- */
-async function getCurrentUser() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
-}
-
-
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
   searchParams?: Promise<{ query: string }>;
 }
-
 
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
   try {
@@ -95,6 +85,10 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
     const username: string = getUsername( profile.email );
 
+    const isOwner = currentUser?.id === profile.id;
+
+    const favoriteBooks = userBooks.filter( b => b.is_favorite );
+
     return (
       <div className="container mx-auto p-4 md:p-8">
         <div className="mb-12 flex flex-col md:flex-row items-center gap-6">
@@ -107,8 +101,10 @@ export default async function UserProfile( { params, searchParams }: UserProfile
           </div>
         </div>
 
+        <FavoriteBookshelf favoriteBooks={ favoriteBooks } isOwner={ isOwner }/>
+
         { userBooks.length > 0 ? (
-          <UserBookshelf userBooks={ userBooks }/>
+          <UserBookshelf userBooks={ userBooks } isOwner={ isOwner }/>
         ) : (
           <EmptyShelves username={ username } query={ query }/>
         ) }

@@ -11,4 +11,5 @@ export interface UserBook extends Book {
   start_reading_date?: string | null;
   end_reading_date?: string | null;
   read_date?: string | null;
+  is_favorite: boolean;
 }
