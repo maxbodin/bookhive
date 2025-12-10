@@ -1,0 +1,108 @@
+import { Cell, Label, Pie, PieChart } from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { StatCard } from "./stat-card";
+import React from "react";
+
+interface BooksByStatusCardProps {
+  data: {
+    read: number;
+    reading: number;
+    later: number;
+    wishlist: number;
+  };
+}
+
+const chartConfig = {
+  read: { label: "Read", color: "hsl(var(--chart-1))" },
+  reading: { label: "Reading", color: "hsl(var(--chart-2))" },
+  later: { label: "To Read", color: "hsl(var(--chart-3))" },
+  wishlist: { label: "Wishlist", color: "hsl(var(--chart-4))" },
+} satisfies ChartConfig;
+
+export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
+  const chartData = Object.entries( data ).map( ( [status, count] ) => ( {
+    statusKey: status,
+    status: chartConfig[status as keyof typeof chartConfig]?.label,
+    count,
+    fill: chartConfig[status as keyof typeof chartConfig]?.color,
+  } ) ).filter( item => item.count > 0 );
+
+  const totalBooks = React.useMemo( () => {
+    return chartData.reduce( ( acc, curr ) => acc + curr.count, 0 );
+  }, [] );
+
+  return (
+    <StatCard title="Books by Status">
+      { totalBooks > 0 ? (
+        <ChartContainer
+          config={ chartConfig }
+          className="mx-auto aspect-square max-h-[250px] pb-0"
+        >
+          <PieChart>
+            <ChartTooltip
+              cursor={ false }
+              content={ <ChartTooltipContent hideLabel/> }
+            />
+            <Pie
+              data={ chartData }
+              dataKey="count"
+              nameKey="status"
+              innerRadius={ 45 }
+              outerRadius={ 110 }
+              strokeWidth={ 2 }
+              label
+            >
+              <Label
+                content={ ( { viewBox } ) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
+                        x={ viewBox.cx }
+                        y={ viewBox.cy }
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
+                          x={ viewBox.cx }
+                          y={ viewBox.cy }
+                          className="text-xl font-bold text-foreground"
+                          fill="currentColor"
+                        >
+                          { totalBooks.toLocaleString() }
+                        </tspan>
+                        <tspan
+                          x={ viewBox.cx }
+                          y={ ( viewBox.cy || 0 ) + 20 }
+                          className="text-muted-foreground"
+                          fill="currentColor"
+                        >
+                          Books
+                        </tspan>
+                      </text>
+                    );
+                  }
+                } }
+              />
+              { chartData.map( ( entry ) => (
+                <Cell key={ `cell-${ entry.statusKey }` } fill={ entry.fill }/>
+              ) ) }
+            </Pie>
+            <ChartLegend
+              content={ <ChartLegendContent nameKey="statusKey"/> }
+              className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+            />
+          </PieChart>
+        </ChartContainer>
+      ) : (
+        <p className="py-8 text-center text-muted-foreground">No books on shelves yet.</p>
+      ) }
+    </StatCard>
+  );
+}
