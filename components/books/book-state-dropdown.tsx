@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 import { BookPlus, Check, ChevronDown, Trash2 } from "lucide-react";
 import { upsertBookState } from "@/app/services/users-books";
 import { BookState } from "@/app/types/book-state";
-import { DateTimePickerDialog } from "./date-time-picker-dialog";
 import { UserBook } from "@/app/types/user-book";
+import { BookStateDateTimeDialog } from "@/components/books/book-state-date-time-dialog";
 
 // Configuration for dialogs triggered by state changes.
 const DIALOG_CONFIG = {
@@ -199,10 +199,10 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
       </DropdownMenu>
 
       { dialog && (
-        <DateTimePickerDialog
+        <BookStateDateTimeDialog
           isOpen={ !!dialog }
-          onClose={ () => setDialog( null ) }
-          onSubmit={ handleDialogSubmit }
+          onCloseAction={ () => setDialog( null ) }
+          onSubmitAction={ handleDialogSubmit }
           title={ dialog.config.title }
           description={ dialog.config.description }
           isSubmitting={ isPending }

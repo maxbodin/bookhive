@@ -6,7 +6,7 @@ import { getUsername } from "@/lib/getUsername";
 import { EmptyShelves } from "@/components/profile/empty-shelves";
 import { sortNatural } from "@/lib/sortNatural";
 import { FavoriteBookshelf } from "@/components/profile/favorite-bookshelf";
-import { getCurrentUser } from "@/app/services/getCurrentUser";
+import { getCurrentUser } from "@/app/actions/getCurrentUser";
 
 /**
  * Fetches a user's profile and their book collection,

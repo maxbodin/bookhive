@@ -41,7 +41,7 @@ export function UserBookshelf( { userBooks, isOwner }: UserBookshelfProps ) {
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">
               { SHELF_TITLES[shelf] } ({ booksOnShelf.length })
             </h2>
-            <BooksGrid books={ booksOnShelf } view={ gridView } isOwner={isOwner}/>
+            <BooksGrid books={ booksOnShelf } view={ gridView } isOwner={ isOwner }/>
           </section>
         );
       } ) }

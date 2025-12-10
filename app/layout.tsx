@@ -5,6 +5,7 @@ import React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
+import ReadingLogger from "@/components/sessions/reading-logger";
 
 const geistSans = Geist( {
   variable: "--font-geist-sans",
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono( {
 
 export const metadata: Metadata = {
   title: "BookHive",
-  description: "Keep track of your books",
+  description: "Keep track of your books and reading goals",
 };
 
 export default function RootLayout( {
@@ -40,6 +41,7 @@ export default function RootLayout( {
     >
       <Navbar/>
       { children }
+      <ReadingLogger/>
     </ThemeProvider>
     </body>
     </html>

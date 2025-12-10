@@ -5,8 +5,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const profileUpdateSchema = z.object( {
-  pictureUrl: z.string().url( "Please enter a valid URL." ).max( 512, "URL is too long." ),
-  userEmail: z.string().email(),
+  pictureUrl: z.url( "Please enter a valid URL." ).max( 512, "URL is too long." ),
+  userEmail: z.email(),
 } );
 
 /**

@@ -5,7 +5,10 @@ import { BookState } from "@/app/types/book-state";
 import { revalidatePath } from "next/cache";
 
 /**
- * Creates or updates the state of a book for the current user.
+ * Upsert the state of a book for the current user.
+ * @param bookId
+ * @param newState
+ * @param updates
  */
 export async function upsertBookState(
   bookId: number,
@@ -36,8 +39,13 @@ export async function upsertBookState(
       state: newState,
     };
 
-    const { error } = await supabase.from( "users_books" ).upsert( dataToUpsert );
-    if (error) return { error: "Failed to update book state." };
+    const { error } = await supabase.from( "users_books" )
+      .upsert( dataToUpsert, { onConflict: "uid, book_id" } );
+
+    if (error) {
+      console.error( "Supabase upsert error:", error );
+      return { error: "Failed to update book state." };
+    }
   }
 
   // Revalidate the pages where the book grids are displayed.

@@ -35,10 +35,10 @@ function FavoriteBookCover( { book, userBook, isOwner }: BookCardProps ) {
         </div>
       ) }
       { isOwner && isRead && (
-      <FavoriteToggleButton
-        bookId={ book.id }
-        isFavorite={ true }
-      />)}
+        <FavoriteToggleButton
+          bookId={ book.id }
+          isFavorite={ true }
+        /> ) }
     </div>
   );
 }

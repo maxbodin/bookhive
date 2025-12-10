@@ -53,6 +53,7 @@ export async function searchBooks( query?: string ): Promise<Book[]> {
     ];
 
     // Handle authors (array field).
+    // TODO : Fix, seems not to work.
     const authorsFilter = `authors.cs.{${ sanitizedQuery }}`;
 
     request = request.or( [...textFilters, authorsFilter].join( "," ) );
