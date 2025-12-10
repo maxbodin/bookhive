@@ -101,10 +101,11 @@ export default async function UserProfile( { params, searchParams }: UserProfile
           </div>
         </div>
 
-        <FavoriteBookshelf favoriteBooks={ favoriteBooks } isOwner={ isOwner }/>
-
         { userBooks.length > 0 ? (
-          <UserBookshelf userBooks={ userBooks } isOwner={ isOwner }/>
+          <>
+            <FavoriteBookshelf favoriteBooks={ favoriteBooks } isOwner={ isOwner }/>
+            <UserBookshelf userBooks={ userBooks } isOwner={ isOwner }/>
+          </>
         ) : (
           <EmptyShelves username={ username } query={ query }/>
         ) }
