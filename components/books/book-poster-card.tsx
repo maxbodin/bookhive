@@ -8,6 +8,7 @@ export interface BookCardProps {
   book: Book;
   userBook?: UserBook;
   isOwner?: boolean;
+  inFavoriteSection?: boolean;
 }
 
 /**
@@ -106,10 +107,10 @@ function StandardBookCard( { book, userBook, isOwner }: BookCardProps ) {
   );
 }
 
-export function BookPosterCard( { book, userBook, isOwner }: BookCardProps ) {
+export function BookPosterCard( { book, userBook, isOwner, inFavoriteSection }: BookCardProps ) {
   const isFavorite = userBook?.is_favorite || false;
 
-  if (isFavorite) {
+  if (isFavorite && inFavoriteSection) {
     return <FavoriteBookCover book={ book } userBook={ userBook } isOwner={ isOwner }/>;
   }
 

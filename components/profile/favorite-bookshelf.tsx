@@ -19,7 +19,7 @@ export function FavoriteBookshelf( { favoriteBooks, isOwner }: FavoriteBookshelf
       { favoriteBooks.length > 0 ? (
         <div className="grid grid-cols-4 gap-4">
           { favoriteBooks.map( ( book ) => (
-            <BookPosterCard key={ book.id } book={ book } userBook={ book } isOwner={ isOwner }/>
+            <BookPosterCard key={ book.id } book={ book } userBook={ book } isOwner={ isOwner } inFavoriteSection/>
           ) ) }
         </div>
       ) : (
