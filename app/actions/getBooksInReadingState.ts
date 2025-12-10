@@ -44,13 +44,13 @@ export async function getBooksInReadingState(): Promise<ActionResponse> {
     return { error: "Failed to load your books. Please try again." };
   }
 
-  const flattenedData = data?.map(item => {
+  const flattenedData = data?.map( item => {
     const { books, ...userBookData } = item;
     return {
       ...userBookData,
-      ...(books as Partial<Book>), // Type assertion to merge book properties
+      ...( books as Partial<Book> ), // Type assertion to merge book properties
     };
-  }) || [];
+  } ) || [];
 
   return { data: flattenedData as UserBook[] };
 }

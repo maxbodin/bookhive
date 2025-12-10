@@ -111,12 +111,12 @@ export default function ReadingLogger() {
    * @param bookId - The value from the SelectItem, which is a string.
    */
   const handleBookSelect = ( bookId: string ) => {
-    const book = books.find((b) => b.book_id.toString() === bookId);
-    setFormState(prev => ({
+    const book = books.find( ( b ) => b.book_id.toString() === bookId );
+    setFormState( prev => ( {
       ...prev,
       selectedBookId: bookId,
       endPage: book?.current_page ?? 0,
-    }));
+    } ) );
   };
 
   /**
@@ -130,7 +130,7 @@ export default function ReadingLogger() {
     } );
 
     if (!validation.success) {
-      toast.error(validation.error.message || "Invalid input. Please check the form.");
+      toast.error( validation.error.message || "Invalid input. Please check the form." );
       return;
     }
 
@@ -142,7 +142,7 @@ export default function ReadingLogger() {
     formData.append( "startPage", validation.data.startPage.toString() );
     formData.append( "notes", validation.data.notes ?? "" );
 
-    console.log( JSON.stringify(formData ) );
+    console.log( JSON.stringify( formData ) );
 
     startSubmitting( async () => {
       const result = await logReadingSession( formData );
