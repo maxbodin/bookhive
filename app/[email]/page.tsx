@@ -7,6 +7,8 @@ import { EmptyShelves } from "@/components/profile/empty-shelves";
 import { sortNatural } from "@/lib/sortNatural";
 import { FavoriteBookshelf } from "@/components/profile/favorite-bookshelf";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserStats } from "@/components/profile/user-stats";
 
 /**
  * Fetches a user's profile and their book collection,
@@ -91,24 +93,38 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
     return (
       <div className="container mx-auto p-4 md:p-8">
-        <div className="mb-12 flex flex-col md:flex-row items-center gap-6">
+        <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
           <UserAvatar profile={ profile } currentUser={ currentUser }/>
           <div>
-            <h1 className="text-3xl font-bold">{ username }&apos;s shelves</h1>
+            <h1 className="text-3xl font-bold">{ username }&apos;s profile</h1>
             <p className="text-md text-gray-500">
               Joined: { new Date( profile.created_at ).toLocaleDateString() }
             </p>
           </div>
         </div>
 
-        { userBooks.length > 0 ? (
-          <>
-            <FavoriteBookshelf favoriteBooks={ favoriteBooks } isOwner={ isOwner }/>
-            <UserBookshelf userBooks={ userBooks } isOwner={ isOwner }/>
-          </>
-        ) : (
-          <EmptyShelves username={ username } query={ query }/>
-        ) }
+        <Tabs defaultValue="shelves" className="w-full">
+          <div className="mb-8 flex justify-center">
+            <TabsList>
+              <TabsTrigger value="shelves">Shelves</TabsTrigger>
+              <TabsTrigger value="stats">Stats</TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="shelves">
+            { userBooks.length > 0 ? (
+              <>
+                <FavoriteBookshelf favoriteBooks={ favoriteBooks } isOwner={ isOwner }/>
+                <UserBookshelf userBooks={ userBooks } isOwner={ isOwner }/>
+              </>
+            ) : (
+              <EmptyShelves username={ username } query={ query }/>
+            ) }
+          </TabsContent>
+          <TabsContent value="stats">
+            <UserStats userBooks={ userBooks }/>
+          </TabsContent>
+        </Tabs>
       </div>
     );
   } catch (error: unknown) {
