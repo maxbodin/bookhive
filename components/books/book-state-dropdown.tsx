@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState, useTransition } from "react";
+import React, { forwardRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { BookPlus, Check, ChevronDown, Trash2 } from "lucide-react";
+import { BookCheck, Bookmark, BookOpen, BookPlus, Check, ChevronDown, Heart, Trash2 } from "lucide-react";
 import { upsertBookState } from "@/app/services/users-books";
 import { BookState } from "@/app/types/book-state";
 import { UserBook } from "@/app/types/user-book";
@@ -43,6 +43,13 @@ const stateLabels: Record<BookState, string> = {
   read: "Read",
   later: "Read Later",
   wishlist: "Wishlist",
+};
+
+const stateIcons: Record<BookState, React.ElementType> = {
+  reading: BookOpen,
+  read: BookCheck,
+  later: Bookmark,
+  wishlist: Heart,
 };
 
 interface BookStateDropdownProps {
@@ -136,6 +143,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
 
   const TriggerButton = forwardRef<HTMLButtonElement>( ( props, ref ) => {
     if (optimisticState) {
+      const Icon = stateIcons[optimisticState];
       return (
         <Button
           ref={ ref }
@@ -145,7 +153,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
           className="w-full text-xs"
           disabled={ isPending }
         >
-          <Check className="w-4 h-4 mr-2"/>
+          <Icon className="w-4 h-4 mr-2"/>
           { stateLabels[optimisticState] }
           <ChevronDown className="w-4 h-4 ml-auto"/>
         </Button>
@@ -175,16 +183,20 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
           <TriggerButton/>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          { states.map( ( state ) => (
-            <DropdownMenuItem
-              key={ state }
-              onSelect={ () => handleStateChange( state ) }
-              disabled={ isPending }
-            >
-              { stateLabels[state] }
-              { optimisticState === state && <Check className="w-4 h-4 ml-auto"/> }
-            </DropdownMenuItem>
-          ) ) }
+          { states.map( ( state ) => {
+            const Icon = stateIcons[state];
+            return (
+              <DropdownMenuItem
+                key={ state }
+                onSelect={ () => handleStateChange( state ) }
+                disabled={ isPending }
+              >
+                <Icon className="w-4 h-4 mr-2"/>
+                { stateLabels[state] }
+                { optimisticState === state && <Check className="w-4 h-4 ml-auto"/> }
+              </DropdownMenuItem>
+            );
+          } ) }
           { optimisticState && (
             <>
               <DropdownMenuSeparator/>
