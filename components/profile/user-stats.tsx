@@ -107,6 +107,7 @@
 import { useMemo } from "react";
 import { UserBook } from "@/app/types/user-book";
 import { BooksByStatusCard } from "./stats/books-by-status-card";
+import { AverageCompletionCard } from "@/components/profile/stats/average-completion-card";
 
 interface UserStatsProps {
   userBooks: UserBook[];
@@ -119,7 +120,7 @@ interface UserStatsProps {
  */
 export function UserStats( { userBooks }: UserStatsProps ) {
   const stats = useMemo( () => {
-    const readBooks = userBooks.filter( b => b.state === "read" && b.end_reading_date );
+    const readBooks = userBooks.filter( b => b.state === "read" );
 
     // Stats on book states.
     const booksByState = {
@@ -141,7 +142,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       acc[type] = ( acc[type] || 0 ) + 1;
       return acc;
     }, {} as Record<string, number> );
-
+*/
     const readingDurations = readBooks
       .map( b => {
         if (b.start_reading_date && b.end_reading_date) {
@@ -157,7 +158,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       ? readingDurations.reduce( ( a, b ) => a + b, 0 ) / readingDurations.length
       : 0;
 
-    const booksReadPerMonth = readBooks.reduce( ( acc, book ) => {
+    /*const booksReadPerMonth = readBooks.reduce( ( acc, book ) => {
       const monthYear = new Date( book.end_reading_date! ).toLocaleString( "default", {
         month: "short",
         year: "numeric"
@@ -172,20 +173,23 @@ export function UserStats( { userBooks }: UserStatsProps ) {
 
     return {
       booksByState,
+      avgReadingDays,
 /*      pagesPerDay,
       booksByType,
-      avgReadingDays,
       monthlyReadsData */
     };
   }, [userBooks] );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col space-y-2">
       <BooksByStatusCard data={ stats.booksByState }/>
       {/*<BookTypesCard data={stats.booksByType} />*/ }
-      {/*<AverageCompletionCard avgDays={stats.avgReadingDays} />*/ }
+      <AverageCompletionCard avgDays={stats.avgReadingDays} />
       {/*<ReadingSpeedCard pagesPerDay={stats.pagesPerDay} />*/ }
       {/*<MonthlyReadsCard data={stats.monthlyReadsData} />*/ }
     </div>
   );
 }
+
+
+

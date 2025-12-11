@@ -9,6 +9,7 @@ import { FavoriteBookshelf } from "@/components/profile/favorite-bookshelf";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserStats } from "@/components/profile/user-stats";
+import { Book } from "@/app/types/book";
 
 /**
  * Fetches a user's profile and their book collection,
@@ -51,18 +52,15 @@ async function getUserProfileAndBooks( email: string, query?: string ) {
     return { profile, userBooks: [] };
   }
 
-  const formattedBooks: UserBook[] = userBooksData.map( item => ( {
-    ...item.books,
-    state: item.state,
-    is_favorite: item.is_favorite,
-  } ) )
-    .filter( book => book.id );
+  const flattenedData = userBooksData?.map( item => {
+    const { books, ...userBookData } = item;
+    return {
+      ...userBookData,
+      ...( books as Partial<Book> ), // Type assertion to merge book properties
+    };
+  } ) || [];
 
-  if (!formattedBooks) {
-    return { profile, userBooks: [] };
-  }
-
-  return { profile, userBooks: sortNatural( formattedBooks ) };
+  return { profile, userBooks: sortNatural( flattenedData ) };
 }
 
 interface UserProfilePageProps {

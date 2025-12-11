@@ -23,7 +23,7 @@ export interface Book {
 export type BookType = "bd" | "manga" | "roman";
 
 export const BOOK_TYPE_MAP: Record<BookType, string> = {
-  bd: "Comic",
+  bd: "BD",
   manga: "Manga",
-  roman: "Novel",
+  roman: "Roman",
 };
