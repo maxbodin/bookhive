@@ -54,23 +54,10 @@
   return (
     <div className="flex flex-col gap-6 px-2">
 
-
       <StatCard title="Reading Speed">
         <p>Pages per day: {pagesPerDay.toFixed(2)}</p>
         <p>Pages per month: {(pagesPerDay * 30.44).toFixed(2)}</p>
         <p>Pages per year: {(pagesPerDay * 365.25).toFixed(2)}</p>
-      </StatCard>
-
-      <StatCard title="Book Types">
-        {Object.entries(booksByType).map(([type, count]) => (
-          <p key={type}>
-            {BOOK_TYPE_MAP[type as keyof typeof BOOK_TYPE_MAP] || 'Unknown'}: {count}
-          </p>
-        ))}
-      </StatCard>
-
-      <StatCard title="Average Time to Finish a Book">
-        <p>{avgReadingDays.toFixed(2)} days</p>
       </StatCard>
 
       <div className="md:col-span-2 lg:col-span-3">
@@ -108,6 +95,7 @@ import { useMemo } from "react";
 import { UserBook } from "@/app/types/user-book";
 import { BooksByStatusCard } from "./stats/books-by-status-card";
 import { AverageCompletionCard } from "@/components/profile/stats/average-completion-card";
+import { BooksByTypesCard } from "@/components/profile/stats/books-by-types-card";
 
 interface UserStatsProps {
   userBooks: UserBook[];
@@ -136,13 +124,16 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       : new Date();
     const daysSinceFirstRead = Math.max( 1, ( new Date().getTime() - firstReadDate.getTime() ) / ( 1000 * 3600 * 24 ) );
     const pagesPerDay = totalPagesRead > 0 ? totalPagesRead / daysSinceFirstRead : 0;
+*/
 
+    // Stats on book types.
     const booksByType = userBooks.reduce( ( acc, book ) => {
       const type = book.type || "unknown";
       acc[type] = ( acc[type] || 0 ) + 1;
       return acc;
     }, {} as Record<string, number> );
-*/
+
+    // Used for average reading time stats.
     const readingDurations = readBooks
       .map( b => {
         if (b.start_reading_date && b.end_reading_date) {
@@ -173,9 +164,9 @@ export function UserStats( { userBooks }: UserStatsProps ) {
 
     return {
       booksByState,
+      booksByType,
       avgReadingDays,
 /*      pagesPerDay,
-      booksByType,
       monthlyReadsData */
     };
   }, [userBooks] );
@@ -183,7 +174,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
   return (
     <div className="flex flex-col space-y-2">
       <BooksByStatusCard data={ stats.booksByState }/>
-      {/*<BookTypesCard data={stats.booksByType} />*/ }
+      <BooksByTypesCard data={stats.booksByType} />
       <AverageCompletionCard avgDays={stats.avgReadingDays} />
       {/*<ReadingSpeedCard pagesPerDay={stats.pagesPerDay} />*/ }
       {/*<MonthlyReadsCard data={stats.monthlyReadsData} />*/ }

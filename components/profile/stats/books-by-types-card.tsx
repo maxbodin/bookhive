@@ -1,46 +1,42 @@
-import { Cell, Label, Pie, PieChart } from "recharts";
+"use client";
+
+import { Pie, PieChart, Cell, Label } from "recharts";
 import {
   ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
+  ChartContainer, ChartLegend, ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { StatCard } from "./stat-card";
+import { BOOK_TYPE_MAP } from "@/app/types/book";
 import React from "react";
 
-interface BooksByStatusCardProps {
-  data: {
-    read: number;
-    reading: number;
-    later: number;
-    wishlist: number;
-  };
+interface BookTypesCardProps {
+  data: Record<string, number>;
 }
 
 const chartConfig = {
-  read: { label: "Read", color: "var(--chart-1)" },
-  reading: { label: "Reading", color: "var(--chart-2)" },
-  later: { label: "To Read", color: "var(--chart-3)" },
-  wishlist: { label: "Wishlist", color: "var(--chart-4)" },
+  bd: { label: BOOK_TYPE_MAP.bd, color: "var(--chart-1)" },
+  manga: { label: BOOK_TYPE_MAP.manga, color: "var(--chart-2)" },
+  roman: { label: BOOK_TYPE_MAP.roman, color: "var(--chart-3)" },
+  unknown: { label: "Unknown", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
-export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
-  const chartData = Object.entries( data ).map( ( [status, count] ) => ( {
-    statusKey: status,
-    status: chartConfig[status as keyof typeof chartConfig]?.label,
+export function BooksByTypesCard( { data }: BookTypesCardProps) {
+  const chartData = Object.entries(data).map(([type, count]) => ({
+    typeKey: type,
+    type: chartConfig[type as keyof typeof chartConfig]?.label || "Unknown",
     count,
-    fill: chartConfig[status as keyof typeof chartConfig]?.color,
-  } ) ).filter( item => item.count > 0 );
+    fill: `var(--color-${type})`,
+  })).filter(item => item.count > 0);
 
   const totalBooks = React.useMemo( () => {
     return chartData.reduce( ( acc, curr ) => acc + curr.count, 0 );
   }, [] );
 
   return (
-    <StatCard title="Books by Status">
-      { totalBooks > 0 ? (
+    <StatCard title="Books by Types">
+      {totalBooks > 0 ? (
         <ChartContainer config={chartConfig} className="p-20 max-h-[500px]">
           <PieChart>
             <ChartTooltip
@@ -48,9 +44,9 @@ export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
               content={ <ChartTooltipContent hideLabel /> }
             />
             <Pie
-              data={ chartData }
+              data={chartData}
               dataKey="count"
-              nameKey="status"
+              nameKey="type"
               innerRadius={ 45 }
               outerRadius={ 90 }
               strokeWidth={ 2 }
@@ -87,12 +83,12 @@ export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
                   }
                 } }
               />
-              { chartData.map( ( entry ) => (
-                <Cell key={ `cell-${ entry.statusKey }` } fill={ entry.fill }/>
-              ) ) }
+              {chartData.map((entry) => (
+                <Cell key={`cell-${entry.type}`} fill={entry.fill} />
+              ))}
             </Pie>
             <ChartLegend
-              content={ <ChartLegendContent nameKey="statusKey"/> }
+              content={ <ChartLegendContent nameKey="typeKey"/> }
               className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
             />
           </PieChart>

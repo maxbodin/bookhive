@@ -9,9 +9,9 @@ interface StatCardProps {
 
 export function StatCard( { title, children }: StatCardProps ) {
   return (
-    <Card className={ "flex flex-col rounded-lg max-w-md" }>
+    <Card className={ "flex flex-col rounded-lg min-w-md" }>
       <CardHeader>
-        <CardTitle className="text-lg font-medium">
+        <CardTitle className="text-lg">
           { title }
         </CardTitle>
       </CardHeader>

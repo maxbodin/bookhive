@@ -48,5 +48,8 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "react-is": "^19.2.1"
   }
 }
