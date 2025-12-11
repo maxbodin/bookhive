@@ -17,7 +17,7 @@ DELETE FROM public.books WHERE id BETWEEN 2001 AND 2020;
 -- 3. Create a user in the 'profiles' table
 -- This user will own the book data.
 INSERT INTO public.profiles (id, email, picture)
-VALUES (user_id, 'test.user@example.com', 'https://example.com/user-picture.png')
+VALUES (user_id, 'test.user@example.com', 'https://thumbs.dreamstime.com/b/crash-test-dummy-20256432.jpg')
     ON CONFLICT (id) DO NOTHING;
 
 -- 4. Insert sample books into the 'books' table
