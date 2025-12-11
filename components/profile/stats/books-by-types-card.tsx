@@ -1,9 +1,11 @@
 "use client";
 
-import { Pie, PieChart, Cell, Label } from "recharts";
+import { Cell, Label, Pie, PieChart } from "recharts";
 import {
   ChartConfig,
-  ChartContainer, ChartLegend, ChartLegendContent,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -22,13 +24,13 @@ const chartConfig = {
   unknown: { label: "Unknown", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
-export function BooksByTypesCard( { data }: BookTypesCardProps) {
-  const chartData = Object.entries(data).map(([type, count]) => ({
+export function BooksByTypesCard( { data }: BookTypesCardProps ) {
+  const chartData = Object.entries( data ).map( ( [type, count] ) => ( {
     typeKey: type,
     type: chartConfig[type as keyof typeof chartConfig]?.label || "Unknown",
     count,
-    fill: `var(--color-${type})`,
-  })).filter(item => item.count > 0);
+    fill: `var(--color-${ type })`,
+  } ) ).filter( item => item.count > 0 );
 
   const totalBooks = React.useMemo( () => {
     return chartData.reduce( ( acc, curr ) => acc + curr.count, 0 );
@@ -36,15 +38,15 @@ export function BooksByTypesCard( { data }: BookTypesCardProps) {
 
   return (
     <StatCard title="Books by Types">
-      {totalBooks > 0 ? (
-        <ChartContainer config={chartConfig} className="p-20 max-h-[500px]">
+      { totalBooks > 0 ? (
+        <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">
           <PieChart>
             <ChartTooltip
               cursor={ false }
-              content={ <ChartTooltipContent hideLabel /> }
+              content={ <ChartTooltipContent hideLabel/> }
             />
             <Pie
-              data={chartData}
+              data={ chartData }
               dataKey="count"
               nameKey="type"
               innerRadius={ 45 }
@@ -83,9 +85,9 @@ export function BooksByTypesCard( { data }: BookTypesCardProps) {
                   }
                 } }
               />
-              {chartData.map((entry) => (
-                <Cell key={`cell-${entry.type}`} fill={entry.fill} />
-              ))}
+              { chartData.map( ( entry ) => (
+                <Cell key={ `cell-${ entry.type }` } fill={ entry.fill }/>
+              ) ) }
             </Pie>
             <ChartLegend
               content={ <ChartLegendContent nameKey="typeKey"/> }

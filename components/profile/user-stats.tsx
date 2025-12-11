@@ -1,101 +1,12 @@
-/*
-
-  // Reading speed stats
-  const totalPagesRead = readBooks.reduce((acc, book) => acc + (book.pages || 0), 0);
-  const firstReadDate = readBooks.length > 0
-    ? new Date(Math.min(...readBooks.map(b => new Date(b.end_reading_date!).getTime())))
-    : new Date();
-  const daysSinceFirstRead = Math.max(1, (new Date().getTime() - firstReadDate.getTime()) / (1000 * 3600 * 24));
-
-  const pagesPerDay = totalPagesRead / daysSinceFirstRead;
-
-  // Book type stats
-  const booksByType = userBooks.reduce((acc, book) => {
-    const type = book.type || 'unknown';
-    acc[type] = (acc[type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Average time to finish a book
-  const readingDurations = readBooks
-    .map(b => {
-      if (b.start_reading_date && b.end_reading_date) {
-        const start = new Date(b.start_reading_date).getTime();
-        const end = new Date(b.end_reading_date).getTime();
-        return (end - start) / (1000 * 3600 * 24); // duration in days
-      }
-      return null;
-    })
-    .filter(d => d !== null && d > 0) as number[];
-
-  const avgReadingDays = readingDurations.length > 0
-    ? readingDurations.reduce((a, b) => a + b, 0) / readingDurations.length
-    : 0;
-
-  // Chart data for books read per month
-  const booksReadPerMonth = readBooks.reduce((acc, book) => {
-    const monthYear = new Date(book.end_reading_date!).toLocaleString('default', { month: 'short', year: 'numeric' });
-    if (!acc[monthYear]) {
-      acc[monthYear] = { month: monthYear, books: 0 };
-    }
-    acc[monthYear].books++;
-    return acc;
-  }, {} as Record<string, { month: string, books: number }>);
-
-  const chartData = Object.values(booksReadPerMonth).sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
-
-  const chartConfig = {
-    books: {
-      label: "Books",
-      color: "hsl(var(--chart-1))",
-    },
-  } satisfies ChartConfig
-
-  return (
-    <div className="flex flex-col gap-6 px-2">
-
-      <StatCard title="Reading Speed">
-        <p>Pages per day: {pagesPerDay.toFixed(2)}</p>
-        <p>Pages per month: {(pagesPerDay * 30.44).toFixed(2)}</p>
-        <p>Pages per year: {(pagesPerDay * 365.25).toFixed(2)}</p>
-      </StatCard>
-
-      <div className="md:col-span-2 lg:col-span-3">
-        <StatCard title="Books Read Per Month">
-          {chartData.length > 0 ? (
-            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-              <BarChart accessibilityLayer data={chartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="dot" />}
-                />
-                <Bar dataKey="books" fill="var(--color-books)" radius={4} />
-              </BarChart>
-            </ChartContainer>
-          ) : (
-            <p>No books read yet.</p>
-          )}
-        </StatCard>
-      </div>
-    </div>
-  );
-}*/
-
-
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { UserBook } from "@/app/types/user-book";
 import { BooksByStatusCard } from "./stats/books-by-status-card";
 import { AverageCompletionCard } from "@/components/profile/stats/average-completion-card";
 import { BooksByTypesCard } from "@/components/profile/stats/books-by-types-card";
+import { MonthlyReadsCard } from "@/components/profile/stats/monthly-reads-card";
+import { ReadingSpeedCard } from "@/components/profile/stats/reading-speed-card";
 
 interface UserStatsProps {
   userBooks: UserBook[];
@@ -107,24 +18,31 @@ interface UserStatsProps {
  * @constructor
  */
 export function UserStats( { userBooks }: UserStatsProps ) {
+  const [selectedYear, setSelectedYear] = useState( new Date().getFullYear() );
+  const availableYears = [2022, 2023, 2024, 2025, 2026];
+
   const stats = useMemo( () => {
-    const readBooks = userBooks.filter( b => b.state === "read" );
+    // Filter books that have a valid end_reading_date and match the selected year.
+    const readBooks = userBooks.filter( b => {
+      if (b.state !== "read" || !b.end_reading_date) return false;
+      const readYear = new Date( b.end_reading_date ).getFullYear();
+      return readYear === selectedYear;
+    } );
 
     // Stats on book states.
     const booksByState = {
-      read: readBooks.length,
+      read: userBooks.filter( b => b.state === "read" ).length,
       reading: userBooks.filter( b => b.state === "reading" ).length,
       later: userBooks.filter( b => b.state === "later" ).length,
       wishlist: userBooks.filter( b => b.state === "wishlist" ).length,
     };
 
-/*    const totalPagesRead = readBooks.reduce( ( acc, book ) => acc + ( book.pages || 0 ), 0 );
+    const totalPagesRead = readBooks.reduce( ( acc, book ) => acc + ( book.pages || 0 ), 0 );
     const firstReadDate = readBooks.length > 0
       ? new Date( Math.min( ...readBooks.map( b => new Date( b.end_reading_date! ).getTime() ) ) )
       : new Date();
     const daysSinceFirstRead = Math.max( 1, ( new Date().getTime() - firstReadDate.getTime() ) / ( 1000 * 3600 * 24 ) );
     const pagesPerDay = totalPagesRead > 0 ? totalPagesRead / daysSinceFirstRead : 0;
-*/
 
     // Stats on book types.
     const booksByType = userBooks.reduce( ( acc, book ) => {
@@ -133,8 +51,9 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       return acc;
     }, {} as Record<string, number> );
 
-    // Used for average reading time stats.
-    const readingDurations = readBooks
+    // Used for average reading time stats (on all read books).
+    const readingDurations = userBooks
+      .filter( b => b.state === "read" )
       .map( b => {
         if (b.start_reading_date && b.end_reading_date) {
           const start = new Date( b.start_reading_date ).getTime();
@@ -149,38 +68,43 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       ? readingDurations.reduce( ( a, b ) => a + b, 0 ) / readingDurations.length
       : 0;
 
-    /*const booksReadPerMonth = readBooks.reduce( ( acc, book ) => {
-      const monthYear = new Date( book.end_reading_date! ).toLocaleString( "default", {
-        month: "short",
-        year: "numeric"
-      } );
-      if (!acc[monthYear]) acc[monthYear] = { month: monthYear, books: 0 };
-      acc[monthYear].books++;
+    // Data for monthly reads chart.
+    const booksReadPerMonth = readBooks.reduce( ( acc, book ) => {
+      const monthIndex = new Date( book.end_reading_date! ).getMonth(); // 0-11
+      acc[monthIndex] = ( acc[monthIndex] || 0 ) + 1;
       return acc;
-    }, {} as Record<string, { month: string, books: number }> );
+    }, {} as Record<number, number> );
 
-    const monthlyReadsData = Object.values( booksReadPerMonth )
-      .sort( ( a, b ) => new Date( a.month ).getTime() - new Date( b.month ).getTime() );*/
+    const allMonths = Array.from( { length: 12 }, ( _, i ) => {
+      return new Date( 0, i ).toLocaleString( "default", { month: "short" } );
+    } );
+
+    const monthlyReadsData = allMonths.map( ( month, index ) => ( {
+      month,
+      books: booksReadPerMonth[index] || 0,
+    } ) );
 
     return {
       booksByState,
       booksByType,
       avgReadingDays,
-/*      pagesPerDay,
-      monthlyReadsData */
+      monthlyReadsData,
+      pagesPerDay
     };
-  }, [userBooks] );
+  }, [userBooks, selectedYear] );
 
   return (
     <div className="flex flex-col space-y-2">
       <BooksByStatusCard data={ stats.booksByState }/>
-      <BooksByTypesCard data={stats.booksByType} />
-      <AverageCompletionCard avgDays={stats.avgReadingDays} />
-      {/*<ReadingSpeedCard pagesPerDay={stats.pagesPerDay} />*/ }
-      {/*<MonthlyReadsCard data={stats.monthlyReadsData} />*/ }
+      <BooksByTypesCard data={ stats.booksByType }/>
+      <AverageCompletionCard avgDays={ stats.avgReadingDays }/>
+      <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay }/>
+      <MonthlyReadsCard
+        data={ stats.monthlyReadsData }
+        years={ availableYears }
+        selectedYear={ selectedYear }
+        onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }
+      />
     </div>
   );
 }
-
-
-

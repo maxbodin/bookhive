@@ -41,11 +41,11 @@ export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
   return (
     <StatCard title="Books by Status">
       { totalBooks > 0 ? (
-        <ChartContainer config={chartConfig} className="p-20 max-h-[500px]">
+        <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">
           <PieChart>
             <ChartTooltip
               cursor={ false }
-              content={ <ChartTooltipContent hideLabel /> }
+              content={ <ChartTooltipContent hideLabel/> }
             />
             <Pie
               data={ chartData }
