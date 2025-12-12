@@ -1,10 +1,10 @@
-import { searchBooks } from "@/app/services/books";
 import { Suspense } from "react";
 import { BooksGrid } from "@/components/books/books-grid";
 import { UserBanner } from "@/components/profile/user-banner";
 import { Separator } from "@/components/ui/separator";
 import { UserBannerSkeleton } from "@/components/skeletons/user-banner-skeleton";
 import { BooksGridSkeleton } from "@/components/skeletons/books-grid-skeleton";
+import { searchBooks } from "@/app/actions/books/searchBooks";
 
 interface HomePageProps {
   searchParams?: Promise<{ query?: string; user?: string; displayShown?: string }>;

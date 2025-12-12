@@ -4,26 +4,6 @@ import { createClient } from "@/app/utils/supabase/server";
 import { Book } from "@/app/types/book";
 import { sortNatural } from "@/lib/sortNatural";
 
-/**
- * Fetches all book.
- *
- * @returns {Promise<Book[]>} A list of all book.
- */
-export async function getBooks(): Promise<Book[]> {
-  const supabase = await createClient();
-
-  const { data: books, error: booksError } = await supabase
-    .from( "books" )
-    .select()
-    .order( "authors", { ascending: false } );
-
-  if (booksError) {
-    console.error( "Error fetching books:", booksError );
-    return [];
-  }
-
-  return books as Book[];
-}
 
 /**
  * Fetches books based on a search query.
