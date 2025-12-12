@@ -1,5 +1,4 @@
 import { createClient } from "@/app/utils/supabase/server";
-import { UserBook } from "@/app/types/user-book";
 import { UserBookshelf } from "@/components/books/user-bookshelf";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { getUsername } from "@/lib/getUsername";

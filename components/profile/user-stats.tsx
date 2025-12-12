@@ -19,7 +19,6 @@ interface UserStatsProps {
  */
 export function UserStats( { userBooks }: UserStatsProps ) {
   const [selectedYear, setSelectedYear] = useState( new Date().getFullYear() );
-  const availableYears = [2022, 2023, 2024, 2025, 2026];
 
   const stats = useMemo( () => {
     // Filter books that have a valid end_reading_date and match the selected year.
@@ -104,7 +103,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       const date = new Date( dateStr );
       if (date.getFullYear() === selectedYear) {
         const monthIndex = date.getMonth(); // 0-11
-        // Increment the count for the specific state in the correct month.
+        // Increment the count for the specific state in the correct xxmonth.
         if (monthlyActivityData[monthIndex] && book.state) {
           monthlyActivityData[monthIndex][book.state]++;
         }
@@ -124,11 +123,14 @@ export function UserStats( { userBooks }: UserStatsProps ) {
     <div className="flex flex-col space-y-2">
       <BooksByStatusCard data={ stats.booksByState }/>
       <BooksByTypesCard data={ stats.booksByType }/>
-      <AverageCompletionCard avgDays={ stats.avgReadingDays }/>
-      <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay }/>
+      <AverageCompletionCard avgDays={ stats.avgReadingDays }
+                             selectedYear={ selectedYear }
+                             onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }/>
+      <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay }
+                        selectedYear={ selectedYear }
+                        onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }/>
       <MonthlyCountByStateCard
         data={ stats.monthlyActivityData }
-        years={ availableYears }
         selectedYear={ selectedYear }
         onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }
       />
