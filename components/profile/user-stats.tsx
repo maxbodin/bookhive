@@ -5,7 +5,7 @@ import { UserBook } from "@/app/types/user-book";
 import { BooksByStatusCard } from "./stats/books-by-status-card";
 import { AverageCompletionCard } from "@/components/profile/stats/average-completion-card";
 import { BooksByTypesCard } from "@/components/profile/stats/books-by-types-card";
-import { MonthlyReadsCard } from "@/components/profile/stats/monthly-reads-card";
+import { MonthlyCountByStateCard } from "@/components/profile/stats/monthly-count-by-state-card";
 import { ReadingSpeedCard } from "@/components/profile/stats/reading-speed-card";
 
 interface UserStatsProps {
@@ -23,7 +23,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
 
   const stats = useMemo( () => {
     // Filter books that have a valid end_reading_date and match the selected year.
-    const readBooks = userBooks.filter( b => {
+    const readBooksByYear = userBooks.filter( b => {
       if (b.state !== "read" || !b.end_reading_date) return false;
       const readYear = new Date( b.end_reading_date ).getFullYear();
       return readYear === selectedYear;
@@ -37,9 +37,9 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       wishlist: userBooks.filter( b => b.state === "wishlist" ).length,
     };
 
-    const totalPagesRead = readBooks.reduce( ( acc, book ) => acc + ( book.pages || 0 ), 0 );
-    const firstReadDate = readBooks.length > 0
-      ? new Date( Math.min( ...readBooks.map( b => new Date( b.end_reading_date! ).getTime() ) ) )
+    const totalPagesRead = readBooksByYear.reduce( ( acc, book ) => acc + ( book.pages || 0 ), 0 );
+    const firstReadDate = readBooksByYear.length > 0
+      ? new Date( Math.min( ...readBooksByYear.map( b => new Date( b.end_reading_date! ).getTime() ) ) )
       : new Date();
     const daysSinceFirstRead = Math.max( 1, ( new Date().getTime() - firstReadDate.getTime() ) / ( 1000 * 3600 * 24 ) );
     const pagesPerDay = totalPagesRead > 0 ? totalPagesRead / daysSinceFirstRead : 0;
@@ -52,8 +52,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
     }, {} as Record<string, number> );
 
     // Used for average reading time stats (on all read books).
-    const readingDurations = userBooks
-      .filter( b => b.state === "read" )
+    const readingDurations = readBooksByYear
       .map( b => {
         if (b.start_reading_date && b.end_reading_date) {
           const start = new Date( b.start_reading_date ).getTime();
@@ -68,27 +67,55 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       ? readingDurations.reduce( ( a, b ) => a + b, 0 ) / readingDurations.length
       : 0;
 
-    // Data for monthly reads chart.
-    const booksReadPerMonth = readBooks.reduce( ( acc, book ) => {
-      const monthIndex = new Date( book.end_reading_date! ).getMonth(); // 0-11
-      acc[monthIndex] = ( acc[monthIndex] || 0 ) + 1;
-      return acc;
-    }, {} as Record<number, number> );
+    // Helper to get the correct date based on the book's state
+    const getRelevantDate = ( book: UserBook ): string | null | undefined => {
+      switch (book.state) {
+        case "read":
+          return book.end_reading_date; // Considered "read" when finished
+        case "reading":
+          return book.start_reading_date; // "Reading" starts on this date
+        case "later":
+          return book.start_later_date; // Added to "later" list
+        case "wishlist":
+          return book.start_wishlist_date; // Added to "wishlist"
+        default:
+          return null;
+      }
+    };
 
     const allMonths = Array.from( { length: 12 }, ( _, i ) => {
       return new Date( 0, i ).toLocaleString( "default", { month: "short" } );
     } );
 
-    const monthlyReadsData = allMonths.map( ( month, index ) => ( {
+    // Initialize a data structure to hold counts for all states for each month
+    const monthlyActivityData = allMonths.map( month => ( {
       month,
-      books: booksReadPerMonth[index] || 0,
+      read: 0,
+      reading: 0,
+      later: 0,
+      wishlist: 0,
     } ) );
+
+    // Populate the data by iterating through all user books.
+    userBooks.forEach( book => {
+      const dateStr = getRelevantDate( book );
+      if (!dateStr) return; // Skip if no relevant date for its state.
+
+      const date = new Date( dateStr );
+      if (date.getFullYear() === selectedYear) {
+        const monthIndex = date.getMonth(); // 0-11
+        // Increment the count for the specific state in the correct month.
+        if (monthlyActivityData[monthIndex] && book.state) {
+          monthlyActivityData[monthIndex][book.state]++;
+        }
+      }
+    } );
 
     return {
       booksByState,
       booksByType,
       avgReadingDays,
-      monthlyReadsData,
+      monthlyActivityData,
       pagesPerDay
     };
   }, [userBooks, selectedYear] );
@@ -99,8 +126,8 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       <BooksByTypesCard data={ stats.booksByType }/>
       <AverageCompletionCard avgDays={ stats.avgReadingDays }/>
       <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay }/>
-      <MonthlyReadsCard
-        data={ stats.monthlyReadsData }
+      <MonthlyCountByStateCard
+        data={ stats.monthlyActivityData }
         years={ availableYears }
         selectedYear={ selectedYear }
         onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }
