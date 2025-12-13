@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { toggleFavoriteBook } from "@/app/services/favorites";
+import { toggleFavoriteBook } from "@/app/actions/users-books/toggleFavoriteBook";
 
 interface FavoriteToggleButtonProps {
   bookId: number;
