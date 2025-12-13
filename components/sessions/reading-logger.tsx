@@ -21,9 +21,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DateTimePicker } from "@/components/books/date-time-picker";
 import { getBooksInReadingState } from "@/app/actions/getBooksInReadingState";
-import { logReadingSession } from "@/app/actions/logReadingSession";
 import { Spinner } from "@/components/ui/spinner";
 import { UserBook } from "@/app/types/user-book";
+import { logReadingSession } from "@/app/actions/reading-session/logReadingSession";
 
 const sessionSchema = z.object( {
   bookId: z.string().min( 1, "Please select a book." ),
