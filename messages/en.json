@@ -47,5 +47,59 @@
       "notes_too_long": "Notes are too long.",
       "end_time_after_start": "End time must be after start time."
     }
+  },
+  "Layout": {
+    "title": "BookHive",
+    "description": "Keep track of your books and reading goals"
+  },
+  "HomePage": {
+    "users": "Users",
+    "allBooks": "All Books ({count})"
+  },
+  "AuthButtons": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "emailPlaceholder": "your@email.com",
+    "warnings": {
+      "enterEmail": "Please enter your email address."
+    },
+    "success": {
+      "checkEmail": "Check your email for the login link!"
+    },
+    "errors": {
+      "unexpected": "An unexpected error occurred.",
+      "unexpectedSignOut": "An unexpected error occurred during sign out."
+    }
+  },
+  "ErrorPage": {
+    "message": "Sorry, something went wrong"
+  },
+  "UpdateProfilePictureAction": {
+    "success": {
+      "updateSuccess": "Profile picture updated successfully!"
+    },
+    "errors": {
+      "invalidUrl": "Please enter a valid URL.",
+      "urlTooLong": "URL is too long.",
+      "authRequired": "Authentication required.",
+      "invalidInput": "Invalid input.",
+      "updateFailed": "Failed to update profile picture. Please try again."
+    }
+  },
+  "LogReadingSessionAction": {
+    "success": {
+      "logSuccess": "Reading session logged successfully!"
+    },
+    "errors": {
+      "bookId": "Book ID must be a positive number.",
+      "startTimeInvalid": "Please provide a valid start date and time.",
+      "endTimeInvalid": "Please provide a valid end date and time.",
+      "startPageNegative": "Start page cannot be negative.",
+      "endPagePositive": "End page must be a positive number.",
+      "notesTooLong": "Notes must be 1000 characters or less.",
+      "startTimeBeforeEndTime": "Start time must be before end time.",
+      "authRequired": "Authentication required. Please log in.",
+      "logFailed": "Failed to log session. Please try again later."
+    }
   }
 }

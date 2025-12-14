@@ -7,10 +7,13 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { AuthButtonsSkeleton } from "@/components/skeletons/auth-buttons-skeleton";
 import { Session } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 
 const supabase = createClient();
 
 export function AuthButtons() {
+  const t = useTranslations( "AuthButtons" );
+
   const [session, setSession] = useState<Session | null>( null );
   const [email, setEmail] = useState<string>( "" );
   const [initialLoading, setInitialLoading] = useState<boolean>( true );
@@ -38,7 +41,7 @@ export function AuthButtons() {
 
   const handleSignIn = async () => {
     if (!email) {
-      toast.warning( "Please enter your email address." );
+      toast.warning( t( "warnings.enterEmail" ) );
       return;
     }
 
@@ -53,12 +56,12 @@ export function AuthButtons() {
       } );
       if (error) throw error;
 
-      toast.success( "Check your email for the login link!" );
+      toast.success( t( "success.checkEmail" ) );
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error( error.message );
       } else {
-        toast.error( "An unexpected error occurred." );
+        toast.error( t( "errors.unexpected" ) );
       }
     } finally {
       setIsSigningIn( false );
@@ -75,7 +78,7 @@ export function AuthButtons() {
         if (error instanceof Error) {
           toast.error( error.message );
         } else {
-          toast.error( "An unexpected error occurred during sign out." );
+          toast.error( t( "errors.unexpectedSignOut" ) );
         }
       } finally {
         setIsSigningOut( false );
@@ -91,19 +94,19 @@ export function AuthButtons() {
     <div>
       { session ? (
         <Button onClick={ handleSignOut } disabled={ isSigningOut }>
-          { isSigningOut ? <Spinner/> : "Sign out" }
+          { isSigningOut ? <Spinner/> : t( "signOut" ) }
         </Button>
       ) : (
         <div className="flex flex-row gap-2">
           <Input
             type="email"
-            placeholder="your@email.com"
+            placeholder={ t( "emailPlaceholder" ) }
             value={ email }
             onChange={ ( e ) => setEmail( e.target.value ) }
             disabled={ isSigningIn }
           />
           <Button onClick={ handleSignIn } disabled={ isSigningIn }>
-            { isSigningIn ? <Spinner/> : "Sign in" }
+            { isSigningIn ? <Spinner/> : t( "signIn" ) }
           </Button>
         </div>
       ) }

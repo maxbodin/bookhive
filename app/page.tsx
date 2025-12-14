@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { BooksGrid } from "@/components/books/books-grid";
 import { UserBanner } from "@/components/profile/user-banner";
 import { Separator } from "@/components/ui/separator";
@@ -31,19 +32,21 @@ export default async function Home( { searchParams }: HomePageProps ) {
     connectedUserDataWithBooks = await getUserUsersBooks( currentUser?.id );
   }
 
+  const t = await getTranslations( "HomePage" );
+
   return (
     <div className="min-h-screen pb-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 items-center">
 
         <div className="w-full max-w-7xl mx-auto px-4 py-6">
-          <h2 className="text-xl font-bold mb-4">Utilisateurs</h2>
+          <h2 className="text-xl font-bold mb-4">{ t( "users" ) }</h2>
           <Suspense fallback={ <UserBannerSkeleton/> }>
             <UserBanner/>
           </Suspense>
 
           <Separator className="w-full mx-auto my-6"/>
 
-          <h2 className="text-xl font-bold mb-4">Tous les Livres ({ books.length })</h2>
+          <h2 className="text-xl font-bold mb-4">{ t( "allBooks", { count: books.length } ) }</h2>
           <Suspense key={ query } fallback={ <BooksGridSkeleton/> }>
             <BooksGrid books={ books } view={ "poster" } isOwner={ true } profileUserBooks={ [] }
                        connectedUserBooks={ connectedUserDataWithBooks } readingSessions={ [] }/>

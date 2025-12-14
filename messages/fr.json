@@ -47,5 +47,59 @@
       "notes_too_long": "Les notes sont trop longues.",
       "end_time_after_start": "L'heure de fin doit être après l'heure de début."
     }
+  },
+  "Layout": {
+    "title": "BookHive",
+    "description": "Suivez vos livres et vos objectifs de lecture"
+  },
+  "HomePage": {
+    "users": "Utilisateurs",
+    "allBooks": "Tous les Livres ({count})"
+  },
+  "AuthButtons": {
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "emailPlaceholder": "votre@email.com",
+    "warnings": {
+      "enterEmail": "Veuillez saisir votre adresse e-mail."
+    },
+    "success": {
+      "checkEmail": "Consultez vos e-mails pour le lien de connexion !"
+    },
+    "errors": {
+      "unexpected": "Une erreur inattendue est survenue.",
+      "unexpectedSignOut": "Une erreur inattendue est survenue lors de la déconnexion."
+    }
+  },
+  "ErrorPage": {
+    "message": "Désolé, une erreur est survenue"
+  },
+  "UpdateProfilePictureAction": {
+    "success": {
+      "updateSuccess": "Photo de profil mise à jour avec succès !"
+    },
+    "errors": {
+      "invalidUrl": "Veuillez entrer une URL valide.",
+      "urlTooLong": "L'URL est trop longue.",
+      "authRequired": "Authentification requise.",
+      "invalidInput": "Entrée invalide.",
+      "updateFailed": "Échec de la mise à jour de la photo de profil. Veuillez réessayer."
+    }
+  },
+  "LogReadingSessionAction": {
+    "success": {
+      "logSuccess": "Session de lecture enregistrée avec succès !"
+    },
+    "errors": {
+      "bookId": "L'ID du livre doit être un nombre positif.",
+      "startTimeInvalid": "Veuillez fournir une date et une heure de début valides.",
+      "endTimeInvalid": "Veuillez fournir une date et une heure de fin valides.",
+      "startPageNegative": "La page de début ne peut pas être négative.",
+      "endPagePositive": "La page de fin doit être un nombre positif.",
+      "notesTooLong": "Les notes ne doivent pas dépasser 1000 caractères.",
+      "startTimeBeforeEndTime": "L'heure de début doit être avant l'heure de fin.",
+      "authRequired": "Authentification requise. Veuillez vous connecter.",
+      "logFailed": "Échec de l'enregistrement de la session. Veuillez réessayer plus tard."
+    }
   }
 }

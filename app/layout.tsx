@@ -7,6 +7,7 @@ import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 import ReadingLogger from "@/components/sessions/reading-logger";
 import { NextIntlClientProvider, useMessages } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 const geistSans = Geist( {
   variable: "--font-geist-sans",
@@ -18,10 +19,15 @@ const geistMono = Geist_Mono( {
   subsets: ["latin"],
 } );
 
-export const metadata: Metadata = {
-  title: "BookHive",
-  description: "Keep track of your books and reading goals",
-};
+// Generate dynamic, translated metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations( "Layout" );
+
+  return {
+    title: t( "title" ),
+    description: t( "description" ),
+  };
+}
 
 export default function RootLayout( {
                                       children,

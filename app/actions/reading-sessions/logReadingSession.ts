@@ -5,29 +5,32 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ActionState } from "@/app/types/action-state";
 import { ReadingSession } from "@/app/types/reading-session";
-
-const readingSessionSchema = z.object( {
-  bookId: z.coerce.number().int().positive( "Book ID must be a positive number." ),
-  startTime: z.iso.datetime( "Please provide a valid start date and time." ),
-  endTime: z.iso.datetime( "Please provide a valid end date and time." ),
-  startPage: z.coerce.number().int().min( 0, "Start page cannot be negative." ),
-  endPage: z.coerce.number().int().positive( "End page must be a positive number." ),
-  notes: z.string().max( 1000, "Notes must be 1000 characters or less." ).optional(),
-} ).refine( data => new Date( data.startTime ) < new Date( data.endTime ), {
-  message: "Start time must be before end time.",
-  path: ["startTime"],
-} );
+import { getTranslations } from "next-intl/server";
 
 /**
  * Logs a reading session for the authenticated user.
  * @param formData - The form data from the client.
  */
 export async function logReadingSession( formData: FormData ): Promise<ActionState> {
+  const t = await getTranslations( "LogReadingSessionAction" );
+
+  const readingSessionSchema = z.object( {
+    bookId: z.coerce.number().int().positive( t( "errors.bookId" ) ),
+    startTime: z.iso.datetime( t( "errors.startTimeInvalid" ) ),
+    endTime: z.iso.datetime( t( "errors.endTimeInvalid" ) ),
+    startPage: z.coerce.number().int().min( 0, t( "errors.startPageNegative" ) ),
+    endPage: z.coerce.number().int().positive( t( "errors.endPagePositive" ) ),
+    notes: z.string().max( 1000, t( "errors.notesTooLong" ) ).optional(),
+  } ).refine( data => new Date( data.startTime ) < new Date( data.endTime ), {
+    message: t( "errors.startTimeBeforeEndTime" ),
+    path: ["startTime"],
+  } );
+
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
-    return { success: false, message: "Authentication required. Please log in." };
+    return { success: false, message: t( "errors.authRequired" ) };
   }
 
   const validatedFields = readingSessionSchema.safeParse( {
@@ -62,10 +65,10 @@ export async function logReadingSession( formData: FormData ): Promise<ActionSta
 
   if (error) {
     console.error( "Supabase insert error:", error.message );
-    return { success: false, message: "Failed to log session. Please try again later." };
+    return { success: false, message: t( "errors.logFailed" ) };
   }
 
   revalidatePath( "/" );
 
-  return { success: true, message: "Reading session logged successfully!" };
+  return { success: true, message: t( "success.logSuccess" ) };
 }
