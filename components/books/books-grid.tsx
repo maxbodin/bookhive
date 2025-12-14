@@ -1,49 +1,31 @@
 import { Book } from "@/app/types/book";
-import { createClient } from "@/app/utils/supabase/server";
 import { NoResults } from "@/components/books/no-results";
-import { UserBookRecordMap } from "@/app/types/book-state";
 import { BookPosterCard } from "./book-poster-card";
 import { BookHorizontalCard } from "./book-horizontal-card";
 import { UserBook } from "@/app/types/user-book";
 
 interface BooksGridProps {
   books: Book[];
+  profileUserBooks: UserBook[];
+  connectedUserBooks?: UserBook[];
   view: "poster" | "list";
   isOwner: boolean;
 }
 
 /**
- * Fetches the current user's full book records to populate the dropdowns correctly.
+ * Flexible component that renders a collection of books, handling multiple user contexts.
  */
-async function getUserBookRecords(): Promise<UserBookRecordMap> {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return {};
-
-  const { data: userBooks } = await supabase
-    .from( "users_books" )
-    .select( "*" )
-    .eq( "uid", user.id );
-
-  if (!userBooks) return {};
-
-  return userBooks.reduce( ( acc, bookRecord ) => {
-    acc[bookRecord.book_id] = bookRecord as UserBook;
-    return acc;
-  }, {} as UserBookRecordMap );
-}
-
-/**
- * Flexible component that fetches user book data and renders a collection of books.
- */
-export async function BooksGrid( { books, view = "poster", isOwner = false }: BooksGridProps ) {
+export function BooksGrid( {
+                             books,
+                             profileUserBooks,
+                             connectedUserBooks,
+                             view = "poster",
+                             isOwner = false
+                           }: BooksGridProps ) {
   if (!books || books.length === 0) {
     return <NoResults/>;
   }
 
-  const userBookRecords = await getUserBookRecords();
-
-  // Dynamically set the container's class based on the view prop.
   const containerClasses = view === "poster"
     ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-4 p-4"
     : "flex flex-col gap-4 p-2 md:p-4";
@@ -51,12 +33,28 @@ export async function BooksGrid( { books, view = "poster", isOwner = false }: Bo
   return (
     <div className={ containerClasses }>
       { books.map( ( book ) => {
-        const userBookRecord = userBookRecords[book.id];
+        // Find the specific user-book record for the profile owner and the connected user.
+        const profileUserBook = profileUserBooks.find( ub => ub.book_id === book.id );
+        const connectedUserBook = connectedUserBooks?.find( ub => ub.book_id === book.id );
 
         return view === "poster" ? (
-          <BookPosterCard key={ book.id } book={ book } userBook={ userBookRecord } isOwner={ isOwner }/>
+          <BookPosterCard
+            key={ book.id }
+            book={ book }
+            profileUserBook={ profileUserBook }
+            connectedUserBook={ connectedUserBook }
+            isOwner={ isOwner }
+            inFavoriteSection={ false }
+          />
         ) : (
-          <BookHorizontalCard key={ book.id } book={ book } userBook={ userBookRecord }/>
+          <BookHorizontalCard
+            key={ book.id }
+            book={ book }
+            profileUserBook={ profileUserBook }
+            connectedUserBook={ connectedUserBook }
+            isOwner={ isOwner }
+            inFavoriteSection={ false }
+          />
         );
       } ) }
     </div>

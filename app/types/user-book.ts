@@ -3,6 +3,7 @@ import { BookState } from "@/app/types/book-state";
 
 export interface UserBook extends Book {
   uid: string;
+  books: Book[];
   book_id: number;
   state: BookState;
   start_reading_date?: string | null;

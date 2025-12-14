@@ -15,23 +15,18 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { FormEvent, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { User } from "@supabase/supabase-js";
 import { updateProfilePicture } from "@/app/[email]/actions";
 import { getInitial } from "@/lib/getInitial";
+import { Profile } from "@/app/types/profile";
 
 interface UserAvatarProps {
-  profile: {
-    id: string;
-    email: string;
-    picture?: string | null;
-  };
-  currentUser: User | null;
+  profile: Profile;
+  isOwner: boolean;
 }
 
-export function UserAvatar( { profile, currentUser }: UserAvatarProps ) {
+export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>( false );
   const [isSubmitting, setIsSubmitting] = useState<boolean>( false );
-  const isOwner = currentUser?.id === profile.id;
 
   const handleSubmit = async ( event: FormEvent<HTMLFormElement> ) => {
     event.preventDefault();

@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { BookCheck, Bookmark, BookOpen, BookPlus, Check, ChevronDown, Heart, Trash2 } from "lucide-react";
-import { upsertBookState } from "@/app/services/users-books";
 import { BookState } from "@/app/types/book-state";
 import { UserBook } from "@/app/types/user-book";
 import { BookStateDateTimeDialog } from "@/components/books/book-state-date-time-dialog";
+import { upsertBookState } from "@/app/actions/users-books/upsertBookState";
 
 // Configuration for dialogs triggered by state changes.
 const DIALOG_CONFIG = {

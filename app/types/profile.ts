@@ -1,6 +1,6 @@
 export interface Profile {
   id: string;
-  email?: string | null;
-  created_at?: string | null;
+  email: string;
+  created_at?: string;
   picture?: string | null;
 }

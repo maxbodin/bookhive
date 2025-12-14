@@ -1,66 +1,17 @@
-import { createClient } from "@/app/utils/supabase/server";
 import { UserBookshelf } from "@/components/books/user-bookshelf";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { getUsername } from "@/lib/getUsername";
 import { EmptyShelves } from "@/components/profile/empty-shelves";
-import { sortNatural } from "@/lib/sortNatural";
 import { FavoriteBookshelf } from "@/components/profile/favorite-bookshelf";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserStats } from "@/components/profile/user-stats";
-import { Book } from "@/app/types/book";
+import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
+import { Profile } from "@/app/types/profile";
+import { UserBook } from "@/app/types/user-book";
+import { getUserUsersBooks } from "@/app/actions/users-books/getUserUsersBooks";
+import { User } from "@supabase/supabase-js";
 
-/**
- * Fetches a user's profile and their book collection,
- * optionally filtering by a search query.
- * @param email - The email of the user to fetch.
- * @param query - An optional search term to filter books by title.
- */
-async function getUserProfileAndBooks( email: string, query?: string ) {
-  const supabase = await createClient();
-  const { data: profile, error: profileError } = await supabase
-    .from( "profiles" )
-    .select( "*" )
-    .eq( "email", email )
-    .single();
-
-  if (profileError || !profile) {
-    throw new Error( profileError?.message || "User not found" );
-  }
-
-  let queryBuilder = supabase
-    .from( "users_books" )
-    .select( `
-      *,
-      books (*)
-    ` )
-    .eq( "uid", profile.id );
-
-  // If a search query is provided, filter the results on the joined 'books' table's title.
-  if (query) {
-    queryBuilder = queryBuilder.ilike( "books.title", `%${ query }%` );
-  }
-
-  const { data: userBooksData, error: booksError } = await queryBuilder;
-
-  if (booksError) {
-    throw new Error( booksError.message || `Failed to fetch user's books.` );
-  }
-
-  if (!userBooksData) {
-    return { profile, userBooks: [] };
-  }
-
-  const flattenedData = userBooksData?.map( item => {
-    const { books, ...userBookData } = item;
-    return {
-      ...userBookData,
-      ...( books as Partial<Book> ), // Type assertion to merge book properties
-    };
-  } ) || [];
-
-  return { profile, userBooks: sortNatural( flattenedData ) };
-}
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -74,52 +25,63 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
     const query: string = resolvedSearchParams?.query ?? "";
 
-    const [
-      { profile, userBooks },
-      currentUser
-    ] = await Promise.all( [
-      getUserProfileAndBooks( decodedEmail, query ),
-      getCurrentUser()
-    ] );
+    const visitedProfile: Profile = await getUserProfile( decodedEmail );
+    const visitedProfileUserBooks: UserBook[] = await getUserUsersBooks( visitedProfile.id, query );
+    const currentUser: User | null = await getCurrentUser();
+    const isOwner: boolean = currentUser?.id === visitedProfile.id;
+    const visitedProfileUsername: string = getUsername( visitedProfile.email );
+    const visitedProfileFavoriteBooks: UserBook[] = visitedProfileUserBooks.filter( b => b.is_favorite );
 
-    const username: string = getUsername( profile.email );
-
-    const isOwner = currentUser?.id === profile.id;
-
-    const favoriteBooks = userBooks.filter( b => b.is_favorite );
+    // Fetch the connected user's book data if they are logged in.
+    let connectedUserDataWithBooks: UserBook[] = [];
+    if (currentUser) {
+      // If the viewer is the owner, their data is the same as the profile's data.
+      // Otherwise, fetch their data separately.
+      connectedUserDataWithBooks = isOwner ? visitedProfileUserBooks : await getUserUsersBooks( currentUser.id );
+    }
 
     return (
       <div className="container mx-auto p-4 md:p-8">
         <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
-          <UserAvatar profile={ profile } currentUser={ currentUser }/>
+          <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
           <div>
-            <h1 className="text-3xl font-bold">{ username }&apos;s profile</h1>
-            <p className="text-md text-gray-500">
-              Joined: { new Date( profile.created_at ).toLocaleDateString() }
-            </p>
+            <h1 className="text-3xl font-bold">{ visitedProfileUsername }&apos;s profile</h1>
+            { visitedProfile.created_at &&
+              <p className="text-md text-gray-500">
+                Joined: { new Date( visitedProfile.created_at ).toLocaleDateString() }
+              </p>
+            }
           </div>
         </div>
 
         <Tabs defaultValue="shelves" className="w-full">
           <div className="mb-8 flex justify-center">
-            <TabsList>
+          <TabsList>
               <TabsTrigger value="shelves">Shelves</TabsTrigger>
               <TabsTrigger value="stats">Stats</TabsTrigger>
             </TabsList>
           </div>
 
           <TabsContent value="shelves">
-            { userBooks.length > 0 ? (
+            { visitedProfileUserBooks.length > 0 ? (
               <>
-                <FavoriteBookshelf favoriteBooks={ favoriteBooks } isOwner={ isOwner }/>
-                <UserBookshelf userBooks={ userBooks } isOwner={ isOwner }/>
+                <FavoriteBookshelf
+                  favoriteUserBooks={ visitedProfileFavoriteBooks }
+                  isOwner={ isOwner }
+                  connectedUserBooks={ connectedUserDataWithBooks }
+                />
+                <UserBookshelf
+                  userBooks={ visitedProfileUserBooks }
+                  isOwner={ isOwner }
+                  connectedUserBooks={ connectedUserDataWithBooks }
+                />
               </>
             ) : (
-              <EmptyShelves username={ username } query={ query }/>
+              <EmptyShelves username={ visitedProfileUsername } query={ query }/>
             ) }
           </TabsContent>
           <TabsContent value="stats">
-            <UserStats userBooks={ userBooks }/>
+            <UserStats userBooks={ visitedProfileUserBooks }/>
           </TabsContent>
         </Tabs>
       </div>

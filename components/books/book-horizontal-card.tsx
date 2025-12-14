@@ -3,7 +3,7 @@ import { BookCardProps } from "@/components/books/book-poster-card";
 import { Badge } from "@/components/ui/badge";
 import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 
-export function BookHorizontalCard( { book, userBook }: BookCardProps ) {
+export function BookHorizontalCard( { book, connectedUserBook }: BookCardProps ) {
   return (
     <div
       className="flex gap-4 group border rounded-lg shadow-sm hover:shadow-lg transition-shadow p-3 w-full">
@@ -24,20 +24,24 @@ export function BookHorizontalCard( { book, userBook }: BookCardProps ) {
 
       <div className="flex flex-col flex-grow justify-between">
         <div>
-          <div className="flex items-start gap-2">
-            <h3 className="text-lg font-bold" title={ book.title ?? "Untitled" }>
-              { book.title ?? "Untitled" }
-            </h3>
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-grow min-w-0">
+              <h3 className="text-lg font-bold" title={ book.title ?? "Untitled" }>
+                { book.title ?? "Untitled" }
+              </h3>
+              { book.authors && (
+                <p className="text-sm text-muted-foreground">
+                  by { book.authors.join( ", " ) }
+                </p>
+              ) }
+            </div>
             { book.type && (
-              <Badge variant="outline">{ BOOK_TYPE_MAP[book.type] || book.type }</Badge>
+              <Badge variant="outline"
+                     className="flex-shrink-0">{ BOOK_TYPE_MAP[book.type] || book.type }</Badge>
             ) }
           </div>
 
-          { book.authors && (
-            <p className="text-sm text-muted-foreground">
-              by { book.authors.join( ", " ) }
-            </p>
-          ) }
+          {/*<SessionInfo userBook={ profileUserBook }/>*/ }
         </div>
 
         <div className="flex items-end justify-between mt-4">
@@ -47,7 +51,7 @@ export function BookHorizontalCard( { book, userBook }: BookCardProps ) {
           <div className="w-40 flex-shrink-0">
             <BookStateDropdown
               bookId={ book.id }
-              currentStateRecord={ userBook }
+              currentStateRecord={ connectedUserBook }
             />
           </div>
         </div>
