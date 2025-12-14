@@ -15,6 +15,7 @@ import { UserBook } from "@/app/types/user-book";
 import { ReadingSession } from "@/app/types/reading-session";
 import { ProfileStatsSummary } from "@/components/profile/profile-stats-summary";
 import { parseISO } from "date-fns";
+import { ReadingActivityCalendar } from "@/components/profile/reading-activity-calendar";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -83,6 +84,8 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                 Joined: { new Date( visitedProfile.created_at ).toLocaleDateString() }
               </p>
             }
+
+            <ReadingActivityCalendar readingSessions={ readingSessions }/>
             <ProfileStatsSummary
               totalHoursRead={ totalHoursRead }
               totalPagesRead={ totalPagesRead }
