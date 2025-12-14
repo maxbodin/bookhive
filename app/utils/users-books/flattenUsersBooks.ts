@@ -6,7 +6,7 @@ import { Book } from "@/app/types/book";
  * @param userBooksData - The data to flatten.
  * @returns A flattened array of book data.
  */
-export function flattenUserBookData( userBooksData: UserBook[] ) {
+export function flattenUsersBooksData( userBooksData: UserBook[] ) {
   return userBooksData.map( item => {
     const { books, ...userBookData } = item;
     return {

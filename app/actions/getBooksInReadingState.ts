@@ -2,7 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { UserBook } from "@/app/types/user-book";
-import { flattenUserBookData } from "@/app/utils/flattenUserBook";
+import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
 
 type ActionResponse = {
   data?: UserBook[];
@@ -42,5 +42,5 @@ export async function getBooksInReadingState(): Promise<ActionResponse> {
     return { error: "Failed to load your books. Please try again." };
   }
 
-  return { data: flattenUserBookData( data as UserBook[] ) as UserBook[] };
+  return { data: flattenUsersBooksData( data as UserBook[] ) as UserBook[] };
 }

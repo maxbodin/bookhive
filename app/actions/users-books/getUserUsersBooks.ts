@@ -2,7 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { UserBook } from "@/app/types/user-book";
-import { flattenUserBookData } from "@/app/utils/flattenUserBook";
+import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
 
 /**
  * Fetches a user's book collection, with optional filtering.
@@ -33,5 +33,5 @@ export async function getUserUsersBooks( userId: string, query?: string ): Promi
     throw new Error( error.message || "Failed to fetch user's usersbooks." );
   }
 
-  return ( flattenUserBookData( userBooksData ) || [] ) as UserBook[];
+  return ( flattenUsersBooksData( userBooksData ) || [] ) as UserBook[];
 }

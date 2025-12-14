@@ -3,13 +3,15 @@ import { NoResults } from "@/components/books/no-results";
 import { BookPosterCard } from "./book-poster-card";
 import { BookHorizontalCard } from "./book-horizontal-card";
 import { UserBook } from "@/app/types/user-book";
+import { ReadingSession } from "@/app/types/reading-session";
 
 interface BooksGridProps {
   books: Book[];
-  profileUserBooks: UserBook[];
-  connectedUserBooks?: UserBook[];
+  profileUserBooks: UserBook[];         // The profile owner's books
+  connectedUserBooks?: UserBook[];      // The logged-in user's data with books
   view: "poster" | "list";
   isOwner: boolean;
+  readingSessions: ReadingSession[];    // The profile owner's reading sessions
 }
 
 /**
@@ -20,7 +22,8 @@ export function BooksGrid( {
                              profileUserBooks,
                              connectedUserBooks,
                              view = "poster",
-                             isOwner = false
+                             isOwner = false,
+                             readingSessions
                            }: BooksGridProps ) {
   if (!books || books.length === 0) {
     return <NoResults/>;
@@ -54,6 +57,7 @@ export function BooksGrid( {
             connectedUserBook={ connectedUserBook }
             isOwner={ isOwner }
             inFavoriteSection={ false }
+            readingSessions={ readingSessions }
           />
         );
       } ) }

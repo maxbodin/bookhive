@@ -1,11 +1,13 @@
 import { UserBook } from "@/app/types/user-book";
 import { BooksGrid } from "@/components/books/books-grid";
 import { BookState } from "@/app/types/book-state";
+import { ReadingSession } from "@/app/types/reading-session";
 
 interface UserBookshelfProps {
-  userBooks: UserBook[]; // The profile owner's books
+  userBooks: UserBook[];                // The profile owner's books
   isOwner: boolean;
-  connectedUserBooks: UserBook[]; // The logged-in user's data with books
+  connectedUserBooks: UserBook[];       // The logged-in user's data with books
+  readingSessions: ReadingSession[];    // The profile owner's reading sessions
 }
 
 const SHELVES_ORDER = ["reading", "read", "later", "wishlist"] as const;
@@ -17,7 +19,7 @@ const SHELF_TITLES: Record<typeof SHELVES_ORDER[number], string> = {
   wishlist: "Wishlist",
 };
 
-export function UserBookshelf( { userBooks, isOwner, connectedUserBooks }: UserBookshelfProps ) {
+export function UserBookshelf( { userBooks, isOwner, connectedUserBooks, readingSessions }: UserBookshelfProps ) {
   // Group books by their state.
   const userBooksByState = userBooks.reduce( ( acc, userbook ) => {
     const state: BookState = userbook.state;
@@ -49,6 +51,7 @@ export function UserBookshelf( { userBooks, isOwner, connectedUserBooks }: UserB
               connectedUserBooks={ connectedUserBooks }
               view={ gridView }
               isOwner={ isOwner }
+              readingSessions={ readingSessions }
             />
           </section>
         );

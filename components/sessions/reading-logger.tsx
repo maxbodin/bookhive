@@ -23,7 +23,7 @@ import { DateTimePicker } from "@/components/books/date-time-picker";
 import { getBooksInReadingState } from "@/app/actions/getBooksInReadingState";
 import { Spinner } from "@/components/ui/spinner";
 import { UserBook } from "@/app/types/user-book";
-import { logReadingSession } from "@/app/actions/reading-session/logReadingSession";
+import { logReadingSession } from "@/app/actions/reading-sessions/logReadingSession";
 
 const sessionSchema = z.object( {
   bookId: z.string().min( 1, "Please select a book." ),

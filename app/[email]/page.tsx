@@ -8,9 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserStats } from "@/components/profile/user-stats";
 import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { Profile } from "@/app/types/profile";
-import { UserBook } from "@/app/types/user-book";
 import { getUserUsersBooks } from "@/app/actions/users-books/getUserUsersBooks";
 import { User } from "@supabase/supabase-js";
+import { getUserReadingSessions } from "@/app/actions/reading-sessions/getUserReadingSessions";
+import { UserBook } from "@/app/types/user-book";
+import { ReadingSession } from "@/app/types/reading-session";
 
 
 interface UserProfilePageProps {
@@ -31,6 +33,9 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const isOwner: boolean = currentUser?.id === visitedProfile.id;
     const visitedProfileUsername: string = getUsername( visitedProfile.email );
     const visitedProfileFavoriteBooks: UserBook[] = visitedProfileUserBooks.filter( b => b.is_favorite );
+
+    // Fetch all reading sessions for the visited profile
+    const readingSessions: ReadingSession[] = await getUserReadingSessions( visitedProfile.id );
 
     // Fetch the connected user's book data if they are logged in.
     let connectedUserDataWithBooks: UserBook[] = [];
@@ -56,7 +61,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
         <Tabs defaultValue="shelves" className="w-full">
           <div className="mb-8 flex justify-center">
-          <TabsList>
+            <TabsList>
               <TabsTrigger value="shelves">Shelves</TabsTrigger>
               <TabsTrigger value="stats">Stats</TabsTrigger>
             </TabsList>
@@ -74,6 +79,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                   userBooks={ visitedProfileUserBooks }
                   isOwner={ isOwner }
                   connectedUserBooks={ connectedUserDataWithBooks }
+                  readingSessions={ readingSessions }
                 />
               </>
             ) : (
