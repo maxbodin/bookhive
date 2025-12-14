@@ -78,20 +78,21 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
           <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
           <div className="flex-grow">
-            <h1 className="text-3xl font-bold">{ visitedProfileUsername }&apos;s profile</h1>
+            <h1 className="text-3xl font-bold">{ visitedProfileUsername }</h1>
             { visitedProfile.created_at &&
               <p className="text-md text-gray-500">
                 Joined: { new Date( visitedProfile.created_at ).toLocaleDateString() }
               </p>
             }
 
-            <ReadingActivityCalendar readingSessions={ readingSessions }/>
             <ProfileStatsSummary
               totalHoursRead={ totalHoursRead }
               totalPagesRead={ totalPagesRead }
             />
           </div>
         </div>
+
+        <ReadingActivityCalendar readingSessions={ readingSessions }/>
 
         <Tabs defaultValue="shelves" className="w-full">
           <div className="mb-8 flex justify-center">

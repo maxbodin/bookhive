@@ -13,6 +13,7 @@ interface ReadingActivityCalendarProps {
 }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCalendarProps ) {
   const activityByDate = useMemo( () => processSessionsForCalendar( readingSessions ), [readingSessions] );
@@ -91,7 +92,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
   };
 
   return (
-    <div className="mt-4">
+    <div className="my-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-semibold text-sm">Reading Activity</h3>
 
@@ -113,15 +114,16 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
       {/* Weekdays */ }
       <div className="flex gap-3">
         <div className="text-xs text-muted-foreground">
-          <div className="h-6 mb-2"></div>
+          <div className="h-6 mb-4"></div>
           <div className="flex flex-col gap-1">
-            <span className="h-4 leading-4"></span> {/* Sun */ }
-            <span className="h-4 leading-4">Mon</span>
-            <span className="h-4 leading-4"></span> {/* Tue */ }
-            <span className="h-4 leading-4">Wed</span>
-            <span className="h-4 leading-4"></span> {/* Thu */ }
-            <span className="h-4 leading-4">Fri</span>
-            <span className="h-4 leading-4"></span> {/* Sat */ }
+            { WEEKDAYS.map( ( day, index ) => (
+              <span
+                key={ index }
+                className="h-4 flex items-center pr-2"
+              >
+                { day }
+              </span>
+            ) ) }
           </div>
         </div>
 
@@ -130,7 +132,6 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
           <div className="flex gap-1 h-6">
             { weeks.map( ( _, weekIndex ) => (
               <div key={ `month-${ weekIndex }` } className="w-4 text-xs text-muted-foreground">
-                {/* Display the month name only if it starts on this week */ }
                 { monthsByWeek[weekIndex] }
               </div>
             ) ) }

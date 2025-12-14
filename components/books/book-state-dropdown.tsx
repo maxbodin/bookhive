@@ -82,11 +82,14 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
     // Determine if a dialog is needed.
     let dialogKey: keyof typeof DIALOG_CONFIG | null = null;
 
-    if (newState === 'reading') dialogKey = 'reading';
-    else if (newState === 'read' && optimisticState === 'reading') dialogKey = 'read_from_reading';
-    else if (newState === 'read') dialogKey = 'read';
-    else if (newState === 'wishlist') dialogKey = 'wishlist';
-    else if (newState === 'later') dialogKey = 'later';
+    const dialogMap = {
+      reading: 'reading',
+      read: optimisticState === 'reading' ? 'read_from_reading' : 'read',
+      wishlist: 'wishlist',
+      later: 'later',
+    } as const;
+
+    dialogKey = dialogMap[newState];
 
     if (dialogKey) {
       setDialog( { config: DIALOG_CONFIG[dialogKey], newState } );
