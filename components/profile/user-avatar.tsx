@@ -15,9 +15,9 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { FormEvent, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { updateProfilePicture } from "@/app/[email]/actions";
 import { getInitial } from "@/lib/getInitial";
 import { Profile } from "@/app/types/profile";
+import { updateProfilePicture } from "@/app/actions/profiles/updateProfilePicture";
 
 interface UserAvatarProps {
   profile: Profile;
