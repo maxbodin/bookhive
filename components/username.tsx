@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Session } from "@supabase/supabase-js";
 import { getUsername } from "@/lib/getUsername";
+import { useTranslations } from "next-intl";
 
 const supabase = createClient();
 
 export function Username() {
   const [session, setSession] = useState<Session | null>( null );
   const [loading, setLoading] = useState<boolean>( true );
+  const t = useTranslations( "Username" );
 
   useEffect( () => {
     const getSession = async () => {
@@ -39,7 +41,7 @@ export function Username() {
     <div className="flex items-center">
       { username && session?.user?.email ? (
         <p className="text-lg font-semibold">
-          Hi{ " " }
+          { t( "greeting" ) }{ " " }
           <Link
             href={ `/${ session.user.email }` }
             className="hover:underline"

@@ -1,5 +1,6 @@
 import { BookOpenCheck, CalendarDays, Clock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { getTranslations } from "next-intl/server";
 
 interface ReadingProgressProps {
   currentPage: number;
@@ -9,13 +10,15 @@ interface ReadingProgressProps {
   formattedLastSessionDate: string | null;
 }
 
-export function ReadingProgress( {
-                                   currentPage,
-                                   totalPages,
-                                   totalHours,
-                                   daysSinceLastSession,
-                                   formattedLastSessionDate,
-                                 }: ReadingProgressProps ) {
+export default async function ReadingProgress( {
+                                                 currentPage,
+                                                 totalPages,
+                                                 totalHours,
+                                                 daysSinceLastSession,
+                                                 formattedLastSessionDate,
+                                               }: ReadingProgressProps ) {
+  const t = await getTranslations( "ReadingProgress" );
+
   // Avoid division by zero and ensure pages are valid.
   const progressPercentage = totalPages > 0 ? Math.round( ( currentPage / totalPages ) * 100 ) : 0;
 
@@ -24,31 +27,32 @@ export function ReadingProgress( {
       <>
         <div className="mb-1 flex justify-between items-baseline">
           <p className="font-medium text-primary">
-            Page { currentPage } of { totalPages }
+            { t( "page_progress", { currentPage, totalPages } ) }
           </p>
           <p className="text-muted-foreground">{ progressPercentage }%</p>
         </div>
-        <Progress value={ progressPercentage } aria-label={ `${ progressPercentage }% read` }/>
+        <Progress value={ progressPercentage } aria-label={ t( "progress_aria", { progress: progressPercentage } ) }/>
       </>
 
       {/* Session Details */ }
       <div className="flex flex-col justify-between text-muted-foreground mt-4 space-y-2">
         { formattedLastSessionDate && (
-          <div className="flex items-center gap-1.5" title={ `Last read on ${ formattedLastSessionDate }` }>
+          <div className="flex items-center gap-1.5"
+               title={ t( "last_read_title", { date: formattedLastSessionDate } ) }>
             <CalendarDays className="h-3.5 w-3.5"/>
-            <span>Last read on { formattedLastSessionDate }</span>
+            <span>{ t( "last_read", { date: formattedLastSessionDate } ) }</span>
           </div>
         ) }
         { daysSinceLastSession && (
-          <div className="flex items-center gap-1.5" title="Time since last session">
+          <div className="flex items-center gap-1.5" title={ t( "time_since_title" ) }>
             <BookOpenCheck className="h-3.5 w-3.5"/>
-            <span>Time since last session { daysSinceLastSession }</span>
+            <span>{ t( "time_since", { days: daysSinceLastSession } ) }</span>
           </div>
         ) }
         { totalHours > 0 && (
-          <div className="flex items-center gap-1.5" title="Total time spent reading">
+          <div className="flex items-center gap-1.5" title={ t( "total_time_title" ) }>
             <Clock className="h-3.5 w-3.5"/>
-            <span>Total time spent reading { totalHours } hours</span>
+            <span>{ t( "total_time", { count: totalHours } ) }</span>
           </div>
         ) }
       </div>

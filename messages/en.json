@@ -1,5 +1,51 @@
 {
   "Navbar": {
-    "title": "BookHive EN"
+    "title": "BookHive EN",
+    "search_placeholder": "Search a book..."
+  },
+  "Username": {
+    "greeting": "Hi"
+  },
+  "ModeToggle": {
+    "toggle_theme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "ReadingProgress": {
+    "page_progress": "Page {currentPage} of {totalPages}",
+    "progress_aria": "{progress}% read",
+    "last_read_title": "Last read on {date}",
+    "last_read": "Last read on {date}",
+    "time_since_title": "Time since last session",
+    "time_since": "Time since last session {days}",
+    "total_time_title": "Total time spent reading",
+    "total_time": "Total time spent reading {count, plural, one {# hour} other {# hours}}"
+  },
+  "ReadingLogger": {
+    "log_reading_button": "Log Reading",
+    "title": "Log reading session",
+    "description": "Record your progress. Keep the streak alive!",
+    "label_book": "Book",
+    "placeholder_loading": "Loading books...",
+    "placeholder_select": "Select a book...",
+    "no_books": "No books in \"Reading\" state.",
+    "label_start_time": "Start Time",
+    "label_end_time": "End Time",
+    "label_stopped_at": "Stopped at",
+    "pages_suffix": "pages",
+    "stat_this_session": "This Session",
+    "stat_total_progress": "Total Progress",
+    "stat_progress_complete": "{progress}% complete",
+    "label_notes": "Notes",
+    "placeholder_notes": "What happened in this session?",
+    "save_button": "Save Session",
+    "errors": {
+      "select_book": "Please select a book.",
+      "select_start_time": "Please select a start time.",
+      "select_end_time": "Please select an end time.",
+      "notes_too_long": "Notes are too long.",
+      "end_time_after_start": "End time must be after start time."
+    }
   }
 }

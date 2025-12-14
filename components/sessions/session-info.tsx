@@ -1,7 +1,7 @@
-import { ReadingProgress } from "@/components/sessions/reading-progress";
 import { calculateReadingStats } from "@/app/utils/reading-sessions/calculateReadingStats";
 import { UserBook } from "@/app/types/user-book";
 import { ReadingSession } from "@/app/types/reading-session";
+import ReadingProgress from "@/components/sessions/reading-progress";
 
 interface SessionInfoProps {
   userBook?: UserBook;

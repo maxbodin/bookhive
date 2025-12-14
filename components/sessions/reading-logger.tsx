@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -25,22 +26,24 @@ import { Spinner } from "@/components/ui/spinner";
 import { UserBook } from "@/app/types/user-book";
 import { logReadingSession } from "@/app/actions/reading-sessions/logReadingSession";
 
-const sessionSchema = z.object( {
-  bookId: z.string().min( 1, "Please select a book." ),
-  startDate: z.date( { error: "Please select a start time." } ),
-  endDate: z.date( { error: "Please select an end time." } ),
-  endPage: z.number().min( 0 ),
-  startPage: z.number().min( 0 ),
-  notes: z.string().max( 1000, "Notes are too long." ).optional(),
-} ).refine( data => data.endDate > data.startDate, {
-  message: "End time must be after start time.",
-  path: ["endDate"],
-} );
-
 /**
  * Dialog component for logging reading sessions.
  */
 export default function ReadingLogger() {
+  const t = useTranslations( "ReadingLogger" );
+
+  const sessionSchema = z.object( {
+    bookId: z.string().min( 1, t( "errors.select_book" ) ),
+    startDate: z.date( { error: t( "errors.select_start_time" ) } ),
+    endDate: z.date( { error: t( "errors.select_end_time" ) } ),
+    endPage: z.number().min( 0 ),
+    startPage: z.number().min( 0 ),
+    notes: z.string().max( 1000, t( "errors.notes_too_long" ) ).optional(),
+  } ).refine( data => data.endDate > data.startDate, {
+    message: t( "errors.end_time_after_start" ),
+    path: ["endDate"],
+  } );
+
   const [isOpen, setIsOpen] = useState<boolean>( false );
   const [isFetchingBooks, startFetchingBooks] = useTransition();
   const [isSubmitting, startSubmitting] = useTransition();
@@ -162,25 +165,25 @@ export default function ReadingLogger() {
         <Button
           className="fixed bottom-4 right-4 h-16 w-16 rounded-full shadow-lg z-50 hover:scale-105 transition-transform">
           <BookOpen className="h-8 w-8"/>
-          <span className="sr-only">Log Reading</span>
+          <span className="sr-only">{ t( "log_reading_button" ) }</span>
         </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Log Reading Session</DialogTitle>
-          <DialogDescription>Record your progress. Keep the streak alive!</DialogDescription>
+          <DialogTitle>{ t( "title" ) }</DialogTitle>
+          <DialogDescription>{ t( "description" ) }</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-6 py-4">
-          <FormRow label="Book">
+          <FormRow label={ t( "label_book" ) }>
             <Select onValueChange={ handleBookSelect } value={ formState.selectedBookId } disabled={ isFetchingBooks }>
               <SelectTrigger>
-                <SelectValue placeholder={ isFetchingBooks ? "Loading books..." : "Select a book..." }/>
+                <SelectValue placeholder={ isFetchingBooks ? t( "placeholder_loading" ) : t( "placeholder_select" ) }/>
               </SelectTrigger>
               <SelectContent>
                 { !isFetchingBooks && books.length === 0 && (
-                  <p className="p-4 text-sm text-center text-muted-foreground">No books in "Reading" state.</p>
+                  <p className="p-4 text-sm text-center text-muted-foreground">{ t( "no_books" ) }</p>
                 ) }
                 { books.map( ( book ) => (
                   <SelectItem key={ book.book_id }
@@ -190,19 +193,19 @@ export default function ReadingLogger() {
             </Select>
           </FormRow>
 
-          <FormRow label="Start Time">
+          <FormRow label={ t( "label_start_time" ) }>
             <DateTimePicker date={ formState.startDate }
                             setDateAction={ ( date ) => setFormState( p => ( { ...p, startDate: date! } ) ) }
                             disabled={ isSubmitting }/>
           </FormRow>
 
-          <FormRow label="End Time">
+          <FormRow label={ t( "label_end_time" ) }>
             <DateTimePicker date={ formState.endDate }
                             setDateAction={ ( date ) => setFormState( p => ( { ...p, endDate: date! } ) ) }
                             disabled={ isSubmitting }/>
           </FormRow>
 
-          <FormRow label="Stopped at">
+          <FormRow label={ t( "label_stopped_at" ) }>
             <div className="flex items-center gap-2">
               <Input
                 type="number"
@@ -214,8 +217,8 @@ export default function ReadingLogger() {
                 disabled={ !selectedBook || isSubmitting }
               />
               <span className="text-sm text-muted-foreground whitespace-nowrap">
-                                / { selectedBook?.pages ?? "--" } pages
-                            </span>
+                / { selectedBook?.pages ?? "--" } { t( "pages_suffix" ) }
+              </span>
             </div>
           </FormRow>
 
@@ -224,17 +227,18 @@ export default function ReadingLogger() {
             !selectedBook ? "opacity-0 invisible h-0" : "opacity-100"
           ) }>
             <div className="bg-muted/50 p-3 rounded-md text-sm grid grid-cols-2 gap-2 border">
-              <StatBox label="This Session"
+              <StatBox label={ t( "stat_this_session" ) }
                        value={ `${ sessionStats.pagesRead > 0 ? "+" : "" }${ sessionStats.pagesRead } pages` }
                        positive={ sessionStats.pagesRead > 0 }/>
-              <StatBox label="Total Progress" value={ `${ sessionStats.progress }% complete` }/>
+              <StatBox label={ t( "stat_total_progress" ) }
+                       value={ t( "stat_progress_complete", { progress: sessionStats.progress } ) }/>
             </div>
           </div>
 
-          <FormRow label="Notes">
+          <FormRow label={ t( "label_notes" ) }>
             <Textarea
               className="col-span-3 resize-none"
-              placeholder="What happened in this session?"
+              placeholder={ t( "placeholder_notes" ) }
               value={ formState.notes }
               onChange={ ( e ) => setFormState( p => ( { ...p, notes: e.target.value } ) ) }
               disabled={ isSubmitting }
@@ -245,7 +249,7 @@ export default function ReadingLogger() {
         <DialogFooter>
           <Button type="submit" onClick={ handleSubmit } disabled={ isSubmitting || !formState.selectedBookId }>
             { isSubmitting && <Spinner/> }
-            Save Session
+            { t( "save_button" ) }
           </Button>
         </DialogFooter>
       </DialogContent>

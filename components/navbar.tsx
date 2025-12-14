@@ -9,7 +9,7 @@ import { getTranslations } from "next-intl/server";
 import LocaleSwitcher from "@/components/locale-switcher";
 
 export default async function Navbar() {
-  const translations = await getTranslations( "Navbar" );
+  const t = await getTranslations( "Navbar" );
 
   return (
     <div className="sticky top-0 z-10 flex w-full flex-col items-center justify-between">
@@ -18,14 +18,14 @@ export default async function Navbar() {
         <div className="flex items-center">
           <h1 className="text-2xl font-bold md:text-3xl">
             <Link href={ `/` }>
-              { translations( "title" ) }
+              { t( "title" ) }
             </Link>
           </h1>
         </div>
 
         <div className="order-last w-full lg:order-none lg:flex-1 max-w-md">
           <Suspense>
-            <Search placeholder="Search a book..."/>
+            <Search placeholder={ t( "search_placeholder" ) }/>
           </Suspense>
         </div>
 

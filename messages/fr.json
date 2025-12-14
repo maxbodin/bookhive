@@ -1,5 +1,51 @@
 {
   "Navbar": {
-    "title": "BookHive FR"
+    "title": "BookHive FR",
+    "search_placeholder": "Rechercher un livre..."
+  },
+  "Username": {
+    "greeting": "Bonjour"
+  },
+  "ModeToggle": {
+    "toggle_theme": "Changer de thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "ReadingProgress": {
+    "page_progress": "Page {currentPage} sur {totalPages}",
+    "progress_aria": "{progress}% lu",
+    "last_read_title": "Dernière lecture le {date}",
+    "last_read": "Dernière lecture le {date}",
+    "time_since_title": "Temps depuis la dernière session",
+    "time_since": "Temps depuis la dernière session {days}",
+    "total_time_title": "Temps de lecture total",
+    "total_time": "Temps de lecture total {count, plural, one {# heure} other {# heures}}"
+  },
+  "ReadingLogger": {
+    "log_reading_button": "Enregistrer une lecture",
+    "title": "Enregistrer une session de lecture",
+    "description": "Notez vos progrès. Maintenez la flamme !",
+    "label_book": "Livre",
+    "placeholder_loading": "Chargement des livres...",
+    "placeholder_select": "Sélectionnez un livre...",
+    "no_books": "Aucun livre en cours de lecture.",
+    "label_start_time": "Début",
+    "label_end_time": "Fin",
+    "label_stopped_at": "Arrêté à",
+    "pages_suffix": "pages",
+    "stat_this_session": "Cette Session",
+    "stat_total_progress": "Progrès Total",
+    "stat_progress_complete": "{progress}% terminé",
+    "label_notes": "Notes",
+    "placeholder_notes": "Que s'est-il passé pendant cette session ?",
+    "save_button": "Enregistrer la Session",
+    "errors": {
+      "select_book": "Veuillez sélectionner un livre.",
+      "select_start_time": "Veuillez sélectionner une heure de début.",
+      "select_end_time": "Veuillez sélectionner une heure de fin.",
+      "notes_too_long": "Les notes sont trop longues.",
+      "end_time_after_start": "L'heure de fin doit être après l'heure de début."
+    }
   }
 }
