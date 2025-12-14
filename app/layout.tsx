@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 import ReadingLogger from "@/components/sessions/reading-logger";
+import { NextIntlClientProvider, useMessages } from "next-intl";
 
 const geistSans = Geist( {
   variable: "--font-geist-sans",
@@ -27,22 +28,26 @@ export default function RootLayout( {
                                     }: Readonly<{
   children: React.ReactNode;
 }> ) {
+  const messages = useMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html suppressHydrationWarning>
     <body
       className={ `${ geistSans.variable } ${ geistMono.variable } antialiased` }
     >
-    <Toaster/>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <Navbar/>
-      { children }
-      <ReadingLogger/>
-    </ThemeProvider>
+    <NextIntlClientProvider messages={ messages }>
+      <Toaster/>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <Navbar/>
+        { children }
+        <ReadingLogger/>
+      </ThemeProvider>
+    </NextIntlClientProvider>
     </body>
     </html>
   );

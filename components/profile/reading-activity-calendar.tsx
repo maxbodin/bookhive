@@ -92,7 +92,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
       {/* Weekdays */ }
       <div className="flex gap-3">
         <div className="text-xs text-muted-foreground pr-2 mt-1">
-          <div className="h-6 mb-4"></div>
+          <div className="h-6"></div>
           <div className="flex flex-col gap-1">
             { WEEKDAYS.map( ( day, index ) => (
               <span key={ index } className="h-4 w-8 flex items-center">

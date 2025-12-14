@@ -46,7 +46,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
           <h2 className="text-xl font-bold mb-4">Tous les Livres ({ books.length })</h2>
           <Suspense key={ query } fallback={ <BooksGridSkeleton/> }>
             <BooksGrid books={ books } view={ "poster" } isOwner={ true } profileUserBooks={ [] }
-                       connectedUserBooks={ connectedUserDataWithBooks }/>
+                       connectedUserBooks={ connectedUserDataWithBooks } readingSessions={ [] }/>
           </Suspense>
         </div>
       </main>

@@ -5,8 +5,12 @@ import { Username } from "@/components/username";
 import Search from "@/components/search";
 import Link from "next/link";
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
+import LocaleSwitcher from "@/components/locale-switcher";
 
 export default async function Navbar() {
+  const translations = await getTranslations( "Navbar" );
+
   return (
     <div className="sticky top-0 z-10 flex w-full flex-col items-center justify-between">
       <div
@@ -14,7 +18,7 @@ export default async function Navbar() {
         <div className="flex items-center">
           <h1 className="text-2xl font-bold md:text-3xl">
             <Link href={ `/` }>
-              BookHive
+              { translations( "title" ) }
             </Link>
           </h1>
         </div>
@@ -30,8 +34,9 @@ export default async function Navbar() {
             <Username/>
           </div>
           <AuthButtons/>
-          <div className="hidden lg:flex">
+          <div className="hidden lg:flex gap-4">
             <ModeToggle/>
+            <LocaleSwitcher/>
           </div>
         </div>
       </div>
