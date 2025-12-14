@@ -83,10 +83,10 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
     let dialogKey: keyof typeof DIALOG_CONFIG | null = null;
 
     const dialogMap = {
-      reading: 'reading',
-      read: optimisticState === 'reading' ? 'read_from_reading' : 'read',
-      wishlist: 'wishlist',
-      later: 'later',
+      reading: "reading",
+      read: optimisticState === "reading" ? "read_from_reading" : "read",
+      wishlist: "wishlist",
+      later: "later",
     } as const;
 
     dialogKey = dialogMap[newState];

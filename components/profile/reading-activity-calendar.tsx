@@ -12,7 +12,6 @@ interface ReadingActivityCalendarProps {
   readingSessions: ReadingSession[];
 }
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCalendarProps ) {
@@ -29,60 +28,39 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
 
   const [selectedYear, setSelectedYear] = useState<string>( availableYears[0] );
 
-  const { weeks, monthsByWeek } = useMemo( () => {
+  const { months } = useMemo( () => {
     const year = parseInt( selectedYear, 10 );
-    const firstDayOfYear = new Date( year, 0, 1 );
-    const lastDayOfYear = new Date( year, 11, 31 );
+    const months = Array.from( { length: 12 }, ( _, monthIndex ) => {
+      const firstDayOfMonth = new Date( year, monthIndex, 1 );
+      const monthName = format( firstDayOfMonth, "MMMM" );
+      const weeks = [];
+      let currentWeek = new Array( 7 ).fill( null );
+      let currentDate = new Date( firstDayOfMonth );
 
-    const weeks = [];
-    const monthLabels = [];
+      while (currentDate.getMonth() === monthIndex) {
+        const dayOfWeek = getDay( currentDate );
+        const dateKey = format( currentDate, "yyyy-MM-dd" );
 
-    let currentDay = new Date( firstDayOfYear );
-    let currentWeek = [];
-    let currentMonth = -1;
+        currentWeek[dayOfWeek] = {
+          key: dateKey,
+          date: new Date( currentDate ),
+          activity: activityByDate.get( dateKey ) || { count: 0, level: 0 },
+        };
 
-    const firstDayOfWeek = getDay( firstDayOfYear );
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      currentWeek.push( null );
-    }
-
-    while (currentDay <= lastDayOfYear) {
-      if (currentDay.getMonth() !== currentMonth) {
-        currentMonth = currentDay.getMonth();
-        monthLabels.push( {
-          month: MONTHS[currentMonth],
-          weekIndex: weeks.length
-        } );
+        if (dayOfWeek === 6) {
+          weeks.push( currentWeek );
+          currentWeek = new Array( 7 ).fill( null );
+        }
+        currentDate.setDate( currentDate.getDate() + 1 );
       }
 
-      const dateKey = format( currentDay, "yyyy-MM-dd" );
-      currentWeek.push( {
-        key: dateKey,
-        date: new Date( currentDay ),
-        activity: activityByDate.get( dateKey ) || { count: 0, level: 0 },
-      } );
-
-      if (getDay( currentDay ) === 6) {
+      if (currentWeek.some( day => day !== null )) {
         weeks.push( currentWeek );
-        currentWeek = [];
       }
 
-      currentDay.setDate( currentDay.getDate() + 1 );
-    }
-
-    if (currentWeek.length > 0) {
-      while (currentWeek.length < 7) {
-        currentWeek.push( null );
-      }
-      weeks.push( currentWeek );
-    }
-
-    const monthsByWeek = monthLabels.reduce( ( acc, { month, weekIndex } ) => {
-      acc[weekIndex] = month;
-      return acc;
-    }, {} as Record<number, string> );
-
-    return { weeks, monthsByWeek };
+      return { month: monthName, weeks };
+    } );
+    return { months };
   }, [selectedYear, activityByDate] );
 
   const getBackgroundColorStyle = ( level: 0 | 1 | 2 | 3 | 4 ) => {
@@ -113,59 +91,58 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
 
       {/* Weekdays */ }
       <div className="flex gap-3">
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-muted-foreground pr-2 mt-1">
           <div className="h-6 mb-4"></div>
           <div className="flex flex-col gap-1">
             { WEEKDAYS.map( ( day, index ) => (
-              <span
-                key={ index }
-                className="h-4 flex items-center pr-2"
-              >
+              <span key={ index } className="h-4 w-8 flex items-center">
                 { day }
               </span>
             ) ) }
           </div>
         </div>
 
-        {/* Scrollable container for the calendar */ }
-        <div className="overflow-x-auto">
-          <div className="flex gap-1 h-6">
-            { weeks.map( ( _, weekIndex ) => (
-              <div key={ `month-${ weekIndex }` } className="w-4 text-xs text-muted-foreground">
-                { monthsByWeek[weekIndex] }
-              </div>
-            ) ) }
-          </div>
-
-          {/* Calendar grid */ }
-          <div className="flex gap-1">
+        {/* Scrollable container for the calendar grid. */ }
+        <div className="overflow-x-auto pb-4">
+          <div className="flex">
             <TooltipProvider delayDuration={ 10 }>
-              { weeks.map( ( week, weekIndex ) => (
-                <div key={ weekIndex } className="flex flex-col gap-1">
-                  { week.map( ( day, dayIndex ) => {
-                    if (!day) {
-                      return <div key={ `padding-${ weekIndex }-${ dayIndex }` } className="h-4 w-4"/>;
-                    }
-                    return (
-                      <Tooltip key={ day.key }>
-                        <TooltipTrigger asChild>
-                          <div
-                            className={ cn(
-                              "h-4 w-4 rounded-sm",
-                              day.activity.level === 0 && "bg-muted/50"
-                            ) }
-                            style={ getBackgroundColorStyle( day.activity.level ) }
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent className="text-xs">
-                          <p>
-                            { day.activity.count > 0 ? `${ day.activity.count } minutes on ` : "No activity on " }
-                            { format( day.date, "MMM d, yyyy" ) }
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    );
-                  } ) }
+              { months.map( ( { month, weeks }, monthIndex ) => (
+                <div key={ month } className={ cn( monthIndex > 0 && "pl-4" ) }>
+                  <div className="text-xs text-muted-foreground h-6 flex items-center mb-1">
+                    { month }
+                  </div>
+                  {/* Grid for this month */ }
+                  <div className="flex gap-1">
+                    { weeks.map( ( week, weekIndex ) => (
+                      <div key={ weekIndex } className="flex flex-col gap-1">
+                        { week.map( ( day, dayIndex ) => {
+                          if (!day) {
+                            return <div key={ `pad-${ monthIndex }-${ weekIndex }-${ dayIndex }` }
+                                        className="h-4 w-4"/>;
+                          }
+                          return (
+                            <Tooltip key={ day.key }>
+                              <TooltipTrigger asChild>
+                                <div
+                                  className={ cn(
+                                    "h-4 w-4 rounded-sm",
+                                    day.activity.level === 0 && "bg-muted/50"
+                                  ) }
+                                  style={ getBackgroundColorStyle( day.activity.level ) }
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent className="text-xs">
+                                <p>
+                                  { day.activity.count > 0 ? `${ day.activity.count } minutes on ` : "No activity on " }
+                                  { format( day.date, "MMM d, yyyy" ) }
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          );
+                        } ) }
+                      </div>
+                    ) ) }
+                  </div>
                 </div>
               ) ) }
             </TooltipProvider>
