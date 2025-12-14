@@ -13,7 +13,8 @@ import { User } from "@supabase/supabase-js";
 import { getUserReadingSessions } from "@/app/actions/reading-sessions/getUserReadingSessions";
 import { UserBook } from "@/app/types/user-book";
 import { ReadingSession } from "@/app/types/reading-session";
-
+import { ProfileStatsSummary } from "@/components/profile/profile-stats-summary";
+import { parseISO } from "date-fns";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -34,8 +35,34 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const visitedProfileUsername: string = getUsername( visitedProfile.email );
     const visitedProfileFavoriteBooks: UserBook[] = visitedProfileUserBooks.filter( b => b.is_favorite );
 
-    // Fetch all reading sessions for the visited profile
+    // Fetch all reading sessions for the visited profile.
     const readingSessions: ReadingSession[] = await getUserReadingSessions( visitedProfile.id );
+
+    // Total reading time.
+    const totalMilliseconds = readingSessions.reduce( ( acc, session ) => {
+      const start = parseISO( session.start_time );
+      const end = parseISO( session.end_time );
+      // Ensure dates are valid before calculating duration.
+      if (!isNaN( start.getTime() ) && !isNaN( end.getTime() )) {
+        return acc + ( end.getTime() - start.getTime() );
+      }
+      return acc;
+    }, 0 );
+    // Convert to hours and round to the nearest whole number.
+    const totalHoursRead = Math.round( totalMilliseconds / ( 1000 * 60 * 60 ) );
+
+    // Total pages read.
+    const totalPagesRead = visitedProfileUserBooks.reduce( ( acc, book ) => {
+      // Add total pages for books marked as 'read'.
+      if (book.state === "read" && book.pages) {
+        return acc + book.pages;
+      }
+      // Add current page for books 'in progress'.
+      if (book.state === "reading" && book.current_page) {
+        return acc + book.current_page;
+      }
+      return acc;
+    }, 0 );
 
     // Fetch the connected user's book data if they are logged in.
     let connectedUserDataWithBooks: UserBook[] = [];
@@ -49,13 +76,17 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       <div className="container mx-auto p-4 md:p-8">
         <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
           <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
-          <div>
+          <div className="flex-grow">
             <h1 className="text-3xl font-bold">{ visitedProfileUsername }&apos;s profile</h1>
             { visitedProfile.created_at &&
               <p className="text-md text-gray-500">
                 Joined: { new Date( visitedProfile.created_at ).toLocaleDateString() }
               </p>
             }
+            <ProfileStatsSummary
+              totalHoursRead={ totalHoursRead }
+              totalPagesRead={ totalPagesRead }
+            />
           </div>
         </div>
 
