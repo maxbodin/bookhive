@@ -211,9 +211,9 @@
     "saveButton": "Enregistrer"
   },
   "UserBookshelf": {
-    "reading": "En Cours de Lecture",
+    "reading": "En cours de lecture",
     "read": "Lus",
-    "later": "Achetés et en attente",
+    "later": "Achetés et en attente d'être lu",
     "wishlist": "Liste d'envies"
   },
   "NoResults": {
