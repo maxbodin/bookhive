@@ -173,5 +173,41 @@
       "ariaLabel": "Select a year",
       "placeholder": "Select year"
     }
+  },
+  "EmptyShelves": {
+    "noMatch": {
+      "title": "No Matching Books Found",
+      "message": "We couldn't find any books matching '<strong>{query}</strong>' on {username}'s shelves."
+    },
+    "empty": {
+      "title": "Shelves are Empty",
+      "message": "It looks like {username} hasn't added any books to their collection yet."
+    }
+  },
+  "FavoriteBookshelf": {
+    "title": "Favorites",
+    "empty": {
+      "title": "No favorite books selected.",
+      "ownerHint": "Click the star on a 'Read' book to add it to your favorites."
+    }
+  },
+  "ProfileStatsSummary": {
+    "hoursRead": "Hours read",
+    "pagesRead": "Pages read"
+  },
+  "ReadingActivityCalendar": {
+    "title": "Reading Activity",
+    "yearPlaceholder": "Year",
+    "tooltip": {
+      "activity": "{count, plural, one {# minute} other {# minutes}} on",
+      "noActivity": "No activity on"
+    }
+  },
+  "UserAvatar": {
+    "dialogTitle": "Edit profile picture",
+    "dialogDescription": "Enter a new URL for your profile picture.",
+    "placeholder": "https://example.com/image.png",
+    "cancelButton": "Cancel",
+    "saveButton": "Save"
   }
 }

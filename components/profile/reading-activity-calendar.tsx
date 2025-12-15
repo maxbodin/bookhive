@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ReadingSession } from "@/app/types/reading-session";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,6 +16,7 @@ interface ReadingActivityCalendarProps {
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCalendarProps ) {
+  const t = useTranslations( "ReadingActivityCalendar" );
   const activityByDate = useMemo( () => processSessionsForCalendar( readingSessions ), [readingSessions] );
 
   const availableYears = useMemo( () => {
@@ -72,12 +74,12 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
   return (
     <div className="my-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-sm">Reading Activity</h3>
+        <h3 className="font-semibold text-sm">{ t( "title" ) }</h3>
 
         {/* Year selection */ }
         <Select value={ selectedYear } onValueChange={ setSelectedYear }>
           <SelectTrigger className="w-[120px] h-8 text-xs">
-            <SelectValue placeholder="Year"/>
+            <SelectValue placeholder={ t( "yearPlaceholder" ) }/>
           </SelectTrigger>
           <SelectContent>
             { availableYears.map( year => (
@@ -133,7 +135,9 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
                               </TooltipTrigger>
                               <TooltipContent className="text-xs">
                                 <p>
-                                  { day.activity.count > 0 ? `${ day.activity.count } minutes on ` : "No activity on " }
+                                  { day.activity.count > 0
+                                    ? t( "tooltip.activity", { count: day.activity.count } )
+                                    : t( "tooltip.noActivity" ) }{ " " }
                                   { format( day.date, "MMM d, yyyy" ) }
                                 </p>
                               </TooltipContent>

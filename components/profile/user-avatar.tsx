@@ -18,6 +18,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { getInitial } from "@/lib/getInitial";
 import { Profile } from "@/app/types/profile";
 import { updateProfilePicture } from "@/app/actions/profiles/updateProfilePicture";
+import { useTranslations } from "next-intl";
 
 interface UserAvatarProps {
   profile: Profile;
@@ -25,6 +26,8 @@ interface UserAvatarProps {
 }
 
 export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
+  const t = useTranslations( "UserAvatar" );
+
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>( false );
   const [isSubmitting, setIsSubmitting] = useState<boolean>( false );
 
@@ -66,17 +69,15 @@ export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={ handleSubmit }>
           <DialogHeader>
-            <DialogTitle>Edit profile picture</DialogTitle>
+            <DialogTitle>{ t( "dialogTitle" ) }</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <p className="text-sm text-muted-foreground">
-              Enter a new URL for your profile picture.
-            </p>
+            <p className="text-sm text-muted-foreground">{ t( "dialogDescription" ) }</p>
             <Input
               id="pictureUrl"
               name="pictureUrl"
               defaultValue={ profile.picture ?? "" }
-              placeholder="https://example.com/image.png"
+              placeholder={ t( "placeholder" ) }
               required
             />
             {/* Hidden input to pass the email to the server action for revalidation. */ }
@@ -84,12 +85,10 @@ export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Cancel
-              </Button>
+              <Button type="button" variant="secondary">{ t( "cancelButton" ) }</Button>
             </DialogClose>
             <Button type="submit" disabled={ isSubmitting }>
-              { isSubmitting ? <Spinner/> : "Save" }
+              { isSubmitting ? <Spinner/> : t( "saveButton" ) }
             </Button>
           </DialogFooter>
         </form>

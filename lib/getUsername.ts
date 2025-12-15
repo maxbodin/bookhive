@@ -1,3 +1,8 @@
+/**
+ * Formats an email address into a displayable username.
+ * @param email - The user's email address.
+ * @returns A formatted username or the guest fallback.
+ */
 export function getUsername( email?: string | null ): string {
   if (!email) {
     return "Guest"; // Fallback if user or email is undefined.

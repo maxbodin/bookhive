@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Library, SearchX } from "lucide-react";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 interface EmptyShelvesProps {
   username: string;
@@ -36,16 +37,18 @@ function EmptyState( { icon: Icon, title, message }: { icon: LucideIcon; title: 
  * @constructor
  */
 export function EmptyShelves( { username, query }: EmptyShelvesProps ) {
+  const t = useTranslations( "EmptyShelves" );
+
   if (query) {
     return (
       <EmptyState
         icon={ SearchX }
-        title="No Matching Books Found"
-        message={
-          <>
-            We couldn&apos;t find any books matching "<strong>{ query }</strong>" on { username }&apos;s shelves.
-          </>
-        }
+        title={ t( "noMatch.title" ) }
+        message={ t.rich( "noMatch.message", {
+          query: query,
+          username: username,
+          strong: ( chunks ) => <strong>{ chunks }</strong>,
+        } ) }
       />
     );
   }
@@ -53,8 +56,8 @@ export function EmptyShelves( { username, query }: EmptyShelvesProps ) {
   return (
     <EmptyState
       icon={ Library }
-      title="Shelves are Empty"
-      message={ `It looks like ${ username } hasn't added any books to their collection yet.` }
+      title={ t( "empty.title" ) }
+      message={ t( "empty.message", { username } ) }
     />
   );
 }

@@ -1,4 +1,5 @@
 import { BookOpen, Clock } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 interface ProfileStatsSummaryProps {
   totalHoursRead: number;
@@ -11,7 +12,9 @@ interface ProfileStatsSummaryProps {
  * @param totalPagesRead
  * @constructor
  */
-export function ProfileStatsSummary( { totalHoursRead, totalPagesRead }: ProfileStatsSummaryProps ) {
+export async function ProfileStatsSummary( { totalHoursRead, totalPagesRead }: ProfileStatsSummaryProps ) {
+  const t = await getTranslations( "ProfileStatsSummary" );
+
   return (
     <div className="mt-4 flex flex-row w-fit items-center justify-between gap-8 rounded-lg border p-4">
       {/* Total reading time stat */ }
@@ -19,7 +22,7 @@ export function ProfileStatsSummary( { totalHoursRead, totalPagesRead }: Profile
         <Clock className="h-6 w-6 text-muted-foreground"/>
         <div>
           <p className="text-lg font-bold">{ totalHoursRead.toLocaleString() }</p>
-          <p className="text-sm">Hours read</p>
+          <p className="text-sm">{ t( "hoursRead" ) }</p>
         </div>
       </div>
 
@@ -28,7 +31,7 @@ export function ProfileStatsSummary( { totalHoursRead, totalPagesRead }: Profile
         <BookOpen className="h-6 w-6 text-muted-foreground"/>
         <div>
           <p className="text-lg font-bold">{ totalPagesRead.toLocaleString() }</p>
-          <p className="text-sm">Pages read</p>
+          <p className="text-sm">{ t( "pagesRead" ) }</p>
         </div>
       </div>
     </div>
