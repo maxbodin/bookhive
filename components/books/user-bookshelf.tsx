@@ -2,6 +2,7 @@ import { UserBook } from "@/app/types/user-book";
 import { BooksGrid } from "@/components/books/books-grid";
 import { BookState } from "@/app/types/book-state";
 import { ReadingSession } from "@/app/types/reading-session";
+import { getTranslations } from "next-intl/server";
 
 interface UserBookshelfProps {
   userBooks: UserBook[];                // The profile owner's books
@@ -12,14 +13,16 @@ interface UserBookshelfProps {
 
 const SHELVES_ORDER = ["reading", "read", "later", "wishlist"] as const;
 
-const SHELF_TITLES: Record<typeof SHELVES_ORDER[number], string> = {
-  reading: "Currently Reading",
-  read: "Read",
-  later: "Bought and waiting to be read",
-  wishlist: "Wishlist",
-};
+export async function UserBookshelf( { userBooks, isOwner, connectedUserBooks, readingSessions }: UserBookshelfProps ) {
+  const t = await getTranslations( "UserBookshelf" );
 
-export function UserBookshelf( { userBooks, isOwner, connectedUserBooks, readingSessions }: UserBookshelfProps ) {
+  const SHELF_TITLES: Record<typeof SHELVES_ORDER[number], string> = {
+    reading: t( "reading" ),
+    read: t( "read" ),
+    later: t( "later" ),
+    wishlist: t( "wishlist" ),
+  };
+
   // Group books by their state.
   const userBooksByState = userBooks.reduce( ( acc, userbook ) => {
     const state: BookState = userbook.state;

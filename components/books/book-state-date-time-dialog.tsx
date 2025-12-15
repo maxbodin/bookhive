@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { DateTimePicker } from "@/components/books/date-time-picker";
+import { useTranslations } from "next-intl";
 
 interface BookStateDateTimeDialogDialogProps {
   isOpen: boolean;
@@ -36,6 +37,7 @@ export function BookStateDateTimeDialog( {
                                            description,
                                            isSubmitting,
                                          }: BookStateDateTimeDialogDialogProps ) {
+  const t = useTranslations( "BookStateDateTimeDialog" );
   const [selectedDateTime, setSelectedDateTime] = useState<Date | undefined>( new Date() );
 
   // Reset the date to the current time whenever the dialog is opened.
@@ -48,7 +50,7 @@ export function BookStateDateTimeDialog( {
   const handleSubmit = ( event: FormEvent<HTMLFormElement> ) => {
     event.preventDefault();
     if (!selectedDateTime) {
-      toast.error( "Please select a valid date and time." );
+      toast.error( t( "toastError" ) );
       return;
     }
     // Submit the final combined date as a universal ISO string.
@@ -67,11 +69,11 @@ export function BookStateDateTimeDialog( {
           <DialogFooter className="mt-4">
             <DialogClose asChild>
               <Button type="button" variant="secondary" className={ "m-2 sm:m-0" } disabled={ isSubmitting }>
-                Cancel
+                { t( "cancelButton" ) }
               </Button>
             </DialogClose>
             <Button type="submit" disabled={ isSubmitting || !selectedDateTime }>
-              { isSubmitting ? <Spinner/> : "Save" }
+              { isSubmitting ? <Spinner/> : t( "saveButton" ) }
             </Button>
           </DialogFooter>
         </form>

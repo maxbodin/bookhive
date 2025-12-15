@@ -1,8 +1,9 @@
-import { Book, BOOK_TYPE_MAP } from "@/app/types/book";
+import { Book } from "@/app/types/book";
 import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { Badge } from "@/components/ui/badge";
 import { UserBook } from "@/app/types/user-book";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
+import { getTranslations } from "next-intl/server";
 
 // Shared interface for props used by all card types
 interface BookCardSharedProps {
@@ -21,7 +22,9 @@ export interface BookCardProps extends BookCardSharedProps {
  * Renders a minimalist book cover.
  * The interactive favorite button reflects the CONNECTED user's status.
  */
-function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
+async function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
+  const t = await getTranslations( "BookCard" );
+
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
   // A user can only favorite a book if they are connected and have it marked as 'read'.
   const canToggleFavorite = connectedUserBook?.state === "read";
@@ -33,7 +36,7 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
              className="w-full h-auto object-cover rounded-lg aspect-[2/3]"/>
       ) : (
         <div className="w-full flex items-center justify-center rounded-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
-          <p className="text-primary text-sm">No Cover</p>
+          <p className="text-primary text-sm">{ t( "noCover" ) }</p>
         </div>
       ) }
       {/* The toggle button is only shown if the connected user can interact with it. */ }
@@ -48,7 +51,10 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
  * Renders the full book card with details and actions.
  * The favorite button's state is tied to the CONNECTED user.
  */
-function StandardBookCard( { book, connectedUserBook }: BookCardSharedProps ) {
+async function StandardBookCard( { book, connectedUserBook }: BookCardSharedProps ) {
+  const t = await getTranslations( "BookCard" );
+  const tBookTypes = await getTranslations( "BookTypes" );
+
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
   const canToggleFavorite = connectedUserBook?.state === "read";
 
@@ -62,12 +68,12 @@ function StandardBookCard( { book, connectedUserBook }: BookCardSharedProps ) {
           ) : (
             <div
               className="w-full flex items-center justify-center rounded-t-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
-              <p className="text-primary text-sm">No Cover</p>
+              <p className="text-primary text-sm">{ t( "noCover" ) }</p>
             </div>
           ) }
           { book.type && (
             <Badge variant="secondary" className="absolute top-2 right-2">
-              { BOOK_TYPE_MAP[book.type] || book.type }
+              { tBookTypes( book.type ) }
             </Badge>
           ) }
           {/* Show the favorite toggle if the connected user has read the book. */ }

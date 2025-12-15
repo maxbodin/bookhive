@@ -15,35 +15,9 @@ import { BookState } from "@/app/types/book-state";
 import { UserBook } from "@/app/types/user-book";
 import { BookStateDateTimeDialog } from "@/components/books/book-state-date-time-dialog";
 import { upsertBookState } from "@/app/actions/users-books/upsertBookState";
-
-// Configuration for dialogs triggered by state changes.
-const DIALOG_CONFIG = {
-  reading: {
-    title: "Start Reading",
-    description: "When did you start reading this book?",
-    column: "start_reading_date"
-  },
-  read_from_reading: {
-    title: "Finish Reading",
-    description: "When did you finish this book?",
-    column: "end_reading_date"
-  },
-  read: { title: "Add to Read", description: "When did you read this book?", column: "read_date" },
-  wishlist: {
-    title: "Add to Wishlist",
-    description: "When did you add this to your wishlist?",
-    column: "start_wishlist_date"
-  },
-  later: { title: "Add to Read Later", description: "When did you save this for later?", column: "start_later_date" },
-};
+import { useTranslations } from "next-intl";
 
 const states: BookState[] = ["reading", "read", "later", "wishlist"];
-const stateLabels: Record<BookState, string> = {
-  reading: "Reading",
-  read: "Read",
-  later: "Read Later",
-  wishlist: "Wishlist",
-};
 
 const stateIcons: Record<BookState, React.ElementType> = {
   reading: BookOpen,
@@ -58,12 +32,45 @@ interface BookStateDropdownProps {
 }
 
 export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDropdownProps ) {
+  const t = useTranslations( "BookStateDropdown" );
   const [isPending, startTransition] = useTransition();
   const [optimisticState, setOptimisticState] = useState( currentStateRecord?.state );
   const [dialog, setDialog] = useState<{
     config: typeof DIALOG_CONFIG[keyof typeof DIALOG_CONFIG];
     newState: BookState
   } | null>( null );
+
+  // Configuration for dialogs triggered by state changes.
+  const DIALOG_CONFIG = {
+    reading: {
+      title: t( "dialogs.reading.title" ),
+      description: t( "dialogs.reading.description" ),
+      column: "start_reading_date"
+    },
+    read_from_reading: {
+      title: t( "dialogs.read_from_reading.title" ),
+      description: t( "dialogs.read_from_reading.description" ),
+      column: "end_reading_date"
+    },
+    read: { title: t( "dialogs.read.title" ), description: t( "dialogs.read.description" ), column: "read_date" },
+    wishlist: {
+      title: t( "dialogs.wishlist.title" ),
+      description: t( "dialogs.wishlist.description" ),
+      column: "start_wishlist_date"
+    },
+    later: {
+      title: t( "dialogs.later.title" ),
+      description: t( "dialogs.later.description" ),
+      column: "start_later_date"
+    },
+  };
+
+  const stateLabels: Record<BookState, string> = {
+    reading: t( "states.reading" ),
+    read: t( "states.read" ),
+    later: t( "states.later" ),
+    wishlist: t( "states.wishlist" ),
+  };
 
   /**
    *
@@ -119,7 +126,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         toast.error( result.error );
         setOptimisticState( originalState ); // Revert on error.
       } else {
-        const message = newState ? `Book moved to "${ stateLabels[newState] }"` : "Book removed from shelf";
+        const message = newState ? t( "toast.successMove", { state: stateLabels[newState] } ) : t( "toast.successRemove" );
         toast.success( message );
       }
       setDialog( null ); // Close dialog on success.
@@ -172,7 +179,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         disabled={ isPending }
       >
         <BookPlus className="w-4 h-4 mr-2"/>
-        Add to Shelf
+        t("addToShelf")
       </Button>
     );
   } );
@@ -206,7 +213,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
               <DropdownMenuItem onSelect={ () => handleStateChange( null ) } disabled={ isPending }
                                 className="text-red-500">
                 <Trash2 className="w-4 h-4 mr-2"/>
-                Remove from Shelf
+                { t( "removeFromShelf" ) }
               </DropdownMenuItem>
             </>
           ) }

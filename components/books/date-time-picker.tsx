@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ interface DateTimePickerProps {
  * and a time from a time input.
  */
 export function DateTimePicker( { date, setDateAction, disabled }: DateTimePickerProps ) {
+  const t = useTranslations( "DateTimePicker" );
   const [isPopoverOpen, setIsPopoverOpen] = useState( false );
 
   const handleDateSelect = ( selectedDay: Date | undefined ) => {
@@ -56,9 +58,7 @@ export function DateTimePicker( { date, setDateAction, disabled }: DateTimePicke
   return (
     <div className="flex items-end gap-4">
       <div className="flex flex-col gap-2 flex-grow">
-        <Label htmlFor="date-picker">
-          Date
-        </Label>
+        <Label htmlFor="date-picker">{ t( "dateLabel" ) }</Label>
         <Popover open={ isPopoverOpen } onOpenChange={ setIsPopoverOpen }>
           <PopoverTrigger asChild>
             <Button
@@ -71,7 +71,7 @@ export function DateTimePicker( { date, setDateAction, disabled }: DateTimePicke
               disabled={ disabled }
             >
               <CalendarIcon className="mr-2 h-4 w-4"/>
-              { date ? format( date, "PPP" ) : <span>Pick a date</span> }
+              { date ? format( date, "PPP" ) : <span>{ t( "placeholder" ) }</span> }
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -85,9 +85,7 @@ export function DateTimePicker( { date, setDateAction, disabled }: DateTimePicke
         </Popover>
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="time-picker">
-          Time
-        </Label>
+        <Label htmlFor="time-picker">{ t( "timeLabel" ) }</Label>
         <Input
           id="time-picker"
           type="time"

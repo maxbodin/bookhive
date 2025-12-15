@@ -156,7 +156,7 @@
       "noBooks": "Aucun livre sur les étagères pour l'instant."
     },
     "MonthlyActivity": {
-      "title": "Activité Mensuelle",
+      "title": "Activité mensuelle",
       "read": "Terminés",
       "startedReading": "Commencés",
       "addedToLater": "Ajoutés à 'À Lire'",
@@ -164,7 +164,7 @@
       "noActivity": "Aucune activité de lecture enregistrée en {year}."
     },
     "ReadingSpeed": {
-      "title": "Vitesse de Lecture Moyenne",
+      "title": "Vitesse de lecture moyenne",
       "pagesPerDay": "Pages/Jour",
       "pagesPerWeek": "Pages/Semaine",
       "pagesPerMonth": "Pages/Mois"
@@ -209,5 +209,90 @@
     "placeholder": "https://exemple.com/image.png",
     "cancelButton": "Annuler",
     "saveButton": "Enregistrer"
+  },
+  "UserBookshelf": {
+    "reading": "En Cours de Lecture",
+    "read": "Lus",
+    "later": "Achetés et en attente",
+    "wishlist": "Liste d'envies"
+  },
+  "NoResults": {
+    "title": "Aucun Livre Trouvé",
+    "quotes": [
+      {
+        "quote": "Un lecteur vit un millier de vies avant de mourir... L'homme qui ne lit jamais n'en vit qu'une.",
+        "author": "George R.R. Martin"
+      },
+      {
+        "quote": "Il n'y a pas d'ami aussi fidèle qu'un livre.",
+        "author": "Ernest Hemingway"
+      },
+      {
+        "quote": "Une chambre sans livres, c'est comme un corps sans âme.",
+        "author": "Marcus Tullius Cicero"
+      }
+    ]
+  },
+  "FavoriteToggleButton": {
+    "add": "Ajouter aux favoris",
+    "remove": "Retirer des favoris"
+  },
+  "DateTimePicker": {
+    "dateLabel": "Date",
+    "timeLabel": "Heure",
+    "placeholder": "Choisir une date"
+  },
+  "BookStateDropdown": {
+    "addToShelf": "Ajouter à l'étagère",
+    "removeFromShelf": "Retirer de l'étagère",
+    "states": {
+      "reading": "En cours",
+      "read": "Lu",
+      "later": "À lire plus tard",
+      "wishlist": "Liste d'envies"
+    },
+    "dialogs": {
+      "reading": {
+        "title": "Commencer la lecture",
+        "description": "Quand avez-vous commencé à lire ce livre ?"
+      },
+      "read_from_reading": {
+        "title": "Terminer la lecture",
+        "description": "Quand avez-vous terminé ce livre ?"
+      },
+      "read": {
+        "title": "Ajouter aux 'Lus'",
+        "description": "Quand avez-vous lu ce livre ?"
+      },
+      "wishlist": {
+        "title": "Ajouter à la liste d'envies",
+        "description": "Quand avez-vous ajouté ceci à votre liste d'envies ?"
+      },
+      "later": {
+        "title": "Ajouter à 'Lire plus tard'",
+        "description": "Quand avez-vous sauvegardé ceci pour plus tard ?"
+      }
+    },
+    "toast": {
+      "successMove": "Livre déplacé vers \"{state}\"",
+      "successRemove": "Livre retiré de l'étagère"
+    }
+  },
+  "BookStateDateTimeDialog": {
+    "toastError": "Veuillez sélectionner une date et une heure valides.",
+    "cancelButton": "Annuler",
+    "saveButton": "Enregistrer"
+  },
+  "BookCard": {
+    "noCover": "Sans Couverture",
+    "by": "par {authors}",
+    "pages": "{count, plural, one {# page} other {# pages}}",
+    "coverAlt": "Couverture de {title}",
+    "untitled": "Sans titre"
+  },
+  "BookTypes": {
+    "bd": "BD",
+    "manga": "Manga",
+    "roman": "Roman"
   }
 }

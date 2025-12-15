@@ -156,7 +156,7 @@
       "noBooks": "No books on shelves yet."
     },
     "MonthlyActivity": {
-      "title": "Monthly Activity",
+      "title": "Monthly activity",
       "read": "Read",
       "startedReading": "Started Reading",
       "addedToLater": "Added to To-Read",
@@ -164,7 +164,7 @@
       "noActivity": "No book activity recorded in {year}."
     },
     "ReadingSpeed": {
-      "title": "Average Reading Speed",
+      "title": "Average reading speed",
       "pagesPerDay": "Pages/Day",
       "pagesPerWeek": "Pages/Week",
       "pagesPerMonth": "Pages/Month"
@@ -209,5 +209,98 @@
     "placeholder": "https://example.com/image.png",
     "cancelButton": "Cancel",
     "saveButton": "Save"
+  },
+  "UserBookshelf": {
+    "reading": "Currently Reading",
+    "read": "Read",
+    "later": "Bought and waiting to be read",
+    "wishlist": "Wishlist"
+  },
+  "NoResults": {
+    "title": "No Books Found",
+    "quotes": [
+      {
+        "quote": "A reader lives a thousand lives before he dies . . . The man who never reads lives only one.",
+        "author": "George R.R. Martin"
+      },
+      {
+        "quote": "Until I feared I would lose it, I never loved to read. One does not love breathing.",
+        "author": "Harper Lee"
+      },
+      {
+        "quote": "There is no friend as loyal as a book.",
+        "author": "Ernest Hemingway"
+      },
+      {
+        "quote": "The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.",
+        "author": "Jane Austen"
+      },
+      {
+        "quote": "A room without books is like a body without a soul.",
+        "author": "Marcus Tullius Cicero"
+      }
+    ]
+  },
+  "FavoriteToggleButton": {
+    "add": "Add to favorites",
+    "remove": "Remove from favorites"
+  },
+  "DateTimePicker": {
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "placeholder": "Pick a date"
+  },
+  "BookStateDropdown": {
+    "addToShelf": "Add to Shelf",
+    "removeFromShelf": "Remove from Shelf",
+    "states": {
+      "reading": "Reading",
+      "read": "Read",
+      "later": "Read Later",
+      "wishlist": "Wishlist"
+    },
+    "dialogs": {
+      "reading": {
+        "title": "Start Reading",
+        "description": "When did you start reading this book?"
+      },
+      "read_from_reading": {
+        "title": "Finish Reading",
+        "description": "When did you finish this book?"
+      },
+      "read": {
+        "title": "Add to Read",
+        "description": "When did you read this book?"
+      },
+      "wishlist": {
+        "title": "Add to Wishlist",
+        "description": "When did you add this to your wishlist?"
+      },
+      "later": {
+        "title": "Add to Read Later",
+        "description": "When did you save this for later?"
+      }
+    },
+    "toast": {
+      "successMove": "Book moved to \"{state}\"",
+      "successRemove": "Book removed from shelf"
+    }
+  },
+  "BookStateDateTimeDialog": {
+    "toastError": "Please select a valid date and time.",
+    "cancelButton": "Cancel",
+    "saveButton": "Save"
+  },
+  "BookCard": {
+    "noCover": "No Cover",
+    "by": "by {authors}",
+    "pages": "{count, plural, one {# page} other {# pages}}",
+    "coverAlt": "Cover of {title}",
+    "untitled": "Untitled"
+  },
+  "BookTypes": {
+    "bd": "Comic",
+    "manga": "Manga",
+    "roman": "Novel"
   }
 }

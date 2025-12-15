@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ interface FavoriteToggleButtonProps {
 }
 
 export function FavoriteToggleButton( { bookId, isFavorite }: FavoriteToggleButtonProps ) {
+  const t = useTranslations( "FavoriteToggleButton" );
   const [isPending, startTransition] = useTransition();
 
   const handleClick = () => {
@@ -38,7 +40,7 @@ export function FavoriteToggleButton( { bookId, isFavorite }: FavoriteToggleButt
         "h-10 w-10 text-white transition-colors",
         isFavorite ? "fill-yellow-400 text-yellow-400" : "fill-transparent"
       ) }/>
-      <span className="sr-only">{ isFavorite ? "Retirer des favoris" : "Ajouter aux favoris" }</span>
+      <span className="sr-only">{ isFavorite ? t( "remove" ) : t( "add" ) }</span>
     </Button>
   );
 }
