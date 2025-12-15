@@ -179,7 +179,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         disabled={ isPending }
       >
         <BookPlus className="w-4 h-4 mr-2"/>
-        t("addToShelf")
+        { t( "addToShelf" ) }
       </Button>
     );
   } );
