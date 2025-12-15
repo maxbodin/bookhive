@@ -87,7 +87,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
     }
 
     // Determine if a dialog is needed.
-    let dialogKey: keyof typeof DIALOG_CONFIG | null = null;
+    let dialogKey: keyof typeof DIALOG_CONFIG | null;
 
     const dialogMap = {
       reading: "reading",
