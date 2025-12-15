@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Cell, Label, Pie, PieChart } from "recharts";
 import {
   ChartConfig,
@@ -10,21 +11,22 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { StatCard } from "./stat-card";
-import { BOOK_TYPE_MAP } from "@/app/types/book";
 import React from "react";
 
 interface BookTypesCardProps {
   data: Record<string, number>;
 }
 
-const chartConfig = {
-  bd: { label: BOOK_TYPE_MAP.bd, color: "var(--chart-1)" },
-  manga: { label: BOOK_TYPE_MAP.manga, color: "var(--chart-2)" },
-  roman: { label: BOOK_TYPE_MAP.roman, color: "var(--chart-3)" },
-  unknown: { label: "Unknown", color: "var(--chart-4)" },
-} satisfies ChartConfig;
-
 export function BooksByTypesCard( { data }: BookTypesCardProps ) {
+  const t = useTranslations( "Stats.BooksByTypes" );
+
+  const chartConfig = {
+    bd: { label: t( "bd" ), color: "var(--chart-1)" },
+    manga: { label: t( "manga" ), color: "var(--chart-2)" },
+    roman: { label: t( "roman" ), color: "var(--chart-3)" },
+    unknown: { label: t( "unknown" ), color: "var(--chart-4)" },
+  } satisfies ChartConfig;
+
   const chartData = Object.entries( data ).map( ( [type, count] ) => ( {
     typeKey: type,
     type: chartConfig[type as keyof typeof chartConfig]?.label || "Unknown",
@@ -37,7 +39,7 @@ export function BooksByTypesCard( { data }: BookTypesCardProps ) {
   }, [] );
 
   return (
-    <StatCard title="Books by Types">
+    <StatCard title={ t( "title" ) }>
       { totalBooks > 0 ? (
         <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">
           <PieChart>
@@ -78,7 +80,7 @@ export function BooksByTypesCard( { data }: BookTypesCardProps ) {
                           className="text-muted-foreground"
                           fill="currentColor"
                         >
-                          Books
+                          { t( "books" ) }
                         </tspan>
                       </text>
                     );
@@ -96,7 +98,7 @@ export function BooksByTypesCard( { data }: BookTypesCardProps ) {
           </PieChart>
         </ChartContainer>
       ) : (
-        <p className="py-8 text-center text-muted-foreground">No books on shelves yet.</p>
+        <p className="py-8 text-center text-muted-foreground">{ t( "noBooks" ) }</p>
       ) }
     </StatCard>
   );

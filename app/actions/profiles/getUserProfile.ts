@@ -2,6 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { Profile } from "@/app/types/profile";
+import { getTranslations } from "next-intl/server";
 
 /**
  * Fetches a user's profile from the database.
@@ -10,6 +11,7 @@ import { Profile } from "@/app/types/profile";
  * @throws An error if the user is not found or if there's a database error.
  */
 export async function getUserProfile( email: string ): Promise<Profile> {
+  const t = await getTranslations( "GetUserProfileAction" );
   const supabase = await createClient();
 
   const { data: profile, error } = await supabase
@@ -19,7 +21,7 @@ export async function getUserProfile( email: string ): Promise<Profile> {
     .single();
 
   if (error || !profile) {
-    throw new Error( error?.message || "User not found" );
+    throw new Error( error?.message || t( "userNotFound" ) );
   }
 
   return profile as Profile;

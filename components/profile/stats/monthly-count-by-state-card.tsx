@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, ReferenceLine, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
@@ -24,46 +25,22 @@ interface MonthlyReadsCardProps {
   onYearChange: ( year: string ) => void;
 }
 
-const chartConfig = {
-  read: {
-    label: "Read",
-    color: "var(--chart-1)",
-  },
-  reading: {
-    label: "Started Reading",
-    color: "var(--chart-2)",
-  },
-  later: {
-    label: "Added to Later",
-    color: "var(--chart-3)",
-  },
-  wishlist: {
-    label: "Added to Wishlist",
-    color: "var(--chart-4)",
-  },
-} satisfies ChartConfig;
+export function MonthlyCountByStateCard( { data, selectedYear, onYearChange }: MonthlyReadsCardProps ) {
+  const t = useTranslations( "Stats.MonthlyActivity" );
 
-const getEmptyStateMessage = ( year: number ) => {
-  return `No book activity recorded in ${ year }.`;
-};
+  const chartConfig = {
+    read: { label: t( "read" ), color: "var(--chart-1)" },
+    reading: { label: t( "startedReading" ), color: "var(--chart-2)" },
+    later: { label: t( "addedToLater" ), color: "var(--chart-3)" },
+    wishlist: { label: t( "addedToWishlist" ), color: "var(--chart-4)" },
+  } satisfies ChartConfig;
 
-export function MonthlyCountByStateCard( {
-                                           data,
-                                           selectedYear,
-                                           onYearChange
-                                         }: MonthlyReadsCardProps ) {
   const hasData = data.some( d => d.read > 0 || d.reading > 0 || d.later > 0 || d.wishlist > 0 );
 
   return (
-    <StatCard
-      title="Monthly Activity"
-      headerChildren={
-        <YearSelection
-          year={ selectedYear }
-          onValueChange={ onYearChange }
-        />
-      }
-    >
+    <StatCard title={ t( "title" ) } headerChildren={
+      <YearSelection year={ selectedYear } onValueChange={ onYearChange }/>
+    }>
       { hasData ? (
         <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">
           <BarChart
@@ -124,7 +101,7 @@ export function MonthlyCountByStateCard( {
       ) : (
         <div className="flex h-[250px] w-full items-center justify-center">
           <p className="text-center text-muted-foreground">
-            { getEmptyStateMessage( selectedYear ) }
+            { t( "noActivity", { year: selectedYear } ) }
           </p>
         </div>
       ) }

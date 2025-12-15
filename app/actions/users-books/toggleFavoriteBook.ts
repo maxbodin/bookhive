@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/app/utils/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
 const MAX_FAVORITES = 4;
@@ -11,11 +12,12 @@ const MAX_FAVORITES = 4;
  * @param currentIsFavorite
  */
 export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boolean ) {
+  const t = await getTranslations( "ToggleFavoriteBookAction" );
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, message: "Authentification requise." };
+    return { success: false, message: t( "authRequired" ) };
   }
 
   // Si l'utilisateur retire un favori.
@@ -25,7 +27,7 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
       .update( { is_favorite: false } )
       .match( { uid: user.id, book_id: bookId } );
 
-    if (error) return { success: false, message: "Impossible de retirer le favori." };
+    if (error) return { success: false, message: t( "removeFavoriteFailed" ) };
 
   } else {
     // Si l'utilisateur ajoute un favori.
@@ -38,7 +40,7 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
       .single();
 
     if (fetchError || bookRecord?.state !== "read") {
-      return { success: false, message: "Seuls les livres lus peuvent être ajoutés en favoris." };
+      return { success: false, message: t( "onlyReadCanBeFavorite" ) };
     }
 
     // Vérifier que l'utilisateur n'a pas dépassé la limite.
@@ -47,9 +49,9 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
       .select( "*", { count: "exact", head: true } )
       .match( { uid: user.id, is_favorite: true } );
 
-    if (countError) return { success: false, message: "Erreur lors de la vérification des favoris." };
+    if (countError) return { success: false, message: t( "checkFavoritesError" ) };
     if (count !== null && count >= MAX_FAVORITES) {
-      return { success: false, message: `Vous ne pouvez avoir que ${ MAX_FAVORITES } livres favoris.` };
+      return { success: false, message: t( "limitReached", { max: MAX_FAVORITES } ) };
     }
 
     // Mise à jour du livre comme favori.
@@ -58,7 +60,7 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
       .update( { is_favorite: true } )
       .match( { uid: user.id, book_id: bookId } );
 
-    if (updateError) return { success: false, message: "Impossible d'ajouter le favori." };
+    if (updateError) return { success: false, message: t( "addFavoriteFailed" ) };
   }
 
   // Revalider la page de profil pour afficher instantanément le changement.
@@ -66,5 +68,5 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
     revalidatePath( `/${ encodeURIComponent( user.email ) }` );
   }
 
-  return { success: true, message: "Favoris mis à jour !" };
+  return { success: true, message: t( "updateSuccess" ) };
 }

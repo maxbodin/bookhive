@@ -16,6 +16,7 @@ import { ReadingSession } from "@/app/types/reading-session";
 import { ProfileStatsSummary } from "@/components/profile/profile-stats-summary";
 import { parseISO } from "date-fns";
 import { ReadingActivityCalendar } from "@/components/profile/reading-activity-calendar";
+import { getTranslations } from "next-intl/server";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -23,6 +24,8 @@ interface UserProfilePageProps {
 }
 
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
+  const t = await getTranslations( "UserProfilePage" );
+
   try {
     const resolvedParams = params ? await params : undefined;
     const decodedEmail = decodeURIComponent( resolvedParams?.email ?? "" );
@@ -81,7 +84,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
             <h1 className="text-3xl font-bold">{ visitedProfileUsername }</h1>
             { visitedProfile.created_at &&
               <p className="text-md text-gray-500">
-                Joined: { new Date( visitedProfile.created_at ).toLocaleDateString() }
+                { t( "joined" ) }: { new Date( visitedProfile.created_at ).toLocaleDateString() }
               </p>
             }
 
@@ -97,8 +100,8 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         <Tabs defaultValue="shelves" className="w-full">
           <div className="mb-8 flex justify-center">
             <TabsList>
-              <TabsTrigger value="shelves">Shelves</TabsTrigger>
-              <TabsTrigger value="stats">Stats</TabsTrigger>
+              <TabsTrigger value="shelves">{ t( "shelvesTab" ) }</TabsTrigger>
+              <TabsTrigger value="stats">{ t( "statsTab" ) }</TabsTrigger>
             </TabsList>
           </div>
 
@@ -128,12 +131,12 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       </div>
     );
   } catch (error: unknown) {
-    let errorMessage = "An unexpected error occurred.";
+    let errorMessage = t( "unexpectedError" );
     if (error instanceof Error) {
       errorMessage = error.message;
     }
     return <div className="container mx-auto p-4 text-center text-red-600">
-      <strong>Error:</strong> { errorMessage }
+      <strong>{ t( "errorLabel" ) }:</strong> { errorMessage }
     </div>;
   }
 }

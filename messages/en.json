@@ -101,5 +101,77 @@
       "authRequired": "Authentication required. Please log in.",
       "logFailed": "Failed to log session. Please try again later."
     }
+  },
+  "GetUserProfileAction": {
+    "userNotFound": "User not found"
+  },
+  "GetUserUsersBooksAction": {
+    "fetchFailed": "Failed to fetch user's books."
+  },
+  "ToggleFavoriteBookAction": {
+    "authRequired": "Authentication required.",
+    "removeFavoriteFailed": "Failed to remove favorite.",
+    "onlyReadCanBeFavorite": "Only books marked as 'read' can be added to favorites.",
+    "checkFavoritesError": "Error while checking favorites.",
+    "limitReached": "You can only have {max} favorite books.",
+    "addFavoriteFailed": "Failed to add favorite.",
+    "updateSuccess": "Favorites updated!"
+  },
+  "UpsertBookStateAction": {
+    "authRequired": "You must be logged in to modify your bookshelf.",
+    "removeFailed": "Failed to remove book from shelf.",
+    "updateFailed": "Failed to update book state."
+  },
+  "GetBooksInReadingStateAction": {
+    "loadFailed": "Failed to load your books. Please try again."
+  },
+  "UserProfilePage": {
+    "joined": "Joined",
+    "shelvesTab": "Shelves",
+    "statsTab": "Stats",
+    "errorLabel": "Error",
+    "unexpectedError": "An unexpected error occurred."
+  },
+  "Stats": {
+    "AverageCompletion": {
+      "title": "Average time to finish a book",
+      "days": "Days"
+    },
+    "BooksByStatus": {
+      "title": "Books by Status",
+      "read": "Read",
+      "reading": "Reading",
+      "toRead": "To Read",
+      "wishlist": "Wishlist",
+      "books": "Books",
+      "noBooks": "No books on shelves yet."
+    },
+    "BooksByTypes": {
+      "title": "Books by Types",
+      "bd": "Comic",
+      "manga": "Manga",
+      "roman": "Novel",
+      "unknown": "Unknown",
+      "books": "Books",
+      "noBooks": "No books on shelves yet."
+    },
+    "MonthlyActivity": {
+      "title": "Monthly Activity",
+      "read": "Read",
+      "startedReading": "Started Reading",
+      "addedToLater": "Added to To-Read",
+      "addedToWishlist": "Added to Wishlist",
+      "noActivity": "No book activity recorded in {year}."
+    },
+    "ReadingSpeed": {
+      "title": "Average Reading Speed",
+      "pagesPerDay": "Pages/Day",
+      "pagesPerWeek": "Pages/Week",
+      "pagesPerMonth": "Pages/Month"
+    },
+    "YearSelection": {
+      "ariaLabel": "Select a year",
+      "placeholder": "Select year"
+    }
   }
 }

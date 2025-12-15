@@ -1,4 +1,6 @@
+"use client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslations } from "next-intl";
 
 interface YearSelectionProps {
   year: number;
@@ -7,6 +9,7 @@ interface YearSelectionProps {
 
 
 export function YearSelection( { year, onValueChange }: YearSelectionProps ) {
+  const t = useTranslations( "Stats.YearSelection" );
   const availableYears = [2022, 2023, 2024, 2025, 2026];
 
   return (
@@ -14,9 +17,9 @@ export function YearSelection( { year, onValueChange }: YearSelectionProps ) {
       <Select value={ String( year ) } onValueChange={ onValueChange }>
         <SelectTrigger
           className="ml-auto h-7 w-[120px] rounded-lg pl-2.5"
-          aria-label="Select a year"
+          aria-label={ t( "ariaLabel" ) }
         >
-          <SelectValue placeholder="Select year"/>
+          <SelectValue placeholder={ t( "placeholder" ) }/>
         </SelectTrigger>
         <SelectContent align="end" className="rounded-xl">
           { availableYears.map( ( option ) => (

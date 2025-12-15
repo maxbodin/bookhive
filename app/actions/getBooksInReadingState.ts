@@ -3,6 +3,7 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { UserBook } from "@/app/types/user-book";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
+import { getTranslations } from "next-intl/server";
 
 type ActionResponse = {
   data?: UserBook[];
@@ -13,6 +14,7 @@ type ActionResponse = {
  * Récupère les livres en cours de lecture pour l'utilisateur connecté.
  */
 export async function getBooksInReadingState(): Promise<ActionResponse> {
+  const t = await getTranslations( "GetBooksInReadingStateAction" );
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -39,7 +41,7 @@ export async function getBooksInReadingState(): Promise<ActionResponse> {
 
   if (error) {
     console.error( "Error fetching reading state books:", error.message );
-    return { error: "Failed to load your books. Please try again." };
+    return { error: t( "loadFailed" ) };
   }
 
   return { data: flattenUsersBooksData( data as UserBook[] ) as UserBook[] };

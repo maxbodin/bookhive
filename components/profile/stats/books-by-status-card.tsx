@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Cell, Label, Pie, PieChart } from "recharts";
 import {
   ChartConfig,
@@ -19,14 +20,16 @@ interface BooksByStatusCardProps {
   };
 }
 
-const chartConfig = {
-  read: { label: "Read", color: "var(--chart-1)" },
-  reading: { label: "Reading", color: "var(--chart-2)" },
-  later: { label: "To Read", color: "var(--chart-3)" },
-  wishlist: { label: "Wishlist", color: "var(--chart-4)" },
-} satisfies ChartConfig;
-
 export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
+  const t = useTranslations( "Stats.BooksByStatus" );
+
+  const chartConfig = {
+    read: { label: t( "read" ), color: "var(--chart-1)" },
+    reading: { label: t( "reading" ), color: "var(--chart-2)" },
+    later: { label: t( "toRead" ), color: "var(--chart-3)" },
+    wishlist: { label: t( "wishlist" ), color: "var(--chart-4)" },
+  } satisfies ChartConfig;
+
   const chartData = Object.entries( data ).map( ( [status, count] ) => ( {
     statusKey: status,
     status: chartConfig[status as keyof typeof chartConfig]?.label,
@@ -36,10 +39,10 @@ export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
 
   const totalBooks = React.useMemo( () => {
     return chartData.reduce( ( acc, curr ) => acc + curr.count, 0 );
-  }, [] );
+  }, [chartData] );
 
   return (
-    <StatCard title="Books by Status">
+    <StatCard title={ t( "title" ) }>
       { totalBooks > 0 ? (
         <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">
           <PieChart>
@@ -80,7 +83,7 @@ export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
                           className="text-muted-foreground"
                           fill="currentColor"
                         >
-                          Books
+                          { t( "books" ) }
                         </tspan>
                       </text>
                     );
@@ -98,7 +101,7 @@ export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
           </PieChart>
         </ChartContainer>
       ) : (
-        <p className="py-8 text-center text-muted-foreground">No books on shelves yet.</p>
+        <p className="py-8 text-center text-muted-foreground">{ t( "noBooks" ) }</p>
       ) }
     </StatCard>
   );

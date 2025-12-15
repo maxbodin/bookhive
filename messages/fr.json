@@ -101,5 +101,77 @@
       "authRequired": "Authentification requise. Veuillez vous connecter.",
       "logFailed": "Échec de l'enregistrement de la session. Veuillez réessayer plus tard."
     }
+  },
+  "GetUserProfileAction": {
+    "userNotFound": "Utilisateur non trouvé"
+  },
+  "GetUserUsersBooksAction": {
+    "fetchFailed": "Échec de la récupération des livres de l'utilisateur."
+  },
+  "ToggleFavoriteBookAction": {
+    "authRequired": "Authentification requise.",
+    "removeFavoriteFailed": "Impossible de retirer le favori.",
+    "onlyReadCanBeFavorite": "Seuls les livres lus peuvent être ajoutés en favoris.",
+    "checkFavoritesError": "Erreur lors de la vérification des favoris.",
+    "limitReached": "Vous ne pouvez avoir que {max} livres favoris.",
+    "addFavoriteFailed": "Impossible d'ajouter le favori.",
+    "updateSuccess": "Favoris mis à jour !"
+  },
+  "UpsertBookStateAction": {
+    "authRequired": "Vous devez être connecté pour modifier votre bibliothèque.",
+    "removeFailed": "Échec de la suppression du livre de l'étagère.",
+    "updateFailed": "Échec de la mise à jour de l'état du livre."
+  },
+  "GetBooksInReadingStateAction": {
+    "loadFailed": "Échec du chargement de vos livres. Veuillez réessayer."
+  },
+  "UserProfilePage": {
+    "joined": "Inscrit le",
+    "shelvesTab": "Étagères",
+    "statsTab": "Stats",
+    "errorLabel": "Erreur",
+    "unexpectedError": "Une erreur inattendue est survenue."
+  },
+  "Stats": {
+    "AverageCompletion": {
+      "title": "Temps moyen pour finir un livre",
+      "days": "Jours"
+    },
+    "BooksByStatus": {
+      "title": "Livres par Statut",
+      "read": "Lu",
+      "reading": "En cours",
+      "toRead": "À Lire",
+      "wishlist": "Liste d'envies",
+      "books": "Livres",
+      "noBooks": "Aucun livre sur les étagères pour l'instant."
+    },
+    "BooksByTypes": {
+      "title": "Livres par Type",
+      "bd": "BD",
+      "manga": "Manga",
+      "roman": "Roman",
+      "unknown": "Inconnu",
+      "books": "Livres",
+      "noBooks": "Aucun livre sur les étagères pour l'instant."
+    },
+    "MonthlyActivity": {
+      "title": "Activité Mensuelle",
+      "read": "Terminés",
+      "startedReading": "Commencés",
+      "addedToLater": "Ajoutés à 'À Lire'",
+      "addedToWishlist": "Ajoutés à la liste d'envies",
+      "noActivity": "Aucune activité de lecture enregistrée en {year}."
+    },
+    "ReadingSpeed": {
+      "title": "Vitesse de Lecture Moyenne",
+      "pagesPerDay": "Pages/Jour",
+      "pagesPerWeek": "Pages/Semaine",
+      "pagesPerMonth": "Pages/Mois"
+    },
+    "YearSelection": {
+      "ariaLabel": "Sélectionner une année",
+      "placeholder": "Choisir l'année"
+    }
   }
 }

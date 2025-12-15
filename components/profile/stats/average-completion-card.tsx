@@ -1,5 +1,7 @@
+"use client";
 import { StatCard } from "./stat-card";
 import { YearSelection } from "@/components/profile/stats/year-selection";
+import { useTranslations } from "next-intl";
 
 interface AverageCompletionCardProps {
   avgDays: number;
@@ -7,12 +9,11 @@ interface AverageCompletionCardProps {
   onYearChange: ( year: string ) => void;
 }
 
-export function AverageCompletionCard( {
-                                         avgDays, selectedYear,
-                                         onYearChange
-                                       }: AverageCompletionCardProps ) {
+export function AverageCompletionCard( { avgDays, selectedYear, onYearChange }: AverageCompletionCardProps ) {
+  const t = useTranslations( "Stats.AverageCompletion" );
+
   return (
-    <StatCard title="Average time to finish a book" headerChildren={
+    <StatCard title={ t( "title" ) } headerChildren={
       <YearSelection
         year={ selectedYear }
         onValueChange={ onYearChange }
@@ -23,7 +24,7 @@ export function AverageCompletionCard( {
           <p className="text-4xl font-bold tracking-tighter">
             { avgDays > 0 ? avgDays.toFixed( 1 ) : "-" }
           </p>
-          <p className="text-sm text-muted-foreground">Days</p>
+          <p className="text-sm text-muted-foreground">{ t( "days" ) }</p>
         </div>
       </div>
     </StatCard>

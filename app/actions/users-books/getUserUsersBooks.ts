@@ -3,6 +3,7 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { UserBook } from "@/app/types/user-book";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
+import { getTranslations } from "next-intl/server";
 
 /**
  * Fetches a user's book collection, with optional filtering.
@@ -12,6 +13,7 @@ import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks
  * @throws An error if fetching the books fails.
  */
 export async function getUserUsersBooks( userId: string, query?: string ): Promise<UserBook[]> {
+  const t = await getTranslations( "GetUserUsersBooksAction" );
   const supabase = await createClient();
 
   let queryBuilder = supabase
@@ -30,7 +32,7 @@ export async function getUserUsersBooks( userId: string, query?: string ): Promi
   const { data: userBooksData, error } = await queryBuilder;
 
   if (error) {
-    throw new Error( error.message || "Failed to fetch user's usersbooks." );
+    throw new Error( error.message || t( "fetchFailed" ) );
   }
 
   return ( flattenUsersBooksData( userBooksData ) || [] ) as UserBook[];

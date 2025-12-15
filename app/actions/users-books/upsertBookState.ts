@@ -2,6 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { BookState } from "@/app/types/book-state";
+import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -15,11 +16,12 @@ export async function upsertBookState(
   newState: BookState | null, // Allow null to remove the book from shelves.
   updates: Record<string, any> = {}
 ) {
+  const t = await getTranslations( "UpsertBookStateAction" );
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "You must be logged in to modify your bookshelf." };
+    return { error: t( "authRequired" ) };
   }
 
   // If the new state is null, we are removing the book entry.
@@ -29,7 +31,7 @@ export async function upsertBookState(
       .delete()
       .match( { uid: user.id, book_id: bookId } );
 
-    if (error) return { error: "Failed to remove book from shelf." };
+    if (error) return { error: t( "removeFailed" ) };
   } else {
     // Combine base data with additional updates (dates).
     const dataToUpsert = {
@@ -44,7 +46,7 @@ export async function upsertBookState(
 
     if (error) {
       console.error( "Supabase upsert error:", error );
-      return { error: "Failed to update book state." };
+      return { error: t( "updateFailed" ) };
     }
   }
 
