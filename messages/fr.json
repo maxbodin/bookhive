@@ -1,6 +1,6 @@
 {
   "Navbar": {
-    "title": "BookHive FR",
+    "title": "BookHive",
     "search_placeholder": "Rechercher un livre..."
   },
   "Username": {
@@ -226,6 +226,10 @@
       {
         "quote": "Il n'y a pas d'ami aussi fidèle qu'un livre.",
         "author": "Ernest Hemingway"
+      },
+      {
+        "quote": "La personne, que ce soit un gentleman ou une lady, qui n'a pas de plaisir dans un bon roman, doit être intolérablement stupide.",
+        "author": "Jane Austen"
       },
       {
         "quote": "Une chambre sans livres, c'est comme un corps sans âme.",
