@@ -20,6 +20,9 @@ export default function Search( { placeholder }: { placeholder: string } ) {
       params.delete( SearchParams.QUERY );
     }
 
+    // Reset to page 1 when the search query changes.
+    params.set( SearchParams.PAGE, "1" );
+
     router.replace( `${ pathname }?${ params.toString() }` );
   }, 300 );
 

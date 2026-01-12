@@ -287,6 +287,11 @@
     "cancelButton": "Annuler",
     "saveButton": "Enregistrer"
   },
+  "PaginationControls": {
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "pageIndicator": "Page {currentPage} sur {totalPages}"
+  },
   "BookCard": {
     "noCover": "Sans Couverture",
     "by": "par {authors}",
