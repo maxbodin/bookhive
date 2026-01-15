@@ -3,12 +3,14 @@ import { BooksGrid } from "@/components/books/books-grid";
 import { BookState } from "@/app/types/book-state";
 import { ReadingSession } from "@/app/types/reading-session";
 import { getTranslations } from "next-intl/server";
+import { BooksGridSkeleton } from "@/components/skeletons/books-grid-skeleton";
+import { Suspense } from "react";
 
 interface UserBookshelfProps {
-  userBooks: UserBook[];                // The profile owner's books
+  userBooks: UserBook[];                // The profile owner's books.
   isOwner: boolean;
-  connectedUserBooks: UserBook[];       // The logged-in user's data with books
-  readingSessions: ReadingSession[];    // The profile owner's reading sessions
+  connectedUserBooks: UserBook[];       // The logged-in user's data with books.
+  readingSessions: ReadingSession[];    // The profile owner's reading sessions.
 }
 
 const SHELVES_ORDER = ["reading", "read", "later", "wishlist"] as const;
@@ -48,14 +50,16 @@ export async function UserBookshelf( { userBooks, isOwner, connectedUserBooks, r
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">
               { SHELF_TITLES[shelf] } ({ userBooksOnShelf.length })
             </h2>
-            <BooksGrid
-              books={ userBooksOnShelf }
-              profileUserBooks={ userBooksOnShelf }
-              connectedUserBooks={ connectedUserBooks }
-              view={ gridView }
-              isOwner={ isOwner }
-              readingSessions={ readingSessions }
-            />
+            <Suspense key={ `${ shelf }` } fallback={ <BooksGridSkeleton/> }>
+              <BooksGrid
+                books={ userBooksOnShelf }
+                profileUserBooks={ userBooksOnShelf }
+                connectedUserBooks={ connectedUserBooks }
+                view={ gridView }
+                isOwner={ isOwner }
+                readingSessions={ readingSessions }
+              />
+            </Suspense>
           </section>
         );
       } ) }

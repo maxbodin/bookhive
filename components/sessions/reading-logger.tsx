@@ -145,8 +145,6 @@ export default function ReadingLogger() {
     formData.append( "startPage", validation.data.startPage.toString() );
     formData.append( "notes", validation.data.notes ?? "" );
 
-    console.log( JSON.stringify( formData ) );
-
     startSubmitting( async () => {
       const result = await logReadingSession( formData );
       if (result.success) {

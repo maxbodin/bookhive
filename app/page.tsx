@@ -9,10 +9,12 @@ import { searchBooks } from "@/app/actions/books/searchBooks";
 import { UserBook } from "@/app/types/user-book";
 import { User } from "@supabase/supabase-js";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
-import { getAllUserUsersBooks } from "@/app/actions/users-books/getUserUsersBooks";
 import { BOOKS_PER_PAGE, SearchParams } from "@/app/searchParams";
 import { PaginationControls } from "@/components/pagination-controls";
 import { redirect } from "next/navigation";
+import {
+  getConnectedUserBooksForDisplayedBooks
+} from "@/app/actions/users-books/getConnectedUserBooksForDisplayedBooks";
 
 interface HomePageProps {
   searchParams?: Promise<{
@@ -40,8 +42,9 @@ export default async function Home( { searchParams }: HomePageProps ) {
   const currentUser: User | null = await getCurrentUser();
 
   // If connected fetch user's data related to books (usersbooks).
-  if (currentUser) {
-    connectedUserDataWithBooks = await getAllUserUsersBooks( currentUser?.id );
+  if (currentUser && books.length > 0) {
+    const booksIds = [...new Set( books.map( book => book.id ) )];
+    connectedUserDataWithBooks = await getConnectedUserBooksForDisplayedBooks( currentUser.id, booksIds );
   }
 
   const t = await getTranslations( "HomePage" );

@@ -1,22 +1,30 @@
-import { UserBookshelf } from "@/components/books/user-bookshelf";
+import { getTranslations } from "next-intl/server";
+import { parseISO } from "date-fns";
 import { UserAvatar } from "@/components/profile/user-avatar";
-import { getUsername } from "@/lib/getUsername";
 import { EmptyShelves } from "@/components/profile/empty-shelves";
 import { FavoriteBookshelf } from "@/components/profile/favorite-bookshelf";
-import { getCurrentUser } from "@/app/actions/getCurrentUser";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserStats } from "@/components/profile/user-stats";
-import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
-import { Profile } from "@/app/types/profile";
-import { getUserUsersBooks } from "@/app/actions/users-books/getUserUsersBooks";
-import { User } from "@supabase/supabase-js";
-import { getUserReadingSessions } from "@/app/actions/reading-sessions/getUserReadingSessions";
-import { UserBook } from "@/app/types/user-book";
-import { ReadingSession } from "@/app/types/reading-session";
+import { UserBookshelf } from "@/components/books/user-bookshelf";
+import { PaginatedBookshelf } from "@/components/profile/paginated-bookshelf";
 import { ProfileStatsSummary } from "@/components/profile/profile-stats-summary";
-import { parseISO } from "date-fns";
 import { ReadingActivityCalendar } from "@/components/profile/reading-activity-calendar";
-import { getTranslations } from "next-intl/server";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getCurrentUser } from "@/app/actions/getCurrentUser";
+import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
+import { getUsername } from "@/lib/getUsername";
+import { getUserReadingSessions } from "@/app/actions/reading-sessions/getUserReadingSessions";
+import { BookState } from "@/app/types/book-state";
+import { UserBook } from "@/app/types/user-book";
+import { Profile } from "@/app/types/profile";
+import { User } from "@supabase/supabase-js";
+import { ReadingSession } from "@/app/types/reading-session";
+import { UserStats } from "@/components/profile/user-stats";
+import { getUserFavoriteUsersBooks } from "@/app/actions/users-books/getUserFavoriteUsersBooks";
+import { getUserBooksByState } from "@/app/actions/users-books/getUserBooksByState";
+import { getPaginatedUserBooksByState } from "@/app/actions/users-books/getPaginatedUserBooksByState";
+import { getUserTotalPagesRead } from "@/app/actions/users-books/getUserTotalPagesRead";
+import {
+  getConnectedUserBooksForDisplayedBooks
+} from "@/app/actions/users-books/getConnectedUserBooksForDisplayedBooks";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -25,6 +33,7 @@ interface UserProfilePageProps {
 
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
   const t = await getTranslations( "UserProfilePage" );
+  const tShelf = await getTranslations( "UserBookshelf" );
 
   try {
     const resolvedParams = params ? await params : undefined;
@@ -33,11 +42,26 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const query: string = resolvedSearchParams?.query ?? "";
 
     const visitedProfile: Profile = await getUserProfile( decodedEmail );
-    const visitedProfileUserBooks: UserBook[] = await getUserUsersBooks( visitedProfile.id, query );
     const currentUser: User | null = await getCurrentUser();
     const isOwner: boolean = currentUser?.id === visitedProfile.id;
     const visitedProfileUsername: string = getUsername( visitedProfile.email );
-    const visitedProfileFavoriteBooks: UserBook[] = visitedProfileUserBooks.filter( b => b.is_favorite );
+
+    // Fetch favorite books.
+    const visitedProfileFavoriteBooks: UserBook[] = await getUserFavoriteUsersBooks( visitedProfile.id );
+
+    // Fetch all books on the 'reading' shelf (not paginated).
+    const visitedProfileReadingBooks: UserBook[] = await getUserBooksByState( visitedProfile.id, "reading", query );
+
+    // Fetch the first page and total count for each paginated shelf.
+    const [
+      readData,
+      laterData,
+      wishlistData,
+    ] = await Promise.all( [
+      getPaginatedUserBooksByState( visitedProfile.id, "read", 1, query ),
+      getPaginatedUserBooksByState( visitedProfile.id, "later", 1, query ),
+      getPaginatedUserBooksByState( visitedProfile.id, "wishlist", 1, query ),
+    ] );
 
     // Fetch all reading sessions for the visited profile.
     const readingSessions: ReadingSession[] = await getUserReadingSessions( visitedProfile.id );
@@ -56,25 +80,45 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const totalHoursRead = Math.round( totalMilliseconds / ( 1000 * 60 * 60 ) );
 
     // Total pages read.
-    const totalPagesRead = visitedProfileUserBooks.reduce( ( acc, book ) => {
-      // Add total pages for books marked as 'read'.
-      if (book.state === "read" && book.pages) {
-        return acc + book.pages;
-      }
-      // Add current page for books 'in progress'.
-      if (book.state === "reading" && book.current_page) {
-        return acc + book.current_page;
-      }
-      return acc;
-    }, 0 );
+    const totalPagesRead = await getUserTotalPagesRead( visitedProfile.id );
 
-    // Fetch the connected user's book data if they are logged in.
     let connectedUserDataWithBooks: UserBook[] = [];
-    if (currentUser) {
+
+    const allDisplayedBooks = [
+      ...visitedProfileFavoriteBooks,
+      ...visitedProfileReadingBooks,
+      ...readData.data,
+      ...laterData.data,
+      ...wishlistData.data,
+    ];
+
+    if (currentUser && !isOwner) {
       // If the viewer is the owner, their data is the same as the profile's data.
       // Otherwise, fetch their data separately.
-      connectedUserDataWithBooks = isOwner ? visitedProfileUserBooks : await getUserUsersBooks( currentUser.id );
-    }
+
+      const uniqueBookIds = Array.from( new Set( allDisplayedBooks.map( ( b ) => b.book_id ) ) );
+
+      if (uniqueBookIds.length > 0) {
+        connectedUserDataWithBooks = await getConnectedUserBooksForDisplayedBooks(
+          currentUser.id,
+          uniqueBookIds
+        );
+      }
+    } else
+      if (currentUser) {
+        connectedUserDataWithBooks = allDisplayedBooks;
+      }
+
+    const hasAnyBooks =
+      visitedProfileFavoriteBooks.length > 0 || visitedProfileReadingBooks.length > 0 ||
+      readData.count > 0 || laterData.count > 0 || wishlistData.count > 0;
+
+    // Configuration for shelves to map over
+    const paginatedShelvesConfig: { state: BookState; title: string; data: any[]; count: number }[] = [
+      { state: "read", title: tShelf( "read" ), data: readData.data, count: readData.count },
+      { state: "later", title: tShelf( "later" ), data: laterData.data, count: laterData.count },
+      { state: "wishlist", title: tShelf( "wishlist" ), data: wishlistData.data, count: wishlistData.count },
+    ];
 
     return (
       <div className="container mx-auto p-4 md:p-8">
@@ -106,37 +150,54 @@ export default async function UserProfile( { params, searchParams }: UserProfile
           </div>
 
           <TabsContent value="shelves">
-            { visitedProfileUserBooks.length > 0 ? (
-              <>
+            <div className="space-y-12">
+              { visitedProfileFavoriteBooks.length > 0 && (
                 <FavoriteBookshelf
                   favoriteUserBooks={ visitedProfileFavoriteBooks }
                   isOwner={ isOwner }
                   connectedUserBooks={ connectedUserDataWithBooks }
                 />
+              ) }
+
+              { visitedProfileReadingBooks.length > 0 && (
                 <UserBookshelf
-                  userBooks={ visitedProfileUserBooks }
-                  isOwner={ isOwner }
+                  userBooks={ visitedProfileReadingBooks }
                   connectedUserBooks={ connectedUserDataWithBooks }
+                  isOwner={ isOwner }
                   readingSessions={ readingSessions }
                 />
-              </>
-            ) : (
-              <EmptyShelves username={ visitedProfileUsername } query={ query }/>
-            ) }
+              ) }
+
+              { paginatedShelvesConfig.map( ( shelf ) => (
+                <PaginatedBookshelf
+                  key={ shelf.state }
+                  userId={ visitedProfile.id }
+                  initialData={ shelf.data }
+                  totalCount={ shelf.count }
+                  shelfState={ shelf.state }
+                  shelfTitle={ shelf.title }
+                  isOwner={ isOwner }
+                  initialConnectedUserBooks={ connectedUserDataWithBooks }
+                  connectedUserId={ currentUser?.id }
+                />
+              ) ) }
+
+              { !hasAnyBooks && <EmptyShelves username={ visitedProfileUsername } query={ query }/> }
+            </div>
           </TabsContent>
+
           <TabsContent value="stats">
-            <UserStats userBooks={ visitedProfileUserBooks }/>
+            <UserStats userBooks={ allDisplayedBooks }/>
           </TabsContent>
         </Tabs>
       </div>
     );
   } catch (error: unknown) {
-    let errorMessage = t( "unexpectedError" );
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    return <div className="container mx-auto p-4 text-center text-red-600">
-      <strong>{ t( "errorLabel" ) }:</strong> { errorMessage }
-    </div>;
+    const errorMessage = error instanceof Error ? error.message : t( "unexpectedError" );
+    return (
+      <div className="container mx-auto p-4 text-center text-red-600">
+        <strong>{ t( "errorLabel" ) }:</strong> { errorMessage }
+      </div>
+    );
   }
 }

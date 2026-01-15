@@ -3,7 +3,7 @@ import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { Badge } from "@/components/ui/badge";
 import { UserBook } from "@/app/types/user-book";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 // Shared interface for props used by all card types
 interface BookCardSharedProps {
@@ -22,8 +22,8 @@ export interface BookCardProps extends BookCardSharedProps {
  * Renders a minimalist book cover.
  * The interactive favorite button reflects the CONNECTED user's status.
  */
-async function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
-  const t = await getTranslations( "BookCard" );
+function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
+  const t = useTranslations( "BookCard" );
 
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
   // A user can only favorite a book if they are connected and have it marked as 'read'.
@@ -51,9 +51,9 @@ async function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedPro
  * Renders the full book card with details and actions.
  * The favorite button's state is tied to the CONNECTED user.
  */
-async function StandardBookCard( { book, connectedUserBook }: BookCardSharedProps ) {
-  const t = await getTranslations( "BookCard" );
-  const tBookTypes = await getTranslations( "BookTypes" );
+function StandardBookCard( { book, connectedUserBook }: BookCardSharedProps ) {
+  const t = useTranslations( "BookCard" );
+  const tBookTypes = useTranslations( "BookTypes" );
 
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
   const canToggleFavorite = connectedUserBook?.state === "read";
