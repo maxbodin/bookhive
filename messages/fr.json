@@ -193,7 +193,7 @@
       "message": "Nous n'avons trouvé aucun livre correspondant à '<strong>{query}</strong>' sur les étagères de {username}."
     },
     "empty": {
-      "title": "Les Étagères sont Vides",
+      "title": "Les étagères sont vides :(",
       "message": "Il semble que {username} n'ait encore ajouté aucun livre à sa collection."
     }
   },
