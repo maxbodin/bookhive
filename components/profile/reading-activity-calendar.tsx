@@ -67,7 +67,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
 
   const getBackgroundColorStyle = ( level: 0 | 1 | 2 | 3 | 4 ) => {
     if (level === 0) return {};
-    const lightness = 90 - ( level * 15 );
+    const lightness = ( level * 15 );
     return { backgroundColor: `hsl(47.9 95.8% ${ lightness }%)` };
   };
 
