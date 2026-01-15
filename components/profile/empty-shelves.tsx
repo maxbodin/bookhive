@@ -16,7 +16,11 @@ interface EmptyShelvesProps {
  * @param message
  * @constructor
  */
-export function EmptyState( { icon: Icon, title, message }: { icon: LucideIcon; title: string; message: React.ReactNode } ) {
+export function EmptyState( { icon: Icon, title, message }: {
+  icon: LucideIcon;
+  title: string;
+  message: React.ReactNode
+} ) {
   return (
     <div
       className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-primary p-8 text-center">

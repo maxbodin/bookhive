@@ -19,6 +19,7 @@ interface PaginatedBookshelfProps {
   isOwner: boolean;
   initialConnectedUserBooks: UserBook[];
   connectedUserId?: string;
+  query: string;
 }
 
 export function PaginatedBookshelf( {
@@ -30,6 +31,7 @@ export function PaginatedBookshelf( {
                                       isOwner,
                                       initialConnectedUserBooks,
                                       connectedUserId,
+                                      query,
                                     }: PaginatedBookshelfProps ) {
   const [isFolded, setIsFolded] = useState( false );
 
@@ -40,6 +42,7 @@ export function PaginatedBookshelf( {
     initialData,
     initialConnectedUserBooks,
     connectedUserId,
+    query
   } );
 
   if (totalCount === 0) {

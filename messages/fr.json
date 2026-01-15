@@ -143,7 +143,12 @@
     "noSessionsVisitor": "Cet utilisateur n'a pas encore enregistré de session de lecture.",
     "totalPages": "sur {count} pages",
     "sessionDurationHours": "{count}h",
-    "sessionDurationMinutes": "{count}m"
+    "sessionDurationMinutes": "{count}m",
+    "title": "{count, plural, one {# Session} other {# Sessions}}",
+    "subtitle": "en {year}",
+    "yearPlaceholder": "Choisir l'année",
+    "noSessionsWithQuery": "Aucune session ne correspond à votre recherche pour cette année.",
+    "noCover": "Sans Couverture"
   },
   "Stats": {
     "AverageCompletion": {

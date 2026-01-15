@@ -30,7 +30,7 @@ export async function getPaginatedUserBooksByState(
 
   let queryBuilder = supabase
     .from( "users_books" )
-    .select( "*, books(*)", { count: "exact" } )
+    .select( "*, books!inner(*)", { count: "exact" } )
     .eq( "uid", userId )
     .eq( "state", state );
 

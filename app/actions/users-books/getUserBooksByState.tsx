@@ -23,7 +23,7 @@ export async function getUserBooksByState(
 
   let queryBuilder = supabase
     .from( "users_books" )
-    .select( `*, books(*)` )
+    .select( `*, books!inner (*)` )
     .eq( "uid", userId )
     .eq( "state", state );
 

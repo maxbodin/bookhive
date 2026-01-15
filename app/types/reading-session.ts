@@ -17,3 +17,5 @@ export interface ReadingSessionWithBook extends ReadingSession {
     pages?: number | null;
   } | null; // The associated book could be null if it was deleted.
 }
+
+export const SESSIONS_PAGE_SIZE = 20;

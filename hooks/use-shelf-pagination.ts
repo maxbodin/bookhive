@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { UserBook } from "@/app/types/user-book";
 import { BookState } from "@/app/types/book-state";
 import { getPaginatedUserBooksByState } from "@/app/actions/users-books/getPaginatedUserBooksByState";
@@ -12,6 +12,7 @@ interface UseShelfPaginationProps {
   initialData: UserBook[];
   initialConnectedUserBooks: UserBook[];
   connectedUserId?: string;
+  query: string;
 }
 
 export function useShelfPagination( {
@@ -20,19 +21,26 @@ export function useShelfPagination( {
                                       initialData,
                                       initialConnectedUserBooks,
                                       connectedUserId,
+                                      query
                                     }: UseShelfPaginationProps ) {
   const [books, setBooks] = useState<UserBook[]>( initialData );
   const [connectedBooks, setConnectedBooks] = useState<UserBook[]>( initialConnectedUserBooks );
   const [currentPage, setCurrentPage] = useState<number>( 1 );
   const [isPending, startTransition] = useTransition();
 
+  useEffect( () => {
+    setCurrentPage( 1 );
+    setBooks( initialData );
+    setConnectedBooks( initialConnectedUserBooks );
+  }, [query, initialData, initialConnectedUserBooks] );
+
   const handlePageChange = ( newPage: number ) => {
     // Prevent fetching if already on the target page or if a fetch is in progress.
     if (newPage === currentPage || isPending) return;
 
     startTransition( async () => {
-      // Fetch the profile's books for the new page.
-      const { data: newProfileBooks } = await getPaginatedUserBooksByState( userId, shelfState, newPage );
+      // Fetch the profile's books for the new page using the current query.
+      const { data: newProfileBooks } = await getPaginatedUserBooksByState( userId, shelfState, newPage, query );
 
       setBooks( newProfileBooks );
       setCurrentPage( newPage );
@@ -40,7 +48,7 @@ export function useShelfPagination( {
       // If a user is connected, fetch their specific data for these new books.
       if (connectedUserId && newProfileBooks.length > 0) {
         const newBookIds = newProfileBooks.map( ( b ) => b.book_id );
-        const newConnectedData = await getConnectedUserBooksForDisplayedBooks( connectedUserId, newBookIds );
+        const newConnectedData = await getConnectedUserBooksForDisplayedBooks( connectedUserId, newBookIds, query );
 
         setConnectedBooks( ( prev ) => {
           const bookMap = new Map( prev.map( ( b ) => [b.book_id, b] ) );

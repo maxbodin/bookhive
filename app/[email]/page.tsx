@@ -27,10 +27,12 @@ import {
 import { ReadingSessionsTab } from "@/components/sessions/reading-sessions-tab";
 import { ProfileTabs } from "@/components/profile/profile-tabs";
 import { ProfileTab } from "@/app/types/profile-tab";
+import { getReadingSessionYears } from "@/app/actions/reading-sessions/getReadingSessionYears";
+import { getPaginatedUserReadingSessions } from "@/app/actions/reading-sessions/getPaginatedUserReadingSessions";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
-  searchParams?: Promise<{ query: string, tab: string }>;
+  searchParams?: Promise<{ query: string; tab: string; year: string }>;
 }
 
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
@@ -43,6 +45,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
     const query: string = resolvedSearchParams?.query ?? "";
     const tabParam: string = resolvedSearchParams?.tab ?? "";
+    const yearParam: string = resolvedSearchParams?.year ?? "";
 
     // Validate tab param or set default.
     const validTabs: ProfileTab[] = ["shelves", "sessions", "stats"];
@@ -54,7 +57,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const visitedProfileUsername: string = getUsername( visitedProfile.email );
 
     // Fetch favorite books.
-    const visitedProfileFavoriteBooks: UserBook[] = await getUserFavoriteUsersBooks( visitedProfile.id );
+    const visitedProfileFavoriteBooks: UserBook[] = await getUserFavoriteUsersBooks( visitedProfile.id, query );
 
     // Fetch all books on the 'reading' shelf (not paginated).
     const visitedProfileReadingBooks: UserBook[] = await getUserBooksByState( visitedProfile.id, "reading", query );
@@ -72,6 +75,18 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
     // Fetch all reading sessions for the visited profile.
     const readingSessions: ReadingSessionWithBook[] = await getUserReadingSessions( visitedProfile.id );
+
+    const readingSessionYears = await getReadingSessionYears( visitedProfile.id );
+    const selectedYear = parseInt( yearParam, 10 ) || readingSessionYears[0] || new Date().getFullYear();
+
+    // Fetch the first page of sessions for the selected year/query to avoid a client-side loading flash.
+    const { sessions: initialSessions, totalCount: initialTotalCount } =
+      await getPaginatedUserReadingSessions( {
+        userId: visitedProfile.id,
+        page: 1,
+        year: selectedYear,
+        query,
+      } );
 
     // Total reading time.
     const totalMilliseconds = readingSessions.reduce( ( acc, session ) => {
@@ -108,7 +123,8 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       if (uniqueBookIds.length > 0) {
         connectedUserDataWithBooks = await getConnectedUserBooksForDisplayedBooks(
           currentUser.id,
-          uniqueBookIds
+          uniqueBookIds,
+          query,
         );
       }
     } else
@@ -181,13 +197,21 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                   isOwner={ isOwner }
                   initialConnectedUserBooks={ connectedUserDataWithBooks }
                   connectedUserId={ currentUser?.id }
-                />
+                  query={ query }/>
               ) ) }
 
               { !hasAnyBooks && <EmptyShelves username={ visitedProfileUsername } query={ query }/> }
             </div> )
           }
-          sessionsTab={ <ReadingSessionsTab sessions={ readingSessions } isOwner={ isOwner }/> }
+          sessionsTab={
+            <ReadingSessionsTab
+              userId={ visitedProfile.id }
+              isOwner={ isOwner }
+              initialYears={ readingSessionYears }
+              initialSessions={ initialSessions }
+              initialTotalCount={ initialTotalCount }
+              query={ query }
+            /> }
           statsTab={ <UserStats userBooks={ allDisplayedBooks }/> }
         />
       </div>

@@ -7,18 +7,26 @@ import { getTranslations } from "next-intl/server";
 /**
  * Fetches a user's favorite books.
  * @param userId - The ID of the user whose favorite books to fetch.
+ * @param query - Optional search query for the book title.
  * @returns A list of the user's favorite books.
  * @throws An error if fetching fails.
  */
-export async function getUserFavoriteUsersBooks( userId: string ): Promise<UserBook[]> {
+export async function getUserFavoriteUsersBooks( userId: string,
+                                                 query: string = "" ): Promise<UserBook[]> {
   const t = await getTranslations( "GetUserUsersBooksAction" );
   const supabase = await createClient();
 
-  const { data: userBooksData, error } = await supabase
+  let queryBuilder = supabase
     .from( "users_books" )
-    .select( `*, books(*)` )
+    .select( `*, books!inner(*)` )
     .eq( "uid", userId )
     .eq( "is_favorite", true );
+
+  if (query) {
+    queryBuilder = queryBuilder.ilike( "books.title", `%${ query }%` );
+  }
+
+  const { data: userBooksData, error } = await queryBuilder;
 
   if (error) {
     console.error( "Error fetching favorite user books:", error );

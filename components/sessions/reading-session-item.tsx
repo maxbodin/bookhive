@@ -1,10 +1,8 @@
 import { Book, Calendar, Clock } from "lucide-react";
 import { format } from "date-fns";
-import { getTranslations } from "next-intl/server";
-
 import { ReadingSessionWithBook } from "@/app/types/reading-session";
-import { Progress } from "@/components/ui/progress";
 import { calculateSessionDuration } from "@/app/utils/reading-sessions/calculateSessionDuration";
+import { useTranslations } from "next-intl";
 
 interface ReadingSessionItemProps {
   session: ReadingSessionWithBook;
@@ -15,8 +13,8 @@ const formatSessionDate = ( startTime: string ) => {
   return format( date, "MMMM d, yyyy 'at' h:mm a" );
 };
 
-export const ReadingSessionItem = async ( { session }: ReadingSessionItemProps ) => {
-  const t = await getTranslations( "ReadingSessions" );
+export function ReadingSessionItem( { session }: ReadingSessionItemProps ) {
+  const t = useTranslations( "ReadingSessions" );
 
   const startPage = session.start_page ?? 0;
   const endPage = session.end_page;
@@ -64,24 +62,19 @@ export const ReadingSessionItem = async ( { session }: ReadingSessionItemProps )
             ) }
           </div>
 
-          <div>
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                <Book className="h-3.5 w-3.5"/>
-                <span>
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2 text-muted-foreground text-xs">
+              <Book className="h-3.5 w-3.5"/>
+              <span>
                   { t( "pagesRead", { count: pagesRead } ) }
                 </span>
-              </div>
-              <span className="text-xs text-muted-foreground">
+            </div>
+            <span className="text-xs text-muted-foreground">
                 ({ t( "pageRange", { start: startPage, end: endPage } ) })
                 <p className="text-right text-xs text-muted-foreground mt-1">
                   { t( "totalPages", { count: totalPages } ) }
                 </p>
               </span>
-            </div>
-            { totalPages > 0 && (
-              <Progress value={ completionPercentage } className="h-1.5 mt-1"/>
-            ) }
           </div>
 
           { hasDuration && (

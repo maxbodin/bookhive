@@ -1,8 +1,8 @@
 import { FileSearch } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
-export async function NoResults() {
-  const t = await getTranslations( "NoResults" );
+export function NoResults() {
+  const t = useTranslations( "NoResults" );
 
   // Get the array of quote objects from translations.
   const bookQuotes = t.raw( "quotes" ) as { quote: string; author: string }[];
