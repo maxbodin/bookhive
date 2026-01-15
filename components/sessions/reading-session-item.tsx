@@ -1,9 +1,10 @@
-import { Book, Calendar } from "lucide-react";
+import { Book, Calendar, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { getTranslations } from "next-intl/server";
 
 import { ReadingSessionWithBook } from "@/app/types/reading-session";
 import { Progress } from "@/components/ui/progress";
+import { calculateSessionDuration } from "@/app/utils/reading-sessions/calculateSessionDuration";
 
 interface ReadingSessionItemProps {
   session: ReadingSessionWithBook;
@@ -21,6 +22,9 @@ export const ReadingSessionItem = async ( { session }: ReadingSessionItemProps )
   const endPage = session.end_page;
   const pagesRead = endPage - startPage;
   const totalPages = session.book?.pages ?? 0;
+
+  const { hours, minutes } = calculateSessionDuration( session.start_time, session.end_time );
+  const hasDuration = hours > 0 || minutes > 0;
 
   // Calculate completion percentage after this session, preventing division by zero.
   const completionPercentage = totalPages > 0
@@ -45,7 +49,7 @@ export const ReadingSessionItem = async ( { session }: ReadingSessionItemProps )
         <div>
           <div className="flex justify-between items-start gap-4">
             <div className="flex-grow">
-              <h3 className="font-semibold leading-tight truncate" title={ session.book?.title }>
+              <h3 className="font-semibold leading-tight mb-2" title={ session.book?.title }>
                 { session.book?.title ?? t( "unknownBook" ) }
               </h3>
               <div className="flex items-center gap-2 mt-1 text-muted-foreground text-xs">
@@ -60,7 +64,7 @@ export const ReadingSessionItem = async ( { session }: ReadingSessionItemProps )
             ) }
           </div>
 
-          <div className="mt-3">
+          <div>
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2 text-muted-foreground text-xs">
                 <Book className="h-3.5 w-3.5"/>
@@ -79,6 +83,17 @@ export const ReadingSessionItem = async ( { session }: ReadingSessionItemProps )
               <Progress value={ completionPercentage } className="h-1.5 mt-1"/>
             ) }
           </div>
+
+          { hasDuration && (
+            <div className="flex items-center gap-2 text-muted-foreground text-xs">
+              <Clock className="h-3.5 w-3.5"/>
+              <span>
+                { hours > 0 && t( "sessionDurationHours", { count: hours } ) }
+                { hours > 0 && minutes > 0 && " " }
+                { minutes > 0 && t( "sessionDurationMinutes", { count: minutes } ) }
+              </span>
+            </div>
+          ) }
         </div>
 
         { session.notes && (

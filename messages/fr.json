@@ -128,7 +128,7 @@
   "UserProfilePage": {
     "joined": "Inscrit le",
     "shelvesTab": "Étagères",
-    "sessionsTab": "Sessions de Lecture",
+    "sessionsTab": "Sessions de lecture",
     "statsTab": "Stats",
     "errorLabel": "Erreur",
     "unexpectedError": "Une erreur inattendue est survenue."
@@ -141,7 +141,9 @@
     "noSessionsTitle": "Aucune session de lecture",
     "noSessionsOwner": "Cliquez sur le bouton ci-dessus ou en bas dans le coin droit pour enregistrer votre première session de lecture.",
     "noSessionsVisitor": "Cet utilisateur n'a pas encore enregistré de session de lecture.",
-    "totalPages": "sur {count} pages"
+    "totalPages": "sur {count} pages",
+    "sessionDurationHours": "{count}h",
+    "sessionDurationMinutes": "{count}m"
   },
   "Stats": {
     "AverageCompletion": {
@@ -207,7 +209,7 @@
     "pagesRead": "Pages lues"
   },
   "ReadingActivityCalendar": {
-    "title": "Activité de Lecture",
+    "title": "Activité de lecture",
     "yearPlaceholder": "Année",
     "tooltip": {
       "activity": "{count, plural, one {# minute} other {# minutes}} le",

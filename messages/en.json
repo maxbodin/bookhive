@@ -141,7 +141,9 @@
     "noSessionsTitle": "No Reading Sessions Logged",
     "noSessionsOwner": "Click the button above or in the bottom right corner to log your first reading session.",
     "noSessionsVisitor": "This user hasn't logged any reading sessions yet.",
-    "totalPages": "of {count} pages"
+    "totalPages": "of {count} pages",
+    "sessionDurationHours": "{count}h",
+    "sessionDurationMinutes": "{count}m"
   },
   "Stats": {
     "AverageCompletion": {
