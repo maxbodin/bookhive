@@ -26,10 +26,15 @@ import { Spinner } from "@/components/ui/spinner";
 import { UserBook } from "@/app/types/user-book";
 import { logReadingSession } from "@/app/actions/reading-sessions/logReadingSession";
 
+interface ReadingLoggerProps {
+  customTrigger?: React.ReactNode;
+  onSessionLogged?: () => void;
+}
+
 /**
  * Dialog component for logging reading sessions.
  */
-export default function ReadingLogger() {
+export default function ReadingLogger( { customTrigger, onSessionLogged }: ReadingLoggerProps ) {
   const t = useTranslations( "ReadingLogger" );
 
   const sessionSchema = z.object( {
@@ -49,7 +54,6 @@ export default function ReadingLogger() {
   const [isSubmitting, startSubmitting] = useTransition();
   const [books, setBooks] = useState<UserBook[]>( [] );
 
-  // Form state is grouped for clarity
   const [formState, setFormState] = useState( {
     selectedBookId: undefined as string | undefined,
     startDate: new Date(),
@@ -133,7 +137,7 @@ export default function ReadingLogger() {
     } );
 
     if (!validation.success) {
-      toast.error( validation.error.message || "Invalid input. Please check the form." );
+      toast.error( validation.error.message || "Invalid input." );
       return;
     }
 
@@ -150,23 +154,27 @@ export default function ReadingLogger() {
       if (result.success) {
         toast.success( result.message );
         setIsOpen( false );
+        onSessionLogged?.();
       } else {
         toast.error( result.message );
       }
     } );
   };
 
+  // Use the customTrigger if provided, otherwise default to the floating button.
+  const trigger = customTrigger ? (
+    customTrigger
+  ) : (
+    <Button
+      className="fixed bottom-4 right-4 h-16 w-16 rounded-full shadow-lg z-50 hover:scale-105 transition-transform">
+      <BookOpen className="h-8 w-8"/>
+      <span className="sr-only">{ t( "log_reading_button" ) }</span>
+    </Button>
+  );
+
   return (
     <Dialog open={ isOpen } onOpenChange={ handleOpenChange }>
-      <DialogTrigger asChild>
-
-        <Button
-          className="fixed bottom-4 right-4 h-16 w-16 rounded-full shadow-lg z-50 hover:scale-105 transition-transform">
-          <BookOpen className="h-8 w-8"/>
-          <span className="sr-only">{ t( "log_reading_button" ) }</span>
-        </Button>
-      </DialogTrigger>
-
+      <DialogTrigger asChild>{ trigger }</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>{ t( "title" ) }</DialogTitle>

@@ -1,0 +1,1 @@
+export type ProfileTab = "shelves" | "sessions" | "stats";

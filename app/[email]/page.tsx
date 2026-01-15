@@ -7,7 +7,6 @@ import { UserBookshelf } from "@/components/books/user-bookshelf";
 import { PaginatedBookshelf } from "@/components/profile/paginated-bookshelf";
 import { ProfileStatsSummary } from "@/components/profile/profile-stats-summary";
 import { ReadingActivityCalendar } from "@/components/profile/reading-activity-calendar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
 import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { getUsername } from "@/lib/getUsername";
@@ -16,7 +15,7 @@ import { BookState } from "@/app/types/book-state";
 import { UserBook } from "@/app/types/user-book";
 import { Profile } from "@/app/types/profile";
 import { User } from "@supabase/supabase-js";
-import { ReadingSession } from "@/app/types/reading-session";
+import { ReadingSessionWithBook } from "@/app/types/reading-session";
 import { UserStats } from "@/components/profile/user-stats";
 import { getUserFavoriteUsersBooks } from "@/app/actions/users-books/getUserFavoriteUsersBooks";
 import { getUserBooksByState } from "@/app/actions/users-books/getUserBooksByState";
@@ -25,10 +24,13 @@ import { getUserTotalPagesRead } from "@/app/actions/users-books/getUserTotalPag
 import {
   getConnectedUserBooksForDisplayedBooks
 } from "@/app/actions/users-books/getConnectedUserBooksForDisplayedBooks";
+import { ReadingSessionsTab } from "@/components/sessions/reading-sessions-tab";
+import { ProfileTabs } from "@/components/profile/profile-tabs";
+import { ProfileTab } from "@/app/types/profile-tab";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
-  searchParams?: Promise<{ query: string }>;
+  searchParams?: Promise<{ query: string, tab: string }>;
 }
 
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
@@ -40,6 +42,11 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const decodedEmail = decodeURIComponent( resolvedParams?.email ?? "" );
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
     const query: string = resolvedSearchParams?.query ?? "";
+    const tabParam: string = resolvedSearchParams?.tab ?? "";
+
+    // Validate tab param or set default.
+    const validTabs: ProfileTab[] = ["shelves", "sessions", "stats"];
+    const activeTab: ProfileTab = ( tabParam && validTabs.includes( tabParam as ProfileTab ) ? tabParam : "shelves" ) as ProfileTab;
 
     const visitedProfile: Profile = await getUserProfile( decodedEmail );
     const currentUser: User | null = await getCurrentUser();
@@ -64,7 +71,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     ] );
 
     // Fetch all reading sessions for the visited profile.
-    const readingSessions: ReadingSession[] = await getUserReadingSessions( visitedProfile.id );
+    const readingSessions: ReadingSessionWithBook[] = await getUserReadingSessions( visitedProfile.id );
 
     // Total reading time.
     const totalMilliseconds = readingSessions.reduce( ( acc, session ) => {
@@ -109,9 +116,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         connectedUserDataWithBooks = allDisplayedBooks;
       }
 
-    const hasAnyBooks =
-      visitedProfileFavoriteBooks.length > 0 || visitedProfileReadingBooks.length > 0 ||
-      readData.count > 0 || laterData.count > 0 || wishlistData.count > 0;
+    const hasAnyBooks = allDisplayedBooks.length > 0;
 
     // Configuration for shelves to map over
     const paginatedShelvesConfig: { state: BookState; title: string; data: any[]; count: number }[] = [
@@ -141,16 +146,13 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
         <ReadingActivityCalendar readingSessions={ readingSessions }/>
 
-        <Tabs defaultValue="shelves" className="w-full">
-          <div className="mb-8 flex justify-center">
-            <TabsList>
-              <TabsTrigger value="shelves">{ t( "shelvesTab" ) }</TabsTrigger>
-              <TabsTrigger value="stats">{ t( "statsTab" ) }</TabsTrigger>
-            </TabsList>
-          </div>
-
-          <TabsContent value="shelves">
-            <div className="space-y-12">
+        <ProfileTabs
+          defaultTab={ activeTab as ProfileTab }
+          shelvesLabel={ t( "shelvesTab" ) }
+          sessionsLabel={ t( "sessionsTab" ) }
+          statsLabel={ t( "statsTab" ) }
+          shelvesTab={
+            ( <div className="space-y-12">
               { visitedProfileFavoriteBooks.length > 0 && (
                 <FavoriteBookshelf
                   favoriteUserBooks={ visitedProfileFavoriteBooks }
@@ -183,13 +185,11 @@ export default async function UserProfile( { params, searchParams }: UserProfile
               ) ) }
 
               { !hasAnyBooks && <EmptyShelves username={ visitedProfileUsername } query={ query }/> }
-            </div>
-          </TabsContent>
-
-          <TabsContent value="stats">
-            <UserStats userBooks={ allDisplayedBooks }/>
-          </TabsContent>
-        </Tabs>
+            </div> )
+          }
+          sessionsTab={ <ReadingSessionsTab sessions={ readingSessions } isOwner={ isOwner }/> }
+          statsTab={ <UserStats userBooks={ allDisplayedBooks }/> }
+        />
       </div>
     );
   } catch (error: unknown) {

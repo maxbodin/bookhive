@@ -1,26 +1,34 @@
 "use server";
 
 import { createClient } from "@/app/utils/supabase/server";
-import { ReadingSession } from "@/app/types/reading-session";
+import { ReadingSessionWithBook } from "@/app/types/reading-session";
 
 /**
- * Fetches all reading sessions for a specific user.
+ * Fetches all reading sessions for a specific user, including associated book details.
+ * Sessions are ordered from newest to oldest based on their start time.
  * @param userId - The ID of the user whose sessions to fetch.
- * @returns A promise that resolves to an array of reading sessions.
+ * @returns A promise that resolves to an array of reading sessions with book info.
  */
-export async function getUserReadingSessions( userId: string ): Promise<ReadingSession[]> {
+export async function getUserReadingSessions( userId: string ): Promise<ReadingSessionWithBook[]> {
   const supabase = await createClient();
 
   const { data: sessions, error } = await supabase
     .from( "reading_sessions" )
-    .select( "*" )
-    .eq( "uid", userId );
+    .select( `
+      *,
+      book:books (
+        title,
+        cover_url,
+        pages
+      )
+    ` )
+    .eq( "uid", userId )
+    .order( "start_time", { ascending: false } ); // Order by newest first.
 
   if (error) {
     console.error( "Failed to fetch reading sessions:", error.message );
-    // Return an empty array on error to prevent the UI from crashing.
     return [];
   }
 
-  return sessions || [];
+  return ( sessions as ReadingSessionWithBook[] ) || [];
 }

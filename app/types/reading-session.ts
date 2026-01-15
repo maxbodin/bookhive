@@ -9,3 +9,11 @@ export interface ReadingSession {
   created_at?: string;
   notes?: string | null;
 }
+
+export interface ReadingSessionWithBook extends ReadingSession {
+  book: {
+    title: string;
+    cover_url: string | null;
+    pages?: number | null;
+  } | null; // The associated book could be null if it was deleted.
+}

@@ -128,9 +128,20 @@
   "UserProfilePage": {
     "joined": "Joined",
     "shelvesTab": "Shelves",
+    "sessionsTab": "Reading Sessions",
     "statsTab": "Stats",
     "errorLabel": "Error",
     "unexpectedError": "An unexpected error occurred."
+  },
+  "ReadingSessions": {
+    "addSession": "Add New Session",
+    "unknownBook": "Unknown Book",
+    "pagesRead": "{count, plural, one {# page read} other {# pages read}}",
+    "pageRange": "p. {start} → p. {end}",
+    "noSessionsTitle": "No Reading Sessions Logged",
+    "noSessionsOwner": "Click the button above or in the bottom right corner to log your first reading session.",
+    "noSessionsVisitor": "This user hasn't logged any reading sessions yet.",
+    "totalPages": "of {count} pages"
   },
   "Stats": {
     "AverageCompletion": {
