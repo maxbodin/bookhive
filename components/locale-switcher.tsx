@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "
  */
 function FlagIcon( { code }: { code: string } ) {
   const flags: { [key: string]: string } = {
-    en: "🇺🇸",
+    en: "🇬🇧",
     fr: "🇫🇷",
   };
   return <span className="mr-2">{ flags[code] }</span>;
