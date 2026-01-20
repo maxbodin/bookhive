@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/app/utils/supabase/server";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
 import { BOOKS_PER_PAGE } from "@/app/searchParams";
+import { sortNatural } from "@/lib/sortNatural";
 
 /**
  * Fetches a paginated list of a user's books filtered by a specific state (e.g., 'read', 'later').
@@ -47,6 +48,6 @@ export async function getPaginatedUserBooksByState(
     throw new Error( t( "fetchFailed" ) );
   }
 
-  const flattenedData = flattenUsersBooksData( data || [] ) as UserBook[];
+  const flattenedData = sortNatural( flattenUsersBooksData( data || [] ) as UserBook[] );
   return { data: flattenedData, count: count || 0 };
 }
