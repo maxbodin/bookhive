@@ -29,6 +29,7 @@ import { ProfileTabs } from "@/components/profile/profile-tabs";
 import { ProfileTab } from "@/app/types/profile-tab";
 import { getReadingSessionYears } from "@/app/actions/reading-sessions/getReadingSessionYears";
 import { getPaginatedUserReadingSessions } from "@/app/actions/reading-sessions/getPaginatedUserReadingSessions";
+import { Badge } from "@/components/ui/badge";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -146,7 +147,14 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
           <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
           <div className="flex-grow">
-            <h1 className="text-3xl font-bold">{ visitedProfileUsername }</h1>
+            <div className="flex flex-row items-center gap-6">
+              <h1 className="text-3xl font-bold">{ visitedProfileUsername }</h1>
+              { visitedProfile.is_admin &&
+                <Badge variant="outline">
+                  Admin
+                </Badge>
+              }
+            </div>
             { visitedProfile.created_at &&
               <p className="text-md text-gray-500">
                 { t( "joined" ) }: { new Date( visitedProfile.created_at ).toLocaleDateString() }
