@@ -18,6 +18,7 @@ export interface Book {
   publication_date?: string | null;
   isbn_13?: string | null;
   type?: BookType | null;
+  open_library_key?: string | null;
 }
 
 export type BookType = "bd" | "manga" | "roman";

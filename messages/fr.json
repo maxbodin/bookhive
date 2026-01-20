@@ -54,7 +54,8 @@
   },
   "HomePage": {
     "users": "Utilisateurs",
-    "allBooks": "Tous les Livres ({count})"
+    "allBooks": "Tous les livres dans notre librairie ({count})",
+    "openlibraryResultsTitle": "Résultats de Open Library ({count})"
   },
   "AuthButtons": {
     "signIn": "Se connecter",

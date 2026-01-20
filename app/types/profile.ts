@@ -3,4 +3,5 @@ export interface Profile {
   email: string;
   created_at?: string;
   picture?: string | null;
+  is_admin: boolean;
 }

@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { UserBook } from "@/app/types/user-book";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
 import { useTranslations } from "next-intl";
+import React from "react";
+import { AddBookButton } from "@/components/open-library/add-book-button";
 
 // Shared interface for props used by all card types
 interface BookCardSharedProps {
@@ -11,6 +13,7 @@ interface BookCardSharedProps {
   profileUserBook?: UserBook;   // Data from the user whose profile is being viewed
   connectedUserBook?: UserBook; // Data from the logged-in user
   isOwner: boolean;
+  addFromOLButton?: boolean;
 }
 
 // Props for the main exported component
@@ -51,7 +54,7 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
  * Renders the full book card with details and actions.
  * The favorite button's state is tied to the CONNECTED user.
  */
-function StandardBookCard( { book, connectedUserBook }: BookCardSharedProps ) {
+function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCardSharedProps ) {
   const t = useTranslations( "BookCard" );
   const tBookTypes = useTranslations( "BookTypes" );
 
@@ -91,8 +94,12 @@ function StandardBookCard( { book, connectedUserBook }: BookCardSharedProps ) {
         </div>
       </div>
       <div className="p-3 pt-0 mt-auto">
-        {/* The state dropdown for actions is based on the connected user's data. */ }
-        <BookStateDropdown bookId={ book.id } currentStateRecord={ connectedUserBook }/>
+        { addFromOLButton && book.open_library_key ? (
+          <AddBookButton openLibraryKey={ book.open_library_key }/>
+        ) : (
+          /* The state dropdown for actions is based on the connected user's data. */
+          <BookStateDropdown bookId={ book.id } currentStateRecord={ connectedUserBook }/>
+        ) }
       </div>
     </div>
   );
@@ -107,7 +114,8 @@ export function BookPosterCard( {
                                   profileUserBook,
                                   connectedUserBook,
                                   isOwner,
-                                  inFavoriteSection
+                                  inFavoriteSection,
+                                  addFromOLButton
                                 }: BookCardProps ) {
   if (inFavoriteSection) {
     // In the "Favorites" section, always render the minimalist cover.
@@ -118,5 +126,5 @@ export function BookPosterCard( {
 
   // In all other shelves, render the standard, detailed card.
   return <StandardBookCard book={ book } profileUserBook={ profileUserBook } connectedUserBook={ connectedUserBook }
-                           isOwner={ isOwner }/>;
+                           isOwner={ isOwner } addFromOLButton={ addFromOLButton }/>;
 }

@@ -12,6 +12,7 @@ interface BooksGridProps {
   view: "poster" | "list";
   isOwner: boolean;
   readingSessions: ReadingSession[];    // The profile owner's reading sessions
+  addFromOLButton?: boolean;
 }
 
 /**
@@ -24,7 +25,8 @@ export function BooksGrid( {
                              connectedUserBooks,
                              view = "poster",
                              isOwner = false,
-                             readingSessions
+                             readingSessions,
+                             addFromOLButton
                            }: BooksGridProps ) {
   if (!books || books.length === 0) {
     return <NoResults/>;
@@ -52,6 +54,9 @@ export function BooksGrid( {
                 connectedUserBook={ connectedUserBook }
                 isOwner={ isOwner }
                 inFavoriteSection={ false }
+                addFromOLButton={
+                  addFromOLButton
+                }
               />
             ) : (
               <BookHorizontalCard

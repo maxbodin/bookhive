@@ -97,4 +97,4 @@ export function ReadingSessionItem( { session }: ReadingSessionItemProps ) {
       </div>
     </div>
   );
-};
+}
