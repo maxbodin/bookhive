@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/app/utils/supabase/server";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
@@ -43,7 +43,7 @@ export async function deleteReadingSession( sessionId: number ): Promise<ActionS
     return { success: false, message: "Database error: Could not delete session." };
   }
 
-  revalidatePath( "/profile/[email]");
+  revalidatePath( "/profile/[email]" );
 
   return { success: true, message: "Session deleted successfully." };
 }

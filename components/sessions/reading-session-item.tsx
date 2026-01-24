@@ -11,8 +11,12 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel,
-  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
@@ -33,49 +37,49 @@ const DRAG_THRESHOLD = 60; // How far the user must drag to snap it open.
 
 export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProps ) {
   const t = useTranslations( "ReadingSessions" );
-  const tDialog = useTranslations("ReadingSessions.deleteDialog");
+  const tDialog = useTranslations( "ReadingSessions.deleteDialog" );
 
   const [isPending, startTransition] = useTransition();
   const [isRevealed, setIsRevealed] = useState<boolean>( false );
   const [isDeleting, setIsDeleting] = useState<boolean>( false );
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>( false );
 
   const x = useMotionValue( 0 );
-  const backgroundOpacity = useTransform(x, [0, REVEAL_WIDTH], [0.5, 1]);
+  const backgroundOpacity = useTransform( x, [0, REVEAL_WIDTH], [0.5, 1] );
 
-  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = ( _event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo ) => {
     if (info.offset.x > DRAG_THRESHOLD) {
-      setIsRevealed(true);
+      setIsRevealed( true );
     } else {
-      setIsRevealed(false);
+      setIsRevealed( false );
     }
   };
 
   const handleConfirmDelete = () => {
-    startTransition(async () => {
-      setIsDeleting(true);
-      const result = await deleteReadingSession(session.id);
+    startTransition( async () => {
+      setIsDeleting( true );
+      const result = await deleteReadingSession( session.id );
       if (result.success) {
-        toast.success(result.message);
+        toast.success( result.message );
       } else {
-        toast.error(result.message);
-        setIsDeleting(false);
+        toast.error( result.message );
+        setIsDeleting( false );
       }
-      setIsDialogOpen(false);
-      setIsRevealed(false);
-    });
+      setIsDialogOpen( false );
+      setIsRevealed( false );
+    } );
   };
 
   const handleContentClick = () => {
     if (isRevealed) {
-      setIsRevealed(false);
+      setIsRevealed( false );
     }
   };
 
-  const handleDialogChange = (open: boolean) => {
-    setIsDialogOpen(open);
+  const handleDialogChange = ( open: boolean ) => {
+    setIsDialogOpen( open );
     if (!open) {
-      setIsRevealed(false);
+      setIsRevealed( false );
     }
   };
 
@@ -93,7 +97,8 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
     : 0;
 
   const sessionContent = (
-      <div className={ cn(!isRevealed ? "rounded-lg " : "rounded-r-lg", "flex w-full gap-4  border bg-card p-4 text-card-foreground shadow-sm")}>
+      <div
+        className={ cn( !isRevealed ? "rounded-lg " : "rounded-r-lg", "flex w-full gap-4  border bg-card p-4 text-card-foreground shadow-sm" ) }>
         <div className="w-16 flex-shrink-0">
           { session.book?.cover_url ? (
             <img src={ session.book?.cover_url } alt={ `Cover of ${ session.book?.title }` }
@@ -169,9 +174,9 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
 
   // If the user is the owner, wrap the content with sliding functionality for deletion.
   return (
-    <AlertDialog open={isDialogOpen} onOpenChange={handleDialogChange}>
+    <AlertDialog open={ isDialogOpen } onOpenChange={ handleDialogChange }>
       <AnimatePresence>
-        {!isDeleting && (
+        { !isDeleting && (
           <div className="relative w-full overflow-hidden rounded-lg">
             <AlertDialogTrigger asChild>
               <motion.div
@@ -187,14 +192,14 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
             <motion.div
               drag="x"
               dragConstraints={ { left: 0, right: REVEAL_WIDTH } }
-              dragElastic={ 0.2 }
+              dragElastic={ 0 }
               onDragEnd={ handleDragEnd }
               animate={ { x: isRevealed ? REVEAL_WIDTH : 0 } }
-              transition={{ type: "spring", stiffness: 1000, damping: 100 }}
+              transition={ { type: "spring", stiffness: 1000, damping: 30 } }
               style={ { x } }
               className="relative z-10 cursor-grab active:cursor-grabbing"
               onClick={ handleContentClick }
-              exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.1 } }}
+              exit={ { opacity: 0, scale: 0.8, transition: { duration: 0.1 } } }
             >
               { sessionContent }
             </motion.div>
@@ -203,18 +208,18 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
       </AnimatePresence>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{tDialog("title")}</AlertDialogTitle>
-          <AlertDialogDescription>{tDialog("description")}</AlertDialogDescription>
+          <AlertDialogTitle>{ tDialog( "title" ) }</AlertDialogTitle>
+          <AlertDialogDescription>{ tDialog( "description" ) }</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{tDialog("cancel")}</AlertDialogCancel>
+          <AlertDialogCancel>{ tDialog( "cancel" ) }</AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleConfirmDelete}
-            disabled={isPending}
+            onClick={ handleConfirmDelete }
+            disabled={ isPending }
             className="bg-destructive hover:bg-destructive/90 text-foreground"
           >
-            {isPending && <Spinner className="mr-2" />}
-            {tDialog("confirm")}
+            { isPending && <Spinner className="mr-2"/> }
+            { tDialog( "confirm" ) }
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
