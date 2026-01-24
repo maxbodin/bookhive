@@ -116,7 +116,8 @@
     "userNotFound": "User not found"
   },
   "GetUserUsersBooksAction": {
-    "fetchFailed": "Failed to fetch user's books."
+    "fetchFailed": "Failed to fetch user's books.",
+    "fetchStatsFailed": "Failed to fetch reading statistics."
   },
   "ToggleFavoriteBookAction": {
     "authRequired": "Authentication required.",

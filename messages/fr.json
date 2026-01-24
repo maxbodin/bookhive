@@ -116,7 +116,8 @@
     "userNotFound": "Utilisateur non trouvé"
   },
   "GetUserUsersBooksAction": {
-    "fetchFailed": "Échec de la récupération des livres de l'utilisateur."
+    "fetchFailed": "Échec de la récupération des livres de l'utilisateur.",
+    "fetchStatsFailed": "Échec de la récupération des statistiques de lecture."
   },
   "ToggleFavoriteBookAction": {
     "authRequired": "Authentification requise.",

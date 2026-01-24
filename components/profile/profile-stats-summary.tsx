@@ -1,19 +1,24 @@
 import { BookOpen, Clock } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { getUserTotalPagesRead } from "@/app/actions/users-books/getUserTotalPagesRead";
+import { getUserTotalHoursRead } from "@/app/actions/users-books/getUserTotalHoursRead";
 
 interface ProfileStatsSummaryProps {
-  totalHoursRead: number;
-  totalPagesRead: number;
+  userId: string;
 }
 
 /**
- * Component to display high-level user statistics like total reading time and pages read.
- * @param totalHoursRead
- * @param totalPagesRead
+ * Async component that fetches and displays high-level user statistics.
+ * @param userId
  * @constructor
  */
-export async function ProfileStatsSummary( { totalHoursRead, totalPagesRead }: ProfileStatsSummaryProps ) {
+export async function ProfileStatsSummary( { userId }: ProfileStatsSummaryProps ) {
   const t = await getTranslations( "ProfileStatsSummary" );
+
+  const [totalHoursRead, totalPagesRead] = await Promise.all( [
+    getUserTotalHoursRead( userId ),
+    getUserTotalPagesRead( userId ),
+  ] );
 
   return (
     <div className="mt-4 flex flex-row w-fit items-center justify-between gap-8 rounded-lg border p-4">

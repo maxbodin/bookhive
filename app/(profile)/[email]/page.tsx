@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import { parseISO } from "date-fns";
 import { UserAvatar } from "@/components/profile/user-avatar";
 import { EmptyShelves } from "@/components/profile/empty-shelves";
 import { FavoriteBookshelf } from "@/components/profile/favorite-bookshelf";
@@ -20,7 +19,6 @@ import { UserStats } from "@/components/profile/user-stats";
 import { getUserFavoriteUsersBooks } from "@/app/actions/users-books/getUserFavoriteUsersBooks";
 import { getUserBooksByState } from "@/app/actions/users-books/getUserBooksByState";
 import { getPaginatedUserBooksByState } from "@/app/actions/users-books/getPaginatedUserBooksByState";
-import { getUserTotalPagesRead } from "@/app/actions/users-books/getUserTotalPagesRead";
 import {
   getConnectedUserBooksForDisplayedBooks
 } from "@/app/actions/users-books/getConnectedUserBooksForDisplayedBooks";
@@ -31,6 +29,8 @@ import { getReadingSessionYears } from "@/app/actions/reading-sessions/getReadin
 import { getPaginatedUserReadingSessions } from "@/app/actions/reading-sessions/getPaginatedUserReadingSessions";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { ProfileStatsSummarySkeleton } from "@/components/skeletons/profile/profile-stats-summary-skeleton";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -96,22 +96,6 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         query,
       } );
 
-    // Total reading time.
-    const totalMilliseconds = readingSessions.reduce( ( acc, session ) => {
-      const start = parseISO( session.start_time );
-      const end = parseISO( session.end_time );
-      // Ensure dates are valid before calculating duration.
-      if (!isNaN( start.getTime() ) && !isNaN( end.getTime() )) {
-        return acc + ( end.getTime() - start.getTime() );
-      }
-      return acc;
-    }, 0 );
-    // Convert to hours and round to the nearest whole number.
-    const totalHoursRead = Math.round( totalMilliseconds / ( 1000 * 60 * 60 ) );
-
-    // Total pages read.
-    const totalPagesRead = await getUserTotalPagesRead( visitedProfile.id );
-
     let connectedUserDataWithBooks: UserBook[] = [];
 
     const allDisplayedBooks = [
@@ -169,10 +153,9 @@ export default async function UserProfile( { params, searchParams }: UserProfile
               </p>
             }
 
-            <ProfileStatsSummary
-              totalHoursRead={ totalHoursRead }
-              totalPagesRead={ totalPagesRead }
-            />
+            <Suspense fallback={ <ProfileStatsSummarySkeleton/> }>
+              <ProfileStatsSummary userId={ visitedProfile.id }/>
+            </Suspense>
           </div>
         </div>
 
