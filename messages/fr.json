@@ -119,6 +119,17 @@
     "fetchFailed": "Échec de la récupération des livres de l'utilisateur.",
     "fetchStatsFailed": "Échec de la récupération des statistiques de lecture."
   },
+  "AddBookButton": {
+    "addBook": "Ajouter à ma bibliothèque",
+    "adding": "Ajout en cours..."
+  },
+  "AddBookAction": {
+    "alreadyExists": "Ce livre est déjà dans la base de données.",
+    "databaseError": "Erreur de base de données : Impossible d'ajouter le livre.",
+    "apiFetchError": "Échec de la récupération des détails complets du livre depuis l'API.",
+    "unknownError": "Une erreur inconnue est survenue.",
+    "success": "'{title}' a été ajouté avec succès."
+  },
   "ToggleFavoriteBookAction": {
     "authRequired": "Authentification requise.",
     "removeFavoriteFailed": "Impossible de retirer le favori.",

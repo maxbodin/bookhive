@@ -9,6 +9,7 @@ import {
 } from "@/app/types/open-library";
 import { transformOpenLibraryWorkDetails } from "@/app/actions/open-library/searchOpenLibrary";
 import { ActionState } from "@/app/types/action-state";
+import { getTranslations } from "next-intl/server";
 
 
 /**
@@ -30,6 +31,7 @@ async function fetchJson<T>( url: string ): Promise<T> {
  * @returns A promise resolving to a success/error object.
  */
 export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<ActionState> {
+  const t = await getTranslations( "AddBookAction" );
   const supabase = await createClient();
 
   // Check if the book already exists using its unique key.
@@ -40,7 +42,7 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
     .single();
 
   if (existingBook) {
-    return { success: false, message: "This book is already in the database." };
+    return { success: false, message: t( "alreadyExists" ) };
   }
 
   try {
@@ -74,19 +76,19 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
 
     if (error) {
       console.error( "Failed to add book from API:", error );
-      return { success: false, message: "Database error: Could not add the book." };
+      return { success: false, message: t( "databaseError" ) };
     }
 
     // Revalidate the home page to show the new book in sovereign results.
     revalidatePath( "/" );
     return {
       success: true,
-      message: `'${ bookDataToInsert.title }' was added successfully.`,
+      message: t( "success", { title: bookDataToInsert.title ?? "" } ),
     };
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+    const errorMessage = error instanceof Error ? error.message : t( "unknownError" );
     console.error( "Error processing addBookFromApi:", errorMessage );
-    return { success: false, message: "Failed to fetch full book details from the API." };
+    return { success: false, message: t( "apiFetchError" ) };
   }
 }
