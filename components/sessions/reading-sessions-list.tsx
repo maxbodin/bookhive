@@ -89,7 +89,11 @@ export function ReadingSessionsList( {
             { month }
           </h2>
           { monthSessions.map( ( session ) => (
-            <ReadingSessionItem key={ session.id } session={ session }/>
+            <ReadingSessionItem
+              key={ session.id }
+              session={ session }
+              isOwner={ isOwner }
+            />
           ) ) }
         </React.Fragment>
       ) ) }

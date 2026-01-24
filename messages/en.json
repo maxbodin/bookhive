@@ -149,7 +149,15 @@
     "subtitle": "in {year}",
     "yearPlaceholder": "Select Year",
     "noSessionsWithQuery": "No sessions found matching your search for this year.",
-    "noCover": "No Cover"
+    "noCover": "No Cover",
+    "deleteActionLabel": "Delete",
+    "deleteDialog": {
+      "trigger": "Delete session",
+      "title": "Are you sure?",
+      "description": "This action cannot be undone. This will permanently delete the reading session.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    }
   },
   "Stats": {
     "AverageCompletion": {

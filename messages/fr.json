@@ -149,7 +149,15 @@
     "subtitle": "en {year}",
     "yearPlaceholder": "Choisir l'année",
     "noSessionsWithQuery": "Aucune session ne correspond à votre recherche pour cette année.",
-    "noCover": "Sans Couverture"
+    "noCover": "Sans Couverture",
+    "deleteActionLabel": "Supprimer",
+    "deleteDialog": {
+      "trigger": "Supprimer la session",
+      "title": "Êtes-vous sûr ?",
+      "description": "Cette action est irréversible et supprimera définitivement la session de lecture.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer"
+    }
   },
   "Stats": {
     "AverageCompletion": {

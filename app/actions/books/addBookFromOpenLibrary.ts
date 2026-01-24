@@ -8,11 +8,8 @@ import {
   OpenLibraryWorkDetails
 } from "@/app/types/open-library";
 import { transformOpenLibraryWorkDetails } from "@/app/actions/open-library/searchOpenLibrary";
+import { ActionState } from "@/app/types/action-state";
 
-interface ActionResult {
-  success: boolean;
-  message: string;
-}
 
 /**
  * Fetch utility.
@@ -32,7 +29,7 @@ async function fetchJson<T>( url: string ): Promise<T> {
  * @param openLibraryKey The book's Open Library key (e.g., "OL45804W").
  * @returns A promise resolving to a success/error object.
  */
-export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<ActionResult> {
+export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<ActionState> {
   const supabase = await createClient();
 
   // Check if the book already exists using its unique key.
