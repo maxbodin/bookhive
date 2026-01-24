@@ -30,6 +30,7 @@ import { ProfileTab } from "@/app/types/profile-tab";
 import { getReadingSessionYears } from "@/app/actions/reading-sessions/getReadingSessionYears";
 import { getPaginatedUserReadingSessions } from "@/app/actions/reading-sessions/getPaginatedUserReadingSessions";
 import { Badge } from "@/components/ui/badge";
+import { notFound } from "next/navigation";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -37,12 +38,19 @@ interface UserProfilePageProps {
 }
 
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
+  const resolvedParams = params ? await params : undefined;
+  const decodedEmail = decodeURIComponent( resolvedParams?.email ?? "" );
+
+  const visitedProfile: Profile | null = await getUserProfile( decodedEmail );
+
+  if (!visitedProfile) {
+    notFound();
+  }
+
   const t = await getTranslations( "UserProfilePage" );
   const tShelf = await getTranslations( "UserBookshelf" );
 
   try {
-    const resolvedParams = params ? await params : undefined;
-    const decodedEmail = decodeURIComponent( resolvedParams?.email ?? "" );
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
     const query: string = resolvedSearchParams?.query ?? "";
     const tabParam: string = resolvedSearchParams?.tab ?? "";
@@ -52,7 +60,6 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const validTabs: ProfileTab[] = ["shelves", "sessions", "stats"];
     const activeTab: ProfileTab = ( tabParam && validTabs.includes( tabParam as ProfileTab ) ? tabParam : "shelves" ) as ProfileTab;
 
-    const visitedProfile: Profile = await getUserProfile( decodedEmail );
     const currentUser: User | null = await getCurrentUser();
     const isOwner: boolean = currentUser?.id === visitedProfile.id;
     const visitedProfileUsername: string = getUsername( visitedProfile.email );
@@ -134,6 +141,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       }
 
     const hasAnyBooks = allDisplayedBooks.length > 0;
+
 
     // Configuration for shelves to map over
     const paginatedShelvesConfig: { state: BookState; title: string; data: any[]; count: number }[] = [

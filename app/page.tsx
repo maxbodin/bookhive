@@ -53,7 +53,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
 
   if (currentUser?.email) {
     currentUserProfile = await getUserProfile( currentUser?.email );
-    if (query && query !== "" && currentUserProfile.is_admin) {
+    if (query && query !== "" && currentUserProfile?.is_admin) {
       OpenLibraryBooks = await searchOpenLibrary( query );
 
       // Filter out books that are already in our sovereign DB results.
@@ -71,7 +71,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
   const t = await getTranslations( "HomePage" );
 
   return (
-    <div className="min-h-screen pb-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen pb-10 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 items-center">
 
         <div className="w-full max-w-7xl mx-auto px-4 py-6">

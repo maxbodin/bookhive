@@ -52,6 +52,9 @@
     "title": "BookHive",
     "description": "Suivez vos livres et vos objectifs de lecture"
   },
+  "Footer": {
+    "title": "BookHive"
+  },
   "HomePage": {
     "users": "Utilisateurs",
     "allBooks": "Tous les livres dans notre librairie ({count})",
@@ -73,7 +76,13 @@
     }
   },
   "ErrorPage": {
-    "message": "Désolé, une erreur est survenue"
+    "message": "Une erreur est survenue ! Veuillez réessayer plus tard."
+  },
+  "NotFoundPage": {
+    "errorCode": "404",
+    "title": "Page non trouvée",
+    "description": "Désolé, nous n'avons pas pu trouver la page que vous cherchez. Elle a peut-être été déplacée, supprimée, ou vous avez peut-être mal saisi l'URL.",
+    "goHome": "Retour à l'accueil"
   },
   "UpdateProfilePictureAction": {
     "success": {

@@ -23,7 +23,7 @@ export function PaginationControls( { totalPages, currentPage }: PaginationContr
   }, [pathname, searchParams] );
 
   return (
-    <div className="mt-8 mb-8">
+    <div className="mt-4 mb-4">
       <PaginationBar
         currentPage={ currentPage }
         totalPages={ totalPages }

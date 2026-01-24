@@ -24,7 +24,7 @@ export default function Search( { placeholder }: { placeholder: string } ) {
     params.set( SearchParams.PAGE, "1" );
 
     router.replace( `${ pathname }?${ params.toString() }` );
-  }, 300 );
+  }, 500 );
 
   return (
     <Input

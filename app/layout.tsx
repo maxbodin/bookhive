@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ReadingLogger from "@/components/sessions/reading-logger";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist( {
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default function RootLayout( {
         <Navbar/>
         { children }
         <ReadingLogger/>
+        <Footer/>
       </ThemeProvider>
     </NextIntlClientProvider>
     </body>
