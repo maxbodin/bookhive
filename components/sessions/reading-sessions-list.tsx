@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { format } from "date-fns";
-
 import { ReadingSessionWithBook, SESSIONS_PAGE_SIZE } from "@/app/types/reading-session";
-import { getPaginatedUserReadingSessions, } from "@/app/actions/reading-sessions/getPaginatedUserReadingSessions";
+import { getPaginatedUserReadingSessions } from "@/app/actions/reading-sessions/getPaginatedUserReadingSessions";
 import { ReadingSessionItem } from "./reading-session-item";
 import { Spinner } from "@/components/ui/spinner";
 import { EmptySessions } from "./empty-sessions";
@@ -34,12 +33,35 @@ export function ReadingSessionsList( {
 
   const { selectedYear } = useYearSelection();
 
-  // Reset list when filters change.
+  // Ref to track if this is the first render.
+  const isInitialMount = useRef( true );
+
+  // Reset list when filters change and we are not on first mount.
   useEffect( () => {
-    setSessions( initialSessions );
-    setPage( 1 );
-    setHasMore( initialSessions.length < initialTotalCount );
-  }, [selectedYear, query, initialSessions, initialTotalCount] );
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // Using an alert we can see clearly that the list is only reloaded on filters update and not on first mount.
+    // alert(`Effect is running for year: ${selectedYear}`);
+    const fetchOnFilterChange = async () => {
+      setIsLoading( true );
+      const { sessions: newSessions, totalCount } = await getPaginatedUserReadingSessions( {
+        userId,
+        page: 1,
+        year: selectedYear,
+        query,
+      } );
+
+      setSessions( newSessions );
+      setPage( 1 );
+      setHasMore( newSessions.length < totalCount );
+      setIsLoading( false );
+    };
+
+    fetchOnFilterChange();
+  }, [selectedYear, query, userId] );
 
   const loadMoreSessions = useCallback( async () => {
     if (isLoading || !hasMore) return;
@@ -60,10 +82,10 @@ export function ReadingSessionsList( {
   }, [isLoading, hasMore, page, userId, selectedYear, query] );
 
   useEffect( () => {
-    if (inView) {
+    if (inView && !isLoading) {
       loadMoreSessions();
     }
-  }, [inView, loadMoreSessions] );
+  }, [inView, isLoading, loadMoreSessions] );
 
   // Group sessions by month for rendering.
   const groupedSessions = useMemo( () => {
@@ -78,7 +100,7 @@ export function ReadingSessionsList( {
     return groups;
   }, [sessions] );
 
-  if (initialTotalCount === 0) {
+  if (sessions.length === 0) {
     return <EmptySessions isOwner={ isOwner } className="mt-4"/>;
   }
 
