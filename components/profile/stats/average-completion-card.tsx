@@ -5,18 +5,14 @@ import { useTranslations } from "next-intl";
 
 interface AverageCompletionCardProps {
   avgDays: number;
-  selectedYear: number;
-  onYearChange: ( year: string ) => void;
 }
 
-export function AverageCompletionCard( { avgDays, selectedYear, onYearChange }: AverageCompletionCardProps ) {
+export function AverageCompletionCard( { avgDays }: AverageCompletionCardProps ) {
   const t = useTranslations( "Stats.AverageCompletion" );
 
   return (
     <StatCard title={ t( "title" ) } headerChildren={
       <YearSelection
-        year={ selectedYear }
-        onValueChange={ onYearChange }
       />
     }>
       <div className="flex h-full items-center justify-center text-center">

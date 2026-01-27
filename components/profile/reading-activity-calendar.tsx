@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ReadingSession } from "@/app/types/reading-session";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { processSessionsForCalendar } from "@/app/utils/profiles/processSessionsForCalendar";
 import { format, getDay } from "date-fns";
 import { cn } from "@/lib/utils";
+import { YearSelection } from "@/components/profile/stats/year-selection";
+import { useYearSelection } from "@/app/contexts/year-selection-context";
 
 interface ReadingActivityCalendarProps {
   readingSessions: ReadingSession[];
@@ -17,23 +18,15 @@ const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCalendarProps ) {
   const t = useTranslations( "ReadingActivityCalendar" );
+  const { selectedYear } = useYearSelection();
+
   const activityByDate = useMemo( () => processSessionsForCalendar( readingSessions ), [readingSessions] );
 
-  const availableYears = useMemo( () => {
-    const years = new Set<string>();
-    activityByDate.forEach( ( _, date ) => years.add( date.substring( 0, 4 ) ) );
-    if (years.size === 0) {
-      years.add( new Date().getFullYear().toString() );
-    }
-    return Array.from( years ).sort( ( a, b ) => Number( b ) - Number( a ) );
-  }, [activityByDate] );
-
-  const [selectedYear, setSelectedYear] = useState<string>( availableYears[0] );
 
   const { months } = useMemo( () => {
-    const year = parseInt( selectedYear, 10 );
+    const year = selectedYear;
     const months = Array.from( { length: 12 }, ( _, monthIndex ) => {
-      const firstDayOfMonth = new Date( year, monthIndex, 1 );
+      const firstDayOfMonth = new Date( Number( year ), monthIndex, 1 );
       const monthName = format( firstDayOfMonth, "MMMM" );
       const weeks = [];
       let currentWeek = new Array( 7 ).fill( null );
@@ -75,20 +68,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
     <div className="my-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-semibold text-sm">{ t( "title" ) }</h3>
-
-        {/* Year selection */ }
-        <Select value={ selectedYear } onValueChange={ setSelectedYear }>
-          <SelectTrigger className="w-[120px] h-8 text-xs">
-            <SelectValue placeholder={ t( "yearPlaceholder" ) }/>
-          </SelectTrigger>
-          <SelectContent>
-            { availableYears.map( year => (
-              <SelectItem key={ year } value={ year } className="text-xs">
-                { year }
-              </SelectItem>
-            ) ) }
-          </SelectContent>
-        </Select>
+        <YearSelection/>
       </div>
 
       {/* Weekdays */ }

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/chart";
 import { StatCard } from "./stat-card";
 import { YearSelection } from "@/components/profile/stats/year-selection";
+import { useYearSelection } from "@/app/contexts/year-selection-context";
 
 interface MonthlyReadsCardProps {
   data: {
@@ -21,12 +22,11 @@ interface MonthlyReadsCardProps {
     later: number;
     wishlist: number;
   }[];
-  selectedYear: number;
-  onYearChange: ( year: string ) => void;
 }
 
-export function MonthlyCountByStateCard( { data, selectedYear, onYearChange }: MonthlyReadsCardProps ) {
+export function MonthlyCountByStateCard( { data }: MonthlyReadsCardProps ) {
   const t = useTranslations( "Stats.MonthlyActivity" );
+  const { selectedYear } = useYearSelection();
 
   const chartConfig = {
     read: { label: t( "read" ), color: "var(--chart-1)" },
@@ -39,7 +39,7 @@ export function MonthlyCountByStateCard( { data, selectedYear, onYearChange }: M
 
   return (
     <StatCard title={ t( "title" ) } headerChildren={
-      <YearSelection year={ selectedYear } onValueChange={ onYearChange }/>
+      <YearSelection/>
     }>
       { hasData ? (
         <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">

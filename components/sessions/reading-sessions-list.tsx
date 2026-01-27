@@ -9,11 +9,11 @@ import { getPaginatedUserReadingSessions, } from "@/app/actions/reading-sessions
 import { ReadingSessionItem } from "./reading-session-item";
 import { Spinner } from "@/components/ui/spinner";
 import { EmptySessions } from "./empty-sessions";
+import { useYearSelection } from "@/app/contexts/year-selection-context";
 
 interface ReadingSessionsListProps {
   userId: string;
   isOwner: boolean;
-  year: number;
   query: string;
   initialSessions: ReadingSessionWithBook[];
   initialTotalCount: number;
@@ -22,7 +22,6 @@ interface ReadingSessionsListProps {
 export function ReadingSessionsList( {
                                        userId,
                                        isOwner,
-                                       year,
                                        query,
                                        initialSessions,
                                        initialTotalCount
@@ -33,12 +32,14 @@ export function ReadingSessionsList( {
   const [isLoading, setIsLoading] = useState<boolean>( false );
   const { ref, inView } = useInView( { threshold: 0.5 } );
 
+  const { selectedYear } = useYearSelection();
+
   // Reset list when filters change.
   useEffect( () => {
     setSessions( initialSessions );
     setPage( 1 );
     setHasMore( initialSessions.length < initialTotalCount );
-  }, [year, query, initialSessions, initialTotalCount] );
+  }, [selectedYear, query, initialSessions, initialTotalCount] );
 
   const loadMoreSessions = useCallback( async () => {
     if (isLoading || !hasMore) return;
@@ -48,7 +49,7 @@ export function ReadingSessionsList( {
     const { sessions: newSessions } = await getPaginatedUserReadingSessions( {
       userId,
       page: nextPage,
-      year,
+      year: selectedYear,
       query,
     } );
 
@@ -56,7 +57,7 @@ export function ReadingSessionsList( {
     setPage( nextPage );
     setHasMore( newSessions.length === SESSIONS_PAGE_SIZE );
     setIsLoading( false );
-  }, [isLoading, hasMore, page, userId, year, query] );
+  }, [isLoading, hasMore, page, userId, selectedYear, query] );
 
   useEffect( () => {
     if (inView) {

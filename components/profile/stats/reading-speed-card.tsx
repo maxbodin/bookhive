@@ -5,16 +5,14 @@ import { useTranslations } from "next-intl";
 
 interface ReadingSpeedCardProps {
   pagesPerDay: number;
-  selectedYear: number;
-  onYearChange: ( year: string ) => void;
 }
 
-export function ReadingSpeedCard( { pagesPerDay, selectedYear, onYearChange }: ReadingSpeedCardProps ) {
+export function ReadingSpeedCard( { pagesPerDay }: ReadingSpeedCardProps ) {
   const t = useTranslations( "Stats.ReadingSpeed" );
 
   return (
     <StatCard title={ t( "title" ) } headerChildren={
-      <YearSelection year={ selectedYear } onValueChange={ onYearChange }/>
+      <YearSelection/>
     }>
       <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
         <div>

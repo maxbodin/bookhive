@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ProfileStatsSummarySkeleton } from "@/components/skeletons/profile/profile-stats-summary-skeleton";
+import { YearSelectionProvider } from "@/app/contexts/year-selection-context";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -54,7 +55,6 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
     const query: string = resolvedSearchParams?.query ?? "";
     const tabParam: string = resolvedSearchParams?.tab ?? "";
-    const yearParam: string = resolvedSearchParams?.year ?? "";
 
     // Validate tab param or set default.
     const validTabs: ProfileTab[] = ["shelves", "sessions", "stats"];
@@ -85,7 +85,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const readingSessions: ReadingSessionWithBook[] = await getUserReadingSessions( visitedProfile.id );
 
     const readingSessionYears = await getReadingSessionYears( visitedProfile.id );
-    const selectedYear = parseInt( yearParam, 10 ) || readingSessionYears[0] || new Date().getFullYear();
+    const selectedYear = readingSessionYears[0] || new Date().getFullYear();
 
     // Fetch the first page of sessions for the selected year/query to avoid a client-side loading flash.
     const { sessions: initialSessions, totalCount: initialTotalCount } =
@@ -135,85 +135,86 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     ];
 
     return (
-      <div className="container mx-auto p-4 md:p-8">
-        <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
-          <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
-          <div className="flex-grow">
-            <div className="flex flex-row items-center gap-6">
-              <h1 className="text-3xl font-bold">{ visitedProfileUsername }</h1>
-              { visitedProfile.is_admin &&
-                <Badge variant="outline">
-                  Admin
-                </Badge>
+      <YearSelectionProvider initialYears={ readingSessionYears }>
+        <div className="container mx-auto p-4 md:p-8">
+          <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
+            <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
+            <div className="flex-grow">
+              <div className="flex flex-row items-center gap-6">
+                <h1 className="text-3xl font-bold">{ visitedProfileUsername }</h1>
+                { visitedProfile.is_admin &&
+                  <Badge variant="outline">
+                    Admin
+                  </Badge>
+                }
+              </div>
+              { visitedProfile.created_at &&
+                <p className="text-md text-gray-500">
+                  { t( "joined" ) }: { new Date( visitedProfile.created_at ).toLocaleDateString() }
+                </p>
               }
+
+              <Suspense fallback={ <ProfileStatsSummarySkeleton/> }>
+                <ProfileStatsSummary userId={ visitedProfile.id }/>
+              </Suspense>
             </div>
-            { visitedProfile.created_at &&
-              <p className="text-md text-gray-500">
-                { t( "joined" ) }: { new Date( visitedProfile.created_at ).toLocaleDateString() }
-              </p>
-            }
-
-            <Suspense fallback={ <ProfileStatsSummarySkeleton/> }>
-              <ProfileStatsSummary userId={ visitedProfile.id }/>
-            </Suspense>
           </div>
+
+          <ReadingActivityCalendar readingSessions={ readingSessions }/>
+
+          <ProfileTabs
+            defaultTab={ activeTab as ProfileTab }
+            shelvesLabel={ t( "shelvesTab" ) }
+            sessionsLabel={ t( "sessionsTab" ) }
+            statsLabel={ t( "statsTab" ) }
+            shelvesTab={
+              ( <div className="space-y-12">
+                { visitedProfileFavoriteBooks.length > 0 && (
+                  <FavoriteBookshelf
+                    favoriteUserBooks={ visitedProfileFavoriteBooks }
+                    isOwner={ isOwner }
+                    connectedUserBooks={ connectedUserDataWithBooks }
+                  />
+                ) }
+
+                { visitedProfileReadingBooks.length > 0 && (
+                  <UserBookshelf
+                    userBooks={ visitedProfileReadingBooks }
+                    connectedUserBooks={ connectedUserDataWithBooks }
+                    isOwner={ isOwner }
+                    readingSessions={ readingSessions }
+                  />
+                ) }
+
+                { paginatedShelvesConfig.map( ( shelf ) => (
+                  <PaginatedBookshelf
+                    key={ shelf.state }
+                    userId={ visitedProfile.id }
+                    initialData={ shelf.data }
+                    totalCount={ shelf.count }
+                    shelfState={ shelf.state }
+                    shelfTitle={ shelf.title }
+                    isOwner={ isOwner }
+                    initialConnectedUserBooks={ connectedUserDataWithBooks }
+                    connectedUserId={ currentUser?.id }
+                    query={ query }/>
+                ) ) }
+
+                { !hasAnyBooks && <EmptyShelves username={ visitedProfileUsername } query={ query }/> }
+              </div> )
+            }
+            sessionsTab={
+              <ReadingSessionsTab
+                userId={ visitedProfile.id }
+                isOwner={ isOwner }
+                initialSessions={ initialSessions }
+                initialTotalCount={ initialTotalCount }
+                query={ query }
+              /> }
+            statsTab={ <UserStats userBooks={ allDisplayedBooks }/> }
+          />
         </div>
-
-        <ReadingActivityCalendar readingSessions={ readingSessions }/>
-
-        <ProfileTabs
-          defaultTab={ activeTab as ProfileTab }
-          shelvesLabel={ t( "shelvesTab" ) }
-          sessionsLabel={ t( "sessionsTab" ) }
-          statsLabel={ t( "statsTab" ) }
-          shelvesTab={
-            ( <div className="space-y-12">
-              { visitedProfileFavoriteBooks.length > 0 && (
-                <FavoriteBookshelf
-                  favoriteUserBooks={ visitedProfileFavoriteBooks }
-                  isOwner={ isOwner }
-                  connectedUserBooks={ connectedUserDataWithBooks }
-                />
-              ) }
-
-              { visitedProfileReadingBooks.length > 0 && (
-                <UserBookshelf
-                  userBooks={ visitedProfileReadingBooks }
-                  connectedUserBooks={ connectedUserDataWithBooks }
-                  isOwner={ isOwner }
-                  readingSessions={ readingSessions }
-                />
-              ) }
-
-              { paginatedShelvesConfig.map( ( shelf ) => (
-                <PaginatedBookshelf
-                  key={ shelf.state }
-                  userId={ visitedProfile.id }
-                  initialData={ shelf.data }
-                  totalCount={ shelf.count }
-                  shelfState={ shelf.state }
-                  shelfTitle={ shelf.title }
-                  isOwner={ isOwner }
-                  initialConnectedUserBooks={ connectedUserDataWithBooks }
-                  connectedUserId={ currentUser?.id }
-                  query={ query }/>
-              ) ) }
-
-              { !hasAnyBooks && <EmptyShelves username={ visitedProfileUsername } query={ query }/> }
-            </div> )
-          }
-          sessionsTab={
-            <ReadingSessionsTab
-              userId={ visitedProfile.id }
-              isOwner={ isOwner }
-              initialYears={ readingSessionYears }
-              initialSessions={ initialSessions }
-              initialTotalCount={ initialTotalCount }
-              query={ query }
-            /> }
-          statsTab={ <UserStats userBooks={ allDisplayedBooks }/> }
-        />
-      </div>
+      </YearSelectionProvider>
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : t( "unexpectedError" );
