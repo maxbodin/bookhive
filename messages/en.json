@@ -128,7 +128,7 @@
     "databaseError": "Database error: Could not add the book.",
     "apiFetchError": "Failed to fetch full book details from the API.",
     "unknownError": "An unknown error occurred.",
-    "success": "'{title}' was added successfully."
+    "success": "''{title}'' was added successfully."
   },
   "ToggleFavoriteBookAction": {
     "authRequired": "Authentication required.",

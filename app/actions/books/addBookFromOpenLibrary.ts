@@ -122,7 +122,7 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
     revalidatePath( "/" );
     return {
       success: true,
-      message: t( "success", { title: bookDataToInsert.title ?? "" } ),
+      message: t("success", { title: bookDataToInsert.title ?? "Unknown Title" }),
     };
 
   } catch (error: unknown) {

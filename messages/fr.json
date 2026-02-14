@@ -128,7 +128,7 @@
     "databaseError": "Erreur de base de données : Impossible d'ajouter le livre.",
     "apiFetchError": "Échec de la récupération des détails complets du livre depuis l'API.",
     "unknownError": "Une erreur inconnue est survenue.",
-    "success": "'{title}' a été ajouté avec succès."
+    "success": "''{title}'' a été ajouté avec succès."
   },
   "ToggleFavoriteBookAction": {
     "authRequired": "Authentification requise.",
