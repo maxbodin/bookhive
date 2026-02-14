@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UserBook } from "@/app/types/user-book";
 import { BookState } from "@/app/types/book-state";
 import { BooksGrid } from "@/components/books/books-grid";
@@ -34,8 +34,9 @@ export function PaginatedBookshelf( {
                                       query,
                                     }: PaginatedBookshelfProps ) {
   const [isFolded, setIsFolded] = useState( false );
+  const sectionRef = useRef<HTMLDivElement>( null );
+  const isInitialMount = useRef( true );
 
-  // Use custom hook for data logic
   const { books, connectedBooks, currentPage, isPending, handlePageChange } = useShelfPagination( {
     userId,
     shelfState,
@@ -45,6 +46,15 @@ export function PaginatedBookshelf( {
     query
   } );
 
+  useEffect( () => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      sectionRef.current?.scrollIntoView( { behavior: "smooth" } );
+    }
+  }, [currentPage] );
+
+
   if (totalCount === 0) {
     return null;
   }
@@ -53,7 +63,7 @@ export function PaginatedBookshelf( {
 
   return (
     <section>
-      <div className="flex justify-between items-center mb-4 border-b pb-2">
+      <div ref={ sectionRef } className="scroll-mt-[96px] flex justify-between items-center mb-4 border-b pb-2">
         <h2 className="text-2xl font-bold">
           { shelfTitle } ({ totalCount })
         </h2>
