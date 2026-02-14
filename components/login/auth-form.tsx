@@ -110,7 +110,7 @@ export default function AuthForm() {
                 required
                 minLength={ mode === "signup" ? 8 : 1 }
               />
-              <InputGroupAddon>
+              <InputGroupAddon align="inline-end">
                 <button
                   type="button"
                   onClick={ () => setShowPassword( !showPassword ) }
