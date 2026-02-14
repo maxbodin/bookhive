@@ -120,7 +120,7 @@
     "fetchStatsFailed": "Échec de la récupération des statistiques de lecture."
   },
   "AddBookButton": {
-    "addBook": "Ajouter à ma bibliothèque",
+    "addBook": "Ajouter à la bibliothèque",
     "adding": "Ajout en cours..."
   },
   "AddBookAction": {

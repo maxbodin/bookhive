@@ -120,7 +120,7 @@
     "fetchStatsFailed": "Failed to fetch reading statistics."
   },
   "AddBookButton": {
-    "addBook": "Add to My Library",
+    "addBook": "Add to the library",
     "adding": "Adding..."
   },
   "AddBookAction": {
