@@ -26,6 +26,40 @@ async function fetchJson<T>( url: string ): Promise<T> {
 }
 
 /**
+ * Normalizes Open Library date strings into valid PostgreSQL date format (YYYY-MM-DD).
+ *
+ * Open Library formats can be: "1990", "1990-05", "May 5, 1990", "c1990", "[1990?]"
+ */
+function normalizeDateForPostgres( dateStr: string | null | undefined ): string | null {
+  if (!dateStr) return null;
+  const clean = dateStr.toString().replace( /[\[\]?c]/g, "" ).trim();
+
+  // Handle YYYY-MM-DD (valid)
+  if (/^\d{4}-\d{2}-\d{2}$/.test( clean )) {
+    return clean;
+  }
+
+  // Handle YYYY-MM -> append -01
+  if (/^\d{4}-\d{2}$/.test( clean )) {
+    return `${ clean }-01`;
+  }
+
+  // Handle YYYY -> Append -01-01
+  if (/^\d{4}$/.test( clean )) {
+    return `${ clean }-01-01`;
+  }
+
+  // Fallback: try js date parser for formats like "May 5, 2023".
+  const d = new Date( clean );
+  if (!isNaN( d.getTime() )) {
+    return d.toISOString().split( "T" )[0];
+  }
+
+  // If all else fails, return null to avoid db error 22007.
+  return null;
+}
+
+/**
  * Server action for admins to add a book from Open Library to the sovereign database.
  * @param openLibraryKey The book's Open Library key (e.g., "OL45804W").
  * @returns A promise resolving to a success/error object.
@@ -70,6 +104,11 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
       authorNames,
       firstEdition || {}
     );
+
+    // Sanitize the publication date before insertion.
+    if (bookDataToInsert.publication_date) {
+      bookDataToInsert.publication_date = normalizeDateForPostgres( bookDataToInsert.publication_date as string );
+    }
 
     // Insert the new book.
     const { error } = await supabase.from( "books" ).insert( bookDataToInsert );
