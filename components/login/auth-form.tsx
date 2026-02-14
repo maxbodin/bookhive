@@ -79,7 +79,7 @@ export default function AuthForm() {
         </div>
       </CardHeader>
 
-      <CardContent className="p-6">
+      <CardContent className="p-6 w-full">
         <form className="space-y-4">
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
