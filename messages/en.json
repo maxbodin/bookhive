@@ -355,5 +355,20 @@
     "bd": "Comic",
     "manga": "Manga",
     "roman": "Novel"
+  },
+  "AuthForm": {
+    "title_signup": "Create an account",
+    "title_signin": "Welcome back",
+    "signin_tab": "Sign in",
+    "signup_tab": "Sign up",
+    "email_label": "Email",
+    "email_placeholder": "Enter your email",
+    "password_label": "Password",
+    "password_placeholder": "Enter your password",
+    "submit_signup": "Create account",
+    "submit_signin": "Sign in",
+    "separator": "or continue with",
+    "magic_link": "Sign in with Magic Link",
+    "error_password_weak": "Password is not strong enough. Please choose a stronger one."
   }
 }

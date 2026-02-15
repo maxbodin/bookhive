@@ -10,10 +10,12 @@ import { Eye, EyeOff, MailIcon, Sparkles } from "lucide-react";
 import PasswordStrengthMeter from "@/components/login/password-strength-meter";
 import SubmitButton from "@/components/login/submit-button";
 import { Separator } from "@/components/ui/separator";
+import { useTranslations } from "next-intl";
 
 const initialState: ActionState = { success: false };
 
 export default function AuthFormContent( { mode }: { mode: "signin" | "signup" } ) {
+  const t = useTranslations( "AuthForm" );
   const [showPassword, setShowPassword] = useState<boolean>( false );
   const [passwordInput, setPasswordInput] = useState<string>( "" );
   const [errors, setErrors] = useState<ActionState["errors"]>( {} );
@@ -26,15 +28,11 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
   const passwordScore: number = passwordStrength( passwordInput );
 
   useEffect( () => {
-    if (state.errors) {
-      setErrors( ( prev ) => ( { ...prev, ...state.errors } ) );
-    }
+    if (state.errors) setErrors( ( prev ) => ( { ...prev, ...state.errors } ) );
   }, [state.errors] );
 
   useEffect( () => {
-    if (otpState.errors) {
-      setErrors( ( prev ) => ( { ...prev, ...otpState.errors } ) );
-    }
+    if (otpState.errors) setErrors( ( prev ) => ( { ...prev, ...otpState.errors } ) );
   }, [otpState.errors] );
 
   useEffect( () => {
@@ -57,7 +55,7 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
 
   const handleSignupSubmit = ( formData: FormData ) => {
     if (passwordScore < 4) {
-      toast.error( "Password is not strong enough. Please choose a stronger one." );
+      toast.error( t( "error_password_weak" ) );
       return;
     }
     formAction( formData );
@@ -72,9 +70,8 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
   const clearFieldError = ( field: keyof NonNullable<ActionState["errors"]> ) => {
     setErrors( ( prev ) => {
       if (!prev || !prev[field]) return prev;
-      const newErrors = { ...prev };
-      delete newErrors[field];
-      return newErrors;
+      const { [field]: _, ...rest } = prev;
+      return rest;
     } );
   };
 
@@ -82,13 +79,13 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
     <>
       <form action={ handleSubmit } className="space-y-4">
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="email">{ t( "email_label" ) }</FieldLabel>
           <InputGroup>
             <InputGroupInput
               id="email"
               name="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder={ t( "email_placeholder" ) }
               required
               onChange={ () => clearFieldError( "email" ) }
             />
@@ -96,13 +93,11 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
               <MailIcon className="h-4 w-4 text-muted-foreground"/>
             </InputGroupAddon>
           </InputGroup>
-          <FieldError
-            errors={ errors?.email ? [{ message: errors.email }] : [] }
-          />
+          <FieldError errors={ errors?.email ? [{ message: errors.email }] : [] }/>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <FieldLabel htmlFor="password">{ t( "password_label" ) }</FieldLabel>
           <InputGroup>
             <InputGroupInput
               id="password"
@@ -113,7 +108,7 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
                 clearFieldError( "password" );
               } }
               type={ showPassword ? "text" : "password" }
-              placeholder="Enter your password"
+              placeholder={ t( "password_placeholder" ) }
               required
               minLength={ mode === "signup" ? 8 : 1 }
             />
@@ -124,24 +119,18 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
                 className="text-muted-foreground hover:text-foreground focus:outline-none"
                 tabIndex={ -1 }
               >
-                { showPassword ? (
-                  <EyeOff className="h-4 w-4"/>
-                ) : (
-                  <Eye className="h-4 w-4"/>
-                ) }
+                { showPassword ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/> }
               </button>
             </InputGroupAddon>
           </InputGroup>
-          <FieldError
-            errors={ errors?.password ? [{ message: errors.password }] : [] }
-          />
+          <FieldError errors={ errors?.password ? [{ message: errors.password }] : [] }/>
         </Field>
 
         { mode === "signup" && <PasswordStrengthMeter passwordScore={ passwordScore }/> }
 
         <div className="pt-2">
           <SubmitButton>
-            { mode === "signup" ? "Create account" : "Sign in" }
+            { mode === "signup" ? t( "submit_signup" ) : t( "submit_signin" ) }
           </SubmitButton>
         </div>
       </form>
@@ -150,17 +139,14 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
         <Separator/>
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-3 text-xs text-muted-foreground whitespace-nowrap">
-          or continue with
+          { t( "separator" ) }
         </div>
       </div>
 
       <form action={ otpAction } className="grid grid-cols-1 gap-3">
-        <SubmitButton
-          variant="outline"
-          className="flex items-center justify-center gap-2"
-        >
+        <SubmitButton variant="outline" className="flex items-center justify-center gap-2">
           <Sparkles className="h-4 w-4"/>
-          Sign in with Magic Link
+          { t( "magic_link" ) }
         </SubmitButton>
       </form>
     </>

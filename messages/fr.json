@@ -351,5 +351,20 @@
     "bd": "BD",
     "manga": "Manga",
     "roman": "Roman"
+  },
+  "AuthForm": {
+    "title_signup": "Créer un compte",
+    "title_signin": "Bienvenue",
+    "signin_tab": "Se connecter",
+    "signup_tab": "S'inscrire",
+    "email_label": "E-mail",
+    "email_placeholder": "Entrez votre e-mail",
+    "password_label": "Mot de passe",
+    "password_placeholder": "Entrez votre mot de passe",
+    "submit_signup": "Créer un compte",
+    "submit_signin": "Se connecter",
+    "separator": "ou continuer avec",
+    "magic_link": "Se connecter avec un lien magique",
+    "error_password_weak": "Le mot de passe n'est pas assez fort. Veuillez en choisir un plus robuste."
   }
 }

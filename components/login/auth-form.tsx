@@ -4,23 +4,25 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import AuthFormContent from "@/components/login/auth-form-content";
+import { useTranslations } from "next-intl";
 
 export default function AuthForm() {
+  const t = useTranslations( "AuthForm" );
   const [mode, setMode] = useState<"signin" | "signup">( "signin" );
 
   return (
     <Card className="flex flex-col w-full max-w-lg items-center justify-center p-12 border-muted mt-8 mb-12">
-      <CardHeader className="text-left">
+      <CardHeader className="text-left w-full px-8">
         <div className="space-y-2">
           <CardTitle className="text-2xl font-bold tracking-tight">
-            { mode === "signup" ? "Create an account" : "Welcome back" }
+            { mode === "signup" ? t( "title_signup" ) : t( "title_signin" ) }
           </CardTitle>
         </div>
 
         <div className="grid w-full grid-cols-2 rounded-lg bg-muted p-1">
           { [
-            { id: "signin", label: "Sign in" },
-            { id: "signup", label: "Sign up" },
+            { id: "signin", label: t( "signin_tab" ) },
+            { id: "signup", label: t( "signup_tab" ) },
           ].map( ( tab ) => (
             <button
               key={ tab.id }
