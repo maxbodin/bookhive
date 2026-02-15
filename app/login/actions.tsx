@@ -4,16 +4,34 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/app/utils/supabase/server";
+import passwordStrength from "@/lib/passwordStrength";
+import { ActionState } from "@/app/types/action-state";
 
 /**
- *
- * @param formData
+ * Logs in a user with email and password.
+ * @param _prevState - The previous state (unused, but required for useFormState).
+ * @param formData - The form data containing email and password.
  */
-export async function login( formData: FormData ) {
+export async function login(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const supabase = await createClient();
 
   const email = formData.get( "email" ) as string;
   const password = formData.get( "password" ) as string;
+  const errors: ActionState["errors"] = {};
+
+  if (!email) {
+    errors.email = "Email is required.";
+  }
+  if (!password) {
+    errors.password = "Password is required.";
+  }
+
+  if (Object.keys( errors ).length > 0) {
+    return { success: false, errors };
+  }
 
   const { error } = await supabase.auth.signInWithPassword( {
     email: email,
@@ -21,7 +39,10 @@ export async function login( formData: FormData ) {
   } );
 
   if (error) {
-    return { error: error.message };
+    return {
+      success: false,
+      errors: { form: "Invalid email or password. Please try again." },
+    };
   }
 
   revalidatePath( "/", "layout" );
@@ -29,15 +50,34 @@ export async function login( formData: FormData ) {
 }
 
 /**
- *
- * @param formData
+ * Signs up a new user.
+ * @param _prevState - The previous state.
+ * @param formData - The form data containing email and password.
  */
-export async function signup( formData: FormData ) {
+export async function signup(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const supabase = await createClient();
   const origin = ( await headers() ).get( "origin" );
 
   const email = formData.get( "email" ) as string;
   const password = formData.get( "password" ) as string;
+  const errors: ActionState["errors"] = {};
+
+  if (!email) {
+    errors.email = "Email is required.";
+  }
+  if (!password) {
+    errors.password = "Password is required.";
+  } else
+    if (passwordStrength( password ) < 4) {
+      errors.password = "Password is not strong enough.";
+    }
+
+  if (Object.keys( errors ).length > 0) {
+    return { success: false, errors };
+  }
 
   const { error } = await supabase.auth.signUp( {
     email: email,
@@ -48,21 +88,32 @@ export async function signup( formData: FormData ) {
   } );
 
   if (error) {
-    return { error: error.message };
+    return {
+      success: false,
+      errors: { form: error.message },
+    };
   }
 
-  return { success: "Check your email to verify your account." };
+  return { success: true, message: "Check your email to verify your account." };
 }
 
 /**
- *
- * @param formData
+ * Sends a magic link for signing in.
+ * @param _prevState - The previous state.
+ * @param formData - The form data containing the email.
  */
-export async function signInWithOtp( formData: FormData ) {
+export async function signInWithOtp(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const supabase = await createClient();
   const origin = ( await headers() ).get( "origin" );
 
   const email = formData.get( "email" ) as string;
+
+  if (!email) {
+    return { success: false, errors: { email: "Email is required." } };
+  }
 
   const { error } = await supabase.auth.signInWithOtp( {
     email: email,
@@ -72,14 +123,17 @@ export async function signInWithOtp( formData: FormData ) {
   } );
 
   if (error) {
-    return { error: error.message };
+    return {
+      success: false,
+      errors: { form: error.message },
+    };
   }
 
-  return { success: "Check your email for the magic link." };
+  return { success: true, message: "Check your email for the magic link." };
 }
 
 /**
- *
+ * Signs out the current user.
  */
 export async function signOut() {
   const supabase = await createClient();

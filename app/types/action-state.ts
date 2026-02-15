@@ -1,5 +1,10 @@
 export interface ActionState {
   success?: boolean;
+  message?: string;
   error?: string;
-  message: string;
+  errors?: {
+    email?: string;
+    password?: string;
+    form?: string;
+  };
 }
