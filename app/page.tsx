@@ -9,7 +9,6 @@ import { searchBooks } from "@/app/actions/books/searchBooks";
 import { UserBook } from "@/app/types/user-book";
 import { User } from "@supabase/supabase-js";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
-import { BOOKS_PER_PAGE, SearchParams } from "@/app/searchParams";
 import { PaginationControls } from "@/components/pagination-controls";
 import { redirect } from "next/navigation";
 import {
@@ -19,6 +18,7 @@ import { Profile } from "@/app/types/profile";
 import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { searchOpenLibrary } from "@/app/actions/open-library/searchOpenLibrary";
 import { Book } from "@/app/types/book";
+import { BOOKS_PER_PAGE, SearchParams } from "@/app/utils/searchParams";
 
 interface HomePageProps {
   searchParams?: Promise<{

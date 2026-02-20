@@ -5,10 +5,10 @@ import { BookState } from "@/app/types/book-state";
 import { BooksGrid } from "@/components/books/books-grid";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
-import { BOOKS_PER_PAGE } from "@/app/searchParams";
 import { cn } from "@/lib/utils";
 import { PaginationBar } from "@/components/pagination/pagination-bar";
 import { useShelfPagination } from "@/hooks/use-shelf-pagination";
+import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
 
 interface PaginatedBookshelfProps {
   userId: string;

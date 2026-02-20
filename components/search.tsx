@@ -1,10 +1,10 @@
 "use client";
 
-import { SearchParams } from "@/app/searchParams";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
+import { SearchParams } from "@/app/utils/searchParams";
 
 export default function Search( { placeholder }: { placeholder: string } ) {
   const searchParams = useSearchParams();

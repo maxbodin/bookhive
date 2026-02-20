@@ -2,7 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { Book } from "@/app/types/book";
-import { BOOKS_PER_PAGE } from "@/app/searchParams";
+import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
 
 /**
  * Fetches a paginated list of books based on a search query and returns the data along with the total count.

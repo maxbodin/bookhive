@@ -4,8 +4,8 @@ import { UserBook } from "@/app/types/user-book";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/app/utils/supabase/server";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
-import { BOOKS_PER_PAGE } from "@/app/searchParams";
 import { sortNatural } from "@/lib/sortNatural";
+import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
 
 /**
  * Fetches a paginated list of a user's books filtered by a specific state (e.g., 'read', 'later').
