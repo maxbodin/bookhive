@@ -366,5 +366,20 @@
     "separator": "ou continuer avec",
     "magic_link": "Se connecter avec un lien magique",
     "error_password_weak": "Le mot de passe n'est pas assez fort. Veuillez en choisir un plus robuste."
+  },
+  "BookDetails": {
+    "noCover": "Aucune couverture disponible",
+    "by": "par",
+    "descriptionTitle": "Description",
+    "detailsTitle": "Détails",
+    "publisher": "Éditeur",
+    "publicationDate": "Date de publication",
+    "pages": "Nombre de pages",
+    "isbn10": "ISBN-10",
+    "isbn13": "ISBN-13",
+    "dimensions": "Dimensions",
+    "weight": "Poids",
+    "categories": "Catégories",
+    "undefined": "Non défini"
   }
 }

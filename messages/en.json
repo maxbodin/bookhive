@@ -370,5 +370,23 @@
     "separator": "or continue with",
     "magic_link": "Sign in with Magic Link",
     "error_password_weak": "Password is not strong enough. Please choose a stronger one."
+  },
+  "BookDetails": {
+    "noCover": "No cover available",
+    "by": "by",
+    "descriptionTitle": "Description",
+    "detailsTitle": "Details",
+    "publisher": "Publisher",
+    "publicationDate": "Published",
+    "pages": "Pages",
+    "isbn10": "ISBN-10",
+    "isbn13": "ISBN-13",
+    "dimensions": "Dimensions",
+    "weight": "Weight",
+    "categories": "Categories",
+    "undefined": "Undefined"
+  },
+  "BookDetailItem": {
+    "undefined": "Undefined"
   }
 }

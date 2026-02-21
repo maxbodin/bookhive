@@ -6,6 +6,8 @@ import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button"
 import { useTranslations } from "next-intl";
 import React from "react";
 import { AddBookButton } from "@/components/open-library/add-book-button";
+import Link from "next/link";
+import { ROUTES } from "@/app/utils/routes";
 
 // Shared interface for props used by all card types
 interface BookCardSharedProps {
@@ -22,7 +24,7 @@ export interface BookCardProps extends BookCardSharedProps {
 }
 
 /**
- * Renders a minimalist book cover.
+ * Renders a minimalist book cover that links to the book's detail page.
  * The interactive favorite button reflects the CONNECTED user's status.
  */
 function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
@@ -33,10 +35,14 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
   const canToggleFavorite = connectedUserBook?.state === "read";
 
   return (
-    <div className="relative group rounded-lg shadow-md">
+    <Link href={ `/${ ROUTES.BOOK }/${ book.id }` }
+          className="relative group rounded-lg shadow-md">
       { book.cover_url ? (
-        <img src={ book.cover_url } alt={ `Cover of ${ book.title }` }
-             className="w-full h-auto object-cover rounded-lg aspect-[2/3]"/>
+        <img
+          src={ book.cover_url }
+          alt={ `Cover of ${ book.title }` }
+          className="w-full h-auto object-cover rounded-lg aspect-[2/3]"
+        />
       ) : (
         <div className="w-full flex items-center justify-center rounded-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
           <p className="text-primary text-sm">{ t( "noCover" ) }</p>
@@ -46,7 +52,7 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
       { canToggleFavorite && (
         <FavoriteToggleButton bookId={ book.id } isFavorite={ isConnectedUserFavorite }/>
       ) }
-    </div>
+    </Link>
   );
 }
 
@@ -65,15 +71,21 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
     <div className="flex flex-col justify-between group border rounded-lg shadow-md">
       <div>
         <div className="relative">
-          { book.cover_url ? (
-            <img src={ book.cover_url } alt={ `Cover of ${ book.title }` }
-                 className="w-full h-auto object-cover rounded-t-lg aspect-[2/3]"/>
-          ) : (
-            <div
-              className="w-full flex items-center justify-center rounded-t-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
-              <p className="text-primary text-sm">{ t( "noCover" ) }</p>
-            </div>
-          ) }
+          <Link href={ `/${ ROUTES.BOOK }/${ book.id }` }
+                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-t-lg">
+            { book.cover_url ? (
+              <img
+                src={ book.cover_url }
+                alt={ `Cover of ${ book.title }` }
+                className="w-full h-auto object-cover rounded-t-lg aspect-[2/3]"
+              />
+            ) : (
+              <div
+                className="w-full flex items-center justify-center rounded-t-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
+                <p className="text-primary text-sm">{ t( "noCover" ) }</p>
+              </div>
+            ) }
+          </Link>
           { book.type && (
             <Badge variant="secondary" className="absolute top-2 right-2">
               { tBookTypes( book.type ) }
@@ -85,9 +97,12 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
           ) }
         </div>
         <div className="p-3">
-          <h3 className="text-md font-bold" title={ book.title ?? "Untitled" }>
-            { book.title ?? "Untitled" }
-          </h3>
+          <Link href={ `/${ ROUTES.BOOK }/${ book.id }` }
+                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md">
+            <h3 className="text-md font-bold hover:underline" title={ book.title ?? "Untitled" }>
+              { book.title ?? "Untitled" }
+            </h3>
+          </Link>
           { book.authors && (
             <p className="text-sm text-muted-foreground">{ book.authors.join( ", " ) }</p>
           ) }

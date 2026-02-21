@@ -102,10 +102,10 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
         <div className="w-16 flex-shrink-0">
           { session.book?.cover_url ? (
             <img src={ session.book?.cover_url } alt={ `Cover of ${ session.book?.title }` }
-                 className="w-full h-auto object-cover rounded-t-lg aspect-[2/3]"/>
+                 className="w-full h-auto object-cover rounded-lg aspect-[2/3]"/>
           ) : (
             <div
-              className="w-full flex items-center justify-center rounded-t-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
+              className="w-full flex items-center justify-center rounded-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
               <p className="text-primary text-sm">{ t( "noCover" ) }</p>
             </div>
           ) }
