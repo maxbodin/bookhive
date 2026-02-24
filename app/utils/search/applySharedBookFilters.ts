@@ -1,3 +1,7 @@
+import { BookType } from "@/app/types/book";
+
+const VALID_BOOK_TYPES: BookType[] = ["bd", "manga", "roman"];
+
 /**
  * Applies shared text search (title/authors) and type filters to a Supabase query builder.
  * Safely handles both top-level tables and joined/embedded tables.
@@ -36,16 +40,17 @@ export function applySharedBookFilters(
   // Apply type filter.
   if (types) {
     const typeArray = types.split( "," );
-    // Separate the string "null" from actual enum values like "bd" or "manga".
-    const validTypes = typeArray.filter( ( t ) => t !== "null" );
+
     const includesNull = typeArray.includes( "null" );
 
+    const validTypes = typeArray.filter( ( t ) => VALID_BOOK_TYPES.includes( t as BookType ) );
+
     if (validTypes.length > 0 && includesNull) {
-      // User selected both specific types AND "null" (No type).
+      // User selected both specific valid types AND "null" (No type).
       queryBuilder = queryBuilder.or( `type.in.(${ validTypes.join( "," ) }),type.is.null`, options );
     } else
       if (validTypes.length > 0) {
-        // User selected ONLY specific types.
+        // User selected ONLY specific valid types.
         queryBuilder = queryBuilder.or( `type.in.(${ validTypes.join( "," ) })`, options );
       } else
         if (includesNull) {
