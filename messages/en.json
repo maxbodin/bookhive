@@ -166,7 +166,7 @@
     "totalPages": "of {count} pages",
     "sessionDurationHours": "{count}h",
     "sessionDurationMinutes": "{count}m",
-    "title": "{count, plural, one {# Session} other {# Sessions}}",
+    "title": "{count, plural, one {# Reading Session} other {# Reading Sessions}}",
     "subtitle": "in {year}",
     "yearPlaceholder": "Select Year",
     "noSessionsWithQuery": "No sessions found matching your search for this year.",
@@ -178,7 +178,9 @@
       "description": "This action cannot be undone. This will permanently delete the reading session.",
       "cancel": "Cancel",
       "confirm": "Delete"
-    }
+    },
+    "bookSubtitle": "Your reading history for this book",
+    "emptyBookSessions": "No reading sessions logged for this book yet."
   },
   "Stats": {
     "AverageCompletion": {

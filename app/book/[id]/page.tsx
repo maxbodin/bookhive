@@ -9,6 +9,7 @@ import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button"
 import { Separator } from "@/components/ui/separator";
 import BookDetailItem from "@/components/book/book-detail-item";
 import { BackButton } from "@/components/back-button";
+import { BookReadingSessions } from "@/components/book/book-reading-sessions";
 
 interface BookDetailsPageProps {
   params?: Promise<{ id: string }>;
@@ -40,8 +41,8 @@ export default async function BookDetailsPage( { params }: BookDetailsPageProps 
   const canToggleFavorite = connectedUserBook?.state === "read";
 
   return (
-    <div className="container mx-auto p-4 md:p-8">
-      <div className="mb-6">
+    <div className="container mx-auto flex flex-col p-4 md:p-8 gap-6">
+      <div>
         <BackButton/>
       </div>
 
@@ -64,7 +65,7 @@ export default async function BookDetailsPage( { params }: BookDetailsPageProps 
               <FavoriteToggleButton bookId={ book.id } isFavorite={ isConnectedUserFavorite }/>
             ) }
           </div>
-          <div className="w-full max-w-xs md:max-w-full flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
             { currentUser && (
               <BookStateDropdown bookId={ book.id } currentStateRecord={ connectedUserBook }/>
             ) }
@@ -113,6 +114,13 @@ export default async function BookDetailsPage( { params }: BookDetailsPageProps 
           </div>
         </main>
       </div>
+
+      { currentUser && (
+        <div className="mt-8">
+          <Separator className="my-6"/>
+          <BookReadingSessions userId={ currentUser.id } bookId={ book.id }/>
+        </div>
+      ) }
     </div>
   );
 }

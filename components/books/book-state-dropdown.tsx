@@ -160,7 +160,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
           { ...props }
           variant="outline"
           size="sm"
-          className="w-full text-xs"
+          className="w-full text-sm"
           disabled={ isPending }
         >
           <Icon className="w-4 h-4 mr-2"/>
@@ -175,7 +175,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         { ...props }
         variant="secondary"
         size="sm"
-        className="w-full text-xs"
+        className="w-full text-sm"
         disabled={ isPending }
       >
         <BookPlus className="w-4 h-4 mr-2"/>

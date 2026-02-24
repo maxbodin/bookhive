@@ -25,7 +25,7 @@
   "ReadingLogger": {
     "log_reading_button": "Enregistrer une lecture",
     "title": "Enregistrer une session de lecture",
-    "description": "Notez vos progrès. Maintenez la flamme !",
+    "description": "Notez vos progrès. Maintenez la flamme de la lecture !",
     "label_book": "Livre",
     "placeholder_loading": "Chargement des livres...",
     "placeholder_select": "Sélectionnez un livre...",
@@ -166,7 +166,7 @@
     "totalPages": "sur {count} pages",
     "sessionDurationHours": "{count}h",
     "sessionDurationMinutes": "{count}m",
-    "title": "{count, plural, one {# Session} other {# Sessions}}",
+    "title": "{count, plural, one {# session de lecture} other {# sessions de lecture}}",
     "subtitle": "en {year}",
     "yearPlaceholder": "Choisir l'année",
     "noSessionsWithQuery": "Aucune session ne correspond à votre recherche pour cette année.",
@@ -178,7 +178,9 @@
       "description": "Cette action est irréversible et supprimera définitivement la session de lecture.",
       "cancel": "Annuler",
       "confirm": "Supprimer"
-    }
+    },
+    "bookSubtitle": "Votre historique de lecture pour ce livre",
+    "emptyBookSessions": "Aucune session de lecture pour ce livre pour l'instant."
   },
   "Stats": {
     "AverageCompletion": {
@@ -380,6 +382,9 @@
     "dimensions": "Dimensions",
     "weight": "Poids",
     "categories": "Catégories",
+    "undefined": "Non défini"
+  },
+  "BookDetailItem": {
     "undefined": "Non défini"
   }
 }
