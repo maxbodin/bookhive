@@ -1,12 +1,13 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import { Separator } from "@/components/ui/separator";
-import Search from "@/components/search";
+import { BookTypeFilter } from "@/components/search/book-type-filter";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import LocaleSwitcher from "@/components/locale-switcher";
 import { AuthButtonsSkeleton } from "@/components/skeletons/auth-buttons-skeleton";
 import AuthButtons from "@/components/login/auth-buttons";
+import Search from "@/components/search/search";
 
 export default async function Navbar() {
   const t = await getTranslations( "Navbar" );
@@ -21,11 +22,14 @@ export default async function Navbar() {
           </h1>
         </div>
 
-        <div className="order-last w-full lg:order-none lg:flex-1 max-w-md">
-          <Suspense
-            fallback={ <div className="h-10 w-full bg-muted rounded-md"/> }
-          >
-            <Search placeholder={ t( "search_placeholder" ) }/>
+        <div className="order-last w-full lg:order-none lg:flex-1 max-w-2xl flex items-center gap-2">
+          <div className="flex-1">
+            <Suspense fallback={ <div className="h-9 w-full bg-muted rounded-md"/> }>
+              <Search placeholder={ t( "search_placeholder" ) }/>
+            </Suspense>
+          </div>
+          <Suspense fallback={ <div className="h-9 w-[140px] bg-muted rounded-md"/> }>
+            <BookTypeFilter/>
           </Suspense>
         </div>
 

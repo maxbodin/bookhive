@@ -8,8 +8,8 @@ import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
 import { Separator } from "@/components/ui/separator";
 import BookDetailItem from "@/components/book/book-detail-item";
-import { BackButton } from "@/components/back-button";
 import { BookReadingSessions } from "@/components/book/book-reading-sessions";
+import { BackButton } from "@/components/ui/back-button";
 
 interface BookDetailsPageProps {
   params?: Promise<{ id: string }>;

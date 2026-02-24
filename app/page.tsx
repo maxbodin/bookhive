@@ -24,8 +24,9 @@ interface HomePageProps {
   searchParams?: Promise<{
     query?: string;
     page?: string;
-    user?: string;
-    displayShown?: string
+    user?: string;  // TODO : usage ??
+    displayShown?: string; // TODO : usage ??
+    types?: string;
   }>;
 }
 
@@ -33,8 +34,9 @@ export default async function Home( { searchParams }: HomePageProps ) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const query: string | undefined = resolvedSearchParams?.query;
   const currentPage: number | undefined = Number( resolvedSearchParams?.page );
+  const types: string | undefined = resolvedSearchParams?.types;
 
-  const { data: books, count: totalBooks } = await searchBooks( query, currentPage );
+  const { data: books, count: totalBooks } = await searchBooks( query, currentPage, types );
   const totalPages = Math.ceil( totalBooks / BOOKS_PER_PAGE ) || 1;
 
   if (currentPage < 1 || isNaN( currentPage ) || ( currentPage > totalPages && totalPages <= 0 )) {

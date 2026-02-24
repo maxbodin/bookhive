@@ -1,7 +1,8 @@
 {
   "Navbar": {
     "title": "BookHive",
-    "search_placeholder": "Rechercher un livre..."
+    "search_placeholder": "Rechercher un livre...",
+    "filter_type_placeholder": "Types"
   },
   "Username": {
     "greeting": "Bonjour"
@@ -352,7 +353,8 @@
   "BookTypes": {
     "bd": "BD",
     "manga": "Manga",
-    "roman": "Roman"
+    "roman": "Roman",
+    "null": "Non défini"
   },
   "AuthForm": {
     "title_signup": "Créer un compte",
