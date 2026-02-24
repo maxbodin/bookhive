@@ -13,6 +13,7 @@ interface UseShelfPaginationProps {
   initialConnectedUserBooks: UserBook[];
   connectedUserId?: string;
   query: string;
+  types?: string;
 }
 
 export function useShelfPagination( {
@@ -21,7 +22,8 @@ export function useShelfPagination( {
                                       initialData,
                                       initialConnectedUserBooks,
                                       connectedUserId,
-                                      query
+                                      query,
+                                      types,
                                     }: UseShelfPaginationProps ) {
   const [books, setBooks] = useState<UserBook[]>( initialData );
   const [connectedBooks, setConnectedBooks] = useState<UserBook[]>( initialConnectedUserBooks );
@@ -32,15 +34,21 @@ export function useShelfPagination( {
     setCurrentPage( 1 );
     setBooks( initialData );
     setConnectedBooks( initialConnectedUserBooks );
-  }, [query, initialData, initialConnectedUserBooks] );
+  }, [query, types, initialData, initialConnectedUserBooks] );
 
   const handlePageChange = ( newPage: number ) => {
     // Prevent fetching if already on the target page or if a fetch is in progress.
     if (newPage === currentPage || isPending) return;
 
     startTransition( async () => {
-      // Fetch the profile's books for the new page using the current query.
-      const { data: newProfileBooks } = await getPaginatedUserBooksByState( userId, shelfState, newPage, query );
+      // Fetch the profile's books for the new page using the current query and types filter.
+      const { data: newProfileBooks } = await getPaginatedUserBooksByState(
+        userId,
+        shelfState,
+        newPage,
+        query,
+        types
+      );
 
       setBooks( newProfileBooks );
       setCurrentPage( newPage );
@@ -48,7 +56,12 @@ export function useShelfPagination( {
       // If a user is connected, fetch their specific data for these new books.
       if (connectedUserId && newProfileBooks.length > 0) {
         const newBookIds = newProfileBooks.map( ( b ) => b.book_id );
-        const newConnectedData = await getConnectedUserBooksForDisplayedBooks( connectedUserId, newBookIds, query );
+        const newConnectedData = await getConnectedUserBooksForDisplayedBooks(
+          connectedUserId,
+          newBookIds,
+          query,
+          types
+        );
 
         setConnectedBooks( ( prev ) => {
           const bookMap = new Map( prev.map( ( b ) => [b.book_id, b] ) );

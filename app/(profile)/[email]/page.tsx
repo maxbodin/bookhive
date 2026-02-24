@@ -35,7 +35,12 @@ import { YearSelectionProvider } from "@/app/contexts/year-selection-context";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
-  searchParams?: Promise<{ query: string; tab: string; year: string }>;
+  searchParams?: Promise<{
+    query: string;
+    tab: string;
+    year: string;
+    types?: string;
+  }>;
 }
 
 export default async function UserProfile( { params, searchParams }: UserProfilePageProps ) {
@@ -54,6 +59,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
   try {
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
     const query: string = resolvedSearchParams?.query ?? "";
+    const types: string = resolvedSearchParams?.types ?? "";
     const tabParam: string = resolvedSearchParams?.tab ?? "";
 
     // Validate tab param or set default.
@@ -65,10 +71,10 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const visitedProfileUsername: string = getUsername( visitedProfile.email );
 
     // Fetch favorite books.
-    const visitedProfileFavoriteBooks: UserBook[] = await getUserFavoriteUsersBooks( visitedProfile.id, query );
+    const visitedProfileFavoriteBooks: UserBook[] = await getUserFavoriteUsersBooks( visitedProfile.id, query, types );
 
     // Fetch all books on the 'reading' shelf (not paginated).
-    const visitedProfileReadingBooks: UserBook[] = await getUserBooksByState( visitedProfile.id, "reading", query );
+    const visitedProfileReadingBooks: UserBook[] = await getUserBooksByState( visitedProfile.id, "reading", query, types );
 
     // Fetch the first page and total count for each paginated shelf.
     const [
@@ -76,9 +82,9 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       laterData,
       wishlistData,
     ] = await Promise.all( [
-      getPaginatedUserBooksByState( visitedProfile.id, "read", 1, query ),
-      getPaginatedUserBooksByState( visitedProfile.id, "later", 1, query ),
-      getPaginatedUserBooksByState( visitedProfile.id, "wishlist", 1, query ),
+      getPaginatedUserBooksByState( visitedProfile.id, "read", 1, query, types ),
+      getPaginatedUserBooksByState( visitedProfile.id, "later", 1, query, types ),
+      getPaginatedUserBooksByState( visitedProfile.id, "wishlist", 1, query, types ),
     ] );
 
     // Fetch all reading sessions for the visited profile.
@@ -94,6 +100,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         page: 1,
         year: selectedYear,
         query,
+        types
       } );
 
     let connectedUserDataWithBooks: UserBook[] = [];
@@ -117,6 +124,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
           currentUser.id,
           uniqueBookIds,
           query,
+          types
         );
       }
     } else
@@ -197,10 +205,12 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                     isOwner={ isOwner }
                     initialConnectedUserBooks={ connectedUserDataWithBooks }
                     connectedUserId={ currentUser?.id }
-                    query={ query }/>
+                    query={ query }
+                    types={ types }
+                  />
                 ) ) }
 
-                { !hasAnyBooks && <EmptyShelves username={ visitedProfileUsername } query={ query }/> }
+                { !hasAnyBooks && <EmptyShelves username={ visitedProfileUsername } query={ query } types={ types }/> }
               </div> )
             }
             sessionsTab={
@@ -210,6 +220,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                 initialSessions={ initialSessions }
                 initialTotalCount={ initialTotalCount }
                 query={ query }
+                types={ types }
               /> }
             statsTab={ <UserStats userBooks={ allDisplayedBooks }/> }
           />

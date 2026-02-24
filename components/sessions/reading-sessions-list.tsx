@@ -14,6 +14,7 @@ interface ReadingSessionsListProps {
   userId: string;
   isOwner: boolean;
   query: string;
+  types?: string;
   initialSessions: ReadingSessionWithBook[];
   initialTotalCount: number;
 }
@@ -22,6 +23,7 @@ export function ReadingSessionsList( {
                                        userId,
                                        isOwner,
                                        query,
+                                       types,
                                        initialSessions,
                                        initialTotalCount
                                      }: ReadingSessionsListProps ) {
@@ -52,6 +54,7 @@ export function ReadingSessionsList( {
         page: 1,
         year: selectedYear,
         query,
+        types,
       } );
 
       setSessions( newSessions );
@@ -61,7 +64,7 @@ export function ReadingSessionsList( {
     };
 
     fetchOnFilterChange();
-  }, [selectedYear, query, userId] );
+  }, [selectedYear, query, types, userId] );
 
   const loadMoreSessions = useCallback( async () => {
     if (isLoading || !hasMore) return;
@@ -73,13 +76,14 @@ export function ReadingSessionsList( {
       page: nextPage,
       year: selectedYear,
       query,
+      types,
     } );
 
     setSessions( ( prev ) => [...prev, ...newSessions] );
     setPage( nextPage );
     setHasMore( newSessions.length === SESSIONS_PAGE_SIZE );
     setIsLoading( false );
-  }, [isLoading, hasMore, page, userId, selectedYear, query] );
+  }, [isLoading, hasMore, page, userId, selectedYear, query, types] );
 
   useEffect( () => {
     if (inView && !isLoading) {

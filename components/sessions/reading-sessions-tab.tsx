@@ -13,6 +13,7 @@ interface ReadingSessionsTabProps {
   initialSessions: ReadingSessionWithBook[];
   initialTotalCount: number;
   query: string;
+  types?: string;
 }
 
 export const ReadingSessionsTab = ( {
@@ -21,6 +22,7 @@ export const ReadingSessionsTab = ( {
                                       initialSessions,
                                       initialTotalCount,
                                       query,
+                                      types,
                                     }: ReadingSessionsTabProps ) => {
   const t = useTranslations( "ReadingSessions" );
   const { selectedYear, availableYears } = useYearSelection();
@@ -55,6 +57,7 @@ export const ReadingSessionsTab = ( {
         userId={ userId }
         isOwner={ isOwner }
         query={ query }
+        types={ types }
         initialSessions={ initialSessions }
         initialTotalCount={ initialTotalCount }
       />

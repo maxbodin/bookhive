@@ -3,6 +3,7 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { Book } from "@/app/types/book";
 import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
+import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
 
 /**
  * Fetches a paginated list of books based on a search query and optional type filters.
@@ -25,44 +26,8 @@ export async function searchBooks(
 
   let request = supabase.from( "books" ).select( "*", { count: "exact" } );
 
-  // Apply text search filter.
-  if (query) {
-    const sanitizedQuery = query.trim().toLowerCase();
-
-    const textFilters = [
-      `title.ilike.%${ sanitizedQuery }%`,
-      `description.ilike.%${ sanitizedQuery }%`,
-      `publisher.ilike.%${ sanitizedQuery }%`,
-      `isbn_10.ilike.%${ sanitizedQuery }%`,
-      `isbn_13.ilike.%${ sanitizedQuery }%`,
-    ];
-
-    const authorsFilter = `authors.cs.{${ sanitizedQuery }}`;
-
-    request = request.or( [...textFilters, authorsFilter].join( "," ) );
-  }
-
-  // Apply type filter.
-  if (types) {
-    const typeArray = types.split( "," );
-
-    // Separate the string "null" from actual enum values like "bd" or "manga".
-    const validTypes = typeArray.filter( ( t ) => t !== "null" );
-    const includesNull = typeArray.includes( "null" );
-
-    if (validTypes.length > 0 && includesNull) {
-      // User selected both specific types AND "null" (No type).
-      request = request.or( `type.in.(${ validTypes.join( "," ) }),type.is.null` );
-    } else
-      if (validTypes.length > 0) {
-        // User selected ONLY specific types.
-        request = request.in( "type", validTypes );
-      } else
-        if (includesNull) {
-          // User selected ONLY "null" (No type).
-          request = request.is( "type", null );
-        }
-  }
+  // Pass `null` for foreignTable because `books` is the top-level table here.
+  request = applySharedBookFilters( request, null, query, types );
 
   // Apply pagination and ordering.
   request = request.order( "authors", { ascending: false } ).range( from, to );

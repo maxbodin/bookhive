@@ -228,7 +228,8 @@
   "EmptyShelves": {
     "noMatch": {
       "title": "Aucun Livre Correspondant",
-      "message": "Nous n'avons trouvé aucun livre correspondant à '<strong>{query}</strong>' sur les étagères de {username}."
+      "message": "Nous n'avons trouvé aucun livre correspondant à '<strong>{query}</strong>' sur les étagères de {username}.",
+      "fallbackMessage": "Aucun livre ne correspond aux filtres sélectionnés."
     },
     "empty": {
       "title": "Les étagères sont vides :(",

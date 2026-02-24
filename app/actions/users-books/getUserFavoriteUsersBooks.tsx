@@ -3,16 +3,21 @@ import { createClient } from "@/app/utils/supabase/server";
 import { UserBook } from "@/app/types/user-book";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
 import { getTranslations } from "next-intl/server";
+import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
 
 /**
  * Fetches a user's favorite books.
  * @param userId - The ID of the user whose favorite books to fetch.
  * @param query - Optional search query for the book title.
+ * @param types
  * @returns A list of the user's favorite books.
  * @throws An error if fetching fails.
  */
-export async function getUserFavoriteUsersBooks( userId: string,
-                                                 query: string = "" ): Promise<UserBook[]> {
+export async function getUserFavoriteUsersBooks(
+  userId: string,
+  query?: string,
+  types?: string
+): Promise<UserBook[]> {
   const t = await getTranslations( "GetUserUsersBooksAction" );
   const supabase = await createClient();
 
@@ -22,9 +27,7 @@ export async function getUserFavoriteUsersBooks( userId: string,
     .eq( "uid", userId )
     .eq( "is_favorite", true );
 
-  if (query) {
-    queryBuilder = queryBuilder.ilike( "books.title", `%${ query }%` );
-  }
+  queryBuilder = applySharedBookFilters( queryBuilder, "books", query, types );
 
   const { data: userBooksData, error } = await queryBuilder;
 

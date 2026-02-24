@@ -6,6 +6,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
 import { sortNatural } from "@/lib/sortNatural";
 import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
+import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
 
 /**
  * Fetches a paginated list of a user's books filtered by a specific state (e.g., 'read', 'later').
@@ -15,14 +16,16 @@ import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
  * @param state - The book state to filter by.
  * @param page - The page number to fetch.
  * @param query - Optional search query for the book title.
+ * @param types
  * @returns An object with the paginated data and the total count for that state.
  */
 export async function getPaginatedUserBooksByState(
   userId: string,
   state: BookState,
   page: number = 1,
-  query: string = ""
-): Promise<{ data: UserBook[], count: number }> {
+  query?: string,
+  types?: string
+): Promise<{ data: UserBook[]; count: number }> {
   const supabase = await createClient();
   const t = await getTranslations( "GetUserUsersBooksAction" );
 
@@ -35,10 +38,7 @@ export async function getPaginatedUserBooksByState(
     .eq( "uid", userId )
     .eq( "state", state );
 
-  if (query) {
-    queryBuilder = queryBuilder.ilike( "books.title", `%${ query }%` );
-  }
-
+  queryBuilder = applySharedBookFilters( queryBuilder, "books", query, types );
   queryBuilder = queryBuilder.range( from, to );
 
   const { data, error, count } = await queryBuilder;

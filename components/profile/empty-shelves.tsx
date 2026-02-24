@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 interface EmptyShelvesProps {
   username: string;
   query?: string | null;
+  types?: string | null;
 }
 
 /**
@@ -31,28 +32,32 @@ export function EmptyState( { icon: Icon, title, message }: {
   );
 }
 
-
 /**
  * Displays a contextual message for a user's empty bookshelf.
  * It differentiates between a generally empty shelf and a shelf that's empty due to a search filter.
  *
  * @param username
  * @param query
+ * @param types
  * @constructor
  */
-export function EmptyShelves( { username, query }: EmptyShelvesProps ) {
+export function EmptyShelves( { username, query, types }: EmptyShelvesProps ) {
   const t = useTranslations( "EmptyShelves" );
 
-  if (query) {
+  if (query || types) {
     return (
       <EmptyState
         icon={ SearchX }
         title={ t( "noMatch.title" ) }
-        message={ t.rich( "noMatch.message", {
-          query: query,
-          username: username,
-          strong: ( chunks ) => <strong>{ chunks }</strong>,
-        } ) }
+        message={
+          query
+            ? t.rich( "noMatch.message", {
+              query: query,
+              username: username,
+              strong: ( chunks ) => <strong>{ chunks }</strong>,
+            } )
+            : t( "noMatch.fallbackMessage" )
+        }
       />
     );
   }

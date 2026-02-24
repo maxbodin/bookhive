@@ -1,3 +1,5 @@
+import { BookType } from "@/app/types/book";
+
 export interface ReadingSession {
   id: number;
   uid: string;
@@ -15,6 +17,8 @@ export interface ReadingSessionWithBook extends ReadingSession {
     title: string;
     cover_url: string | null;
     pages?: number | null;
+    authors?: string[] | null;
+    type?: BookType | null;
   } | null; // The associated book could be null if it was deleted.
 }
 

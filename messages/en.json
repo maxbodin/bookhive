@@ -228,7 +228,8 @@
   "EmptyShelves": {
     "noMatch": {
       "title": "No Matching Books Found",
-      "message": "We couldn't find any books matching '<strong>{query}</strong>' on {username}'s shelves."
+      "message": "We couldn't find any books matching '<strong>{query}</strong>' on {username}'s shelves.",
+      "fallbackMessage": "No books match the selected filters."
     },
     "empty": {
       "title": "Shelves are Empty",

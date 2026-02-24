@@ -2,6 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { ReadingSessionWithBook, SESSIONS_PAGE_SIZE } from "@/app/types/reading-session";
+import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
 
 interface PaginatedSessionsResult {
   sessions: ReadingSessionWithBook[];
@@ -14,6 +15,7 @@ interface PaginatedSessionsResult {
  * @param page The page number to fetch.
  * @param year The year to filter sessions by.
  * @param query Optional search query for the book title.
+ * @param types
  * @returns A promise resolving to the sessions for the page and the total count matching the criteria.
  */
 export async function getPaginatedUserReadingSessions( {
@@ -21,11 +23,13 @@ export async function getPaginatedUserReadingSessions( {
                                                          page,
                                                          year,
                                                          query,
+                                                         types,
                                                        }: {
   userId: string;
   page: number;
   year: number;
   query?: string;
+  types?: string;
 } ): Promise<PaginatedSessionsResult> {
   const supabase = await createClient();
   const offset = ( page - 1 ) * SESSIONS_PAGE_SIZE;
@@ -37,21 +41,18 @@ export async function getPaginatedUserReadingSessions( {
       book:books!inner (
         title,
         cover_url,
-        pages
+        pages,
+        authors,
+        type
       )
-    `,
-      { count: "exact" }
-    )
+    `, { count: "exact" } )
     .eq( "uid", userId )
     .gte( "start_time", `${ year }-01-01T00:00:00Z` )
     .lt( "start_time", `${ year + 1 }-01-01T00:00:00Z` )
     .order( "start_time", { ascending: false } )
     .range( offset, offset + SESSIONS_PAGE_SIZE - 1 );
 
-  // Apply search query if it exists.
-  if (query) {
-    queryBuilder = queryBuilder.ilike( "book.title", `%${ query }%` );
-  }
+  queryBuilder = applySharedBookFilters( queryBuilder, "book", query, types );
 
   const { data: sessions, error, count } = await queryBuilder;
 

@@ -20,6 +20,7 @@ interface PaginatedBookshelfProps {
   initialConnectedUserBooks: UserBook[];
   connectedUserId?: string;
   query: string;
+  types?: string;
 }
 
 export function PaginatedBookshelf( {
@@ -32,6 +33,7 @@ export function PaginatedBookshelf( {
                                       initialConnectedUserBooks,
                                       connectedUserId,
                                       query,
+                                      types,
                                     }: PaginatedBookshelfProps ) {
   const [isFolded, setIsFolded] = useState( false );
   const sectionRef = useRef<HTMLDivElement>( null );
@@ -45,7 +47,8 @@ export function PaginatedBookshelf( {
     initialData,
     initialConnectedUserBooks,
     connectedUserId,
-    query
+    query,
+    types,
   } );
 
   const onPageChangeClick = ( page: number ) => {
