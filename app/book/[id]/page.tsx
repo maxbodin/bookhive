@@ -8,6 +8,7 @@ import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
 import { Separator } from "@/components/ui/separator";
 import BookDetailItem from "@/components/book/book-detail-item";
+import { BackButton } from "@/components/back-button";
 
 interface BookDetailsPageProps {
   params?: Promise<{ id: string }>;
@@ -40,14 +41,18 @@ export default async function BookDetailsPage( { params }: BookDetailsPageProps 
 
   return (
     <div className="container mx-auto p-4 md:p-8">
+      <div className="mb-6">
+        <BackButton/>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
         <aside className="md:col-span-1 flex flex-col items-center gap-6">
-          <div className="relative">
+          <div className="relative w-full max-w-xs md:max-w-full">
             { book.cover_url ? (
               <img
                 src={ book.cover_url }
                 alt={ `Cover of ${ book.title }` }
-                className="w-full max-w-xs md:max-w-full rounded-lg shadow-xl aspect-[2/3] object-cover"
+                className="w-full rounded-lg shadow-xl aspect-[2/3] object-cover"
               />
             ) : (
               <div
@@ -83,7 +88,7 @@ export default async function BookDetailsPage( { params }: BookDetailsPageProps 
             </Badge>
           ) }
 
-          <Separator className="mt-4 mb-4"/>
+          <Separator className="my-6"/>
 
           <div className="max-w-none">
             <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "descriptionTitle" ) }</h2>
