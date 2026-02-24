@@ -35,7 +35,9 @@ export function PaginatedBookshelf( {
                                     }: PaginatedBookshelfProps ) {
   const [isFolded, setIsFolded] = useState( false );
   const sectionRef = useRef<HTMLDivElement>( null );
-  const isInitialMount = useRef( true );
+
+  // Track user intent: true ONLY when the user explicitly clicks pagination.
+  const isPagingRef = useRef( false );
 
   const { books, connectedBooks, currentPage, isPending, handlePageChange } = useShelfPagination( {
     userId,
@@ -46,14 +48,22 @@ export function PaginatedBookshelf( {
     query
   } );
 
+  const onPageChangeClick = ( page: number ) => {
+    // Prevent setting the flag if the user clicks the currently active page.
+    if (page !== currentPage) {
+      isPagingRef.current = true;
+      handlePageChange( page );
+    }
+  };
+
   useEffect( () => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
+    // Only scroll if the effect was triggered by an explicit user action.
+    if (isPagingRef.current) {
       sectionRef.current?.scrollIntoView( { behavior: "smooth" } );
+      // Reset the intent flag immediately after scrolling.
+      isPagingRef.current = false;
     }
   }, [currentPage] );
-
 
   if (totalCount === 0) {
     return null;
@@ -84,7 +94,7 @@ export function PaginatedBookshelf( {
             currentPage={ currentPage }
             totalPages={ totalPages }
             isPending={ isPending }
-            onPageChange={ handlePageChange }
+            onPageChange={ onPageChangeClick }
           />
 
           <BooksGrid
@@ -100,7 +110,7 @@ export function PaginatedBookshelf( {
             currentPage={ currentPage }
             totalPages={ totalPages }
             isPending={ isPending }
-            onPageChange={ handlePageChange }
+            onPageChange={ onPageChangeClick }
           />
         </div>
       ) }
