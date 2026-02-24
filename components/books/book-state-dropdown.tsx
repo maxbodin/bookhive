@@ -160,12 +160,12 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
           { ...props }
           variant="outline"
           size="sm"
-          className="w-full text-sm"
+          className="w-full h-auto min-h-8 py-1.5 text-sm whitespace-normal leading-tight flex items-center justify-between"
           disabled={ isPending }
         >
-          <Icon className="w-4 h-4 mr-2"/>
-          { stateLabels[optimisticState] }
-          <ChevronDown className="w-4 h-4 ml-auto"/>
+          <Icon className="w-3.5 h-3.5 shrink-0"/>
+          <span className="flex-1 text-center">{ stateLabels[optimisticState] }</span>
+          <ChevronDown className="w-3.5 h-3.5 shrink-0"/>
         </Button>
       );
     }
@@ -175,11 +175,11 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         { ...props }
         variant="secondary"
         size="sm"
-        className="w-full text-sm"
+        className="w-full h-auto min-h-8 py-1.5 text-sm whitespace-normal leading-tight flex items-center justify-between"
         disabled={ isPending }
       >
-        <BookPlus className="w-4 h-4 mr-2"/>
-        { t( "addToShelf" ) }
+        <BookPlus className="w-3.5 h-3.5 shrink-0"/>
+        <span className="text-center">{ t( "addToShelf" ) }</span>
       </Button>
     );
   } );
