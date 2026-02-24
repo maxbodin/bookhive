@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { ActionState } from "@/app/types/action-state";
 import { login, signInWithOtp, signup } from "@/app/login/actions";
-import { useFormState } from "react-dom";
 import passwordStrength from "@/lib/passwordStrength";
 import { toast } from "sonner";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -22,8 +21,8 @@ export default function AuthFormContent( { mode }: { mode: "signin" | "signup" }
 
   const action = mode === "signin" ? login : signup;
 
-  const [state, formAction] = useFormState( action, initialState );
-  const [otpState, otpAction] = useFormState( signInWithOtp, initialState );
+  const [state, formAction] = useActionState( action, initialState );
+  const [otpState, otpAction] = useActionState( signInWithOtp, initialState );
 
   const passwordScore: number = passwordStrength( passwordInput );
 
