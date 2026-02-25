@@ -23,6 +23,31 @@ export interface BookCardProps extends BookCardSharedProps {
 }
 
 /**
+ * Performant utility wrapper.
+ * Renders a link if isLink is true, otherwise returns a safe layout div.
+ */
+function OptionalLink( {
+                         isLink,
+                         href,
+                         className,
+                         children,
+                       }: {
+  isLink: boolean;
+  href: string;
+  className?: string;
+  children: React.ReactNode;
+} ) {
+  if (!isLink) {
+    return <div className={ className }>{ children }</div>;
+  }
+  return (
+    <Link href={ href } className={ className }>
+      { children }
+    </Link>
+  );
+}
+
+/**
  * Renders a minimalist book cover that links to the book's detail page.
  * The interactive favorite button reflects the CONNECTED user's status.
  */
@@ -34,8 +59,11 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
   const canToggleFavorite = connectedUserBook?.state === "read";
 
   return (
-    <Link href={ `/${ ROUTES.BOOK }/${ book.id }` }
-          className="relative group rounded-lg shadow-md">
+    <OptionalLink
+      isLink={ false }
+      href={ `/${ ROUTES.BOOK }/${ book.id }` }
+      className="relative group rounded-lg shadow-md block"
+    >
       { book.cover_url ? (
         <img
           src={ book.cover_url }
@@ -51,7 +79,7 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
       { canToggleFavorite && (
         <FavoriteToggleButton bookId={ book.id } isFavorite={ isConnectedUserFavorite }/>
       ) }
-    </Link>
+    </OptionalLink>
   );
 }
 
@@ -70,8 +98,11 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
     <div className="flex flex-col justify-between group border rounded-lg shadow-md h-full">
       <div>
         <div className="relative">
-          <Link href={ `/${ ROUTES.BOOK }/${ book.id }` }
-                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-t-lg">
+          <OptionalLink
+            isLink={ !addFromOLButton }
+            href={ `/${ ROUTES.BOOK }/${ book.id }` }
+            className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-t-lg"
+          >
             { book.cover_url ? (
               <img
                 src={ book.cover_url }
@@ -84,7 +115,8 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
                 <p className="text-primary text-sm">{ t( "noCover" ) }</p>
               </div>
             ) }
-          </Link>
+          </OptionalLink>
+
           { book.type && (
             <Badge variant="secondary" className="absolute top-2 right-2">
               { tBookTypes( book.type ) }
@@ -96,12 +128,19 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
           ) }
         </div>
         <div className="p-3">
-          <Link href={ `/${ ROUTES.BOOK }/${ book.id }` }
-                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md">
-            <h3 className="text-md font-bold hover:underline" title={ book.title ?? "Untitled" }>
+          <OptionalLink
+            isLink={ !addFromOLButton }
+            href={ `/${ ROUTES.BOOK }/${ book.id }` }
+            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md inline-block"
+          >
+            <h3
+              className={ `text-md font-bold ${ !addFromOLButton ? "hover:underline" : "" }` }
+              title={ book.title ?? "Untitled" }
+            >
               { book.title ?? "Untitled" }
             </h3>
-          </Link>
+          </OptionalLink>
+
           { book.authors && (
             <p className="text-sm text-muted-foreground">{ book.authors.join( ", " ) }</p>
           ) }
@@ -119,7 +158,6 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
   );
 }
 
-
 /**
  * Main component that decides whether to render a standard card or a favorite cover.
  */
@@ -128,16 +166,27 @@ export function BookPosterCard( {
                                   profileUserBook,
                                   connectedUserBook,
                                   inFavoriteSection,
-                                  addFromOLButton
+                                  addFromOLButton,
                                 }: BookCardProps ) {
   if (inFavoriteSection) {
     // In the "Favorites" section, always render the minimalist cover.
-    // It still receives `connectedUserBook` to allow the connected user to take action.
-    return <FavoriteBookCover book={ book } profileUserBook={ profileUserBook }
-                              connectedUserBook={ connectedUserBook }/>;
+    return (
+      <FavoriteBookCover
+        book={ book }
+        profileUserBook={ profileUserBook }
+        connectedUserBook={ connectedUserBook }
+        addFromOLButton={ addFromOLButton }
+      />
+    );
   }
 
   // In all other shelves, render the standard, detailed card.
-  return <StandardBookCard book={ book } profileUserBook={ profileUserBook } connectedUserBook={ connectedUserBook }
-                           addFromOLButton={ addFromOLButton }/>;
+  return (
+    <StandardBookCard
+      book={ book }
+      profileUserBook={ profileUserBook }
+      connectedUserBook={ connectedUserBook }
+      addFromOLButton={ addFromOLButton }
+    />
+  );
 }
