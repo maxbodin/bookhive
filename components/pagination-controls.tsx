@@ -23,12 +23,10 @@ export function PaginationControls( { totalPages, currentPage }: PaginationContr
   }, [pathname, searchParams] );
 
   return (
-    <div className="mt-4 mb-4">
-      <PaginationBar
-        currentPage={ currentPage }
-        totalPages={ totalPages }
-        hrefBuilder={ createPageURL }
-      />
-    </div>
+    <PaginationBar
+      currentPage={ currentPage }
+      totalPages={ totalPages }
+      hrefBuilder={ createPageURL }
+    />
   );
 }

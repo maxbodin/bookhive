@@ -32,9 +32,8 @@ export async function FavoriteBookshelf( { favoriteUserBooks, isOwner, connected
                 book={ profileFavoriteBook }              // The base book data
                 profileUserBook={ profileFavoriteBook }   // The profile owner's data for this book
                 connectedUserBook={ connectedUserBook }   // The connected user's data for this book
-                isOwner={ isOwner }
                 inFavoriteSection={ true }
-              />
+                addFromOLButton={ false }/>
             );
           } ) }
         </div>

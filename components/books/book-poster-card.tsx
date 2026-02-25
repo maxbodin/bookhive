@@ -14,7 +14,7 @@ interface BookCardSharedProps {
   book: Book;
   profileUserBook?: UserBook;   // Data from the user whose profile is being viewed
   connectedUserBook?: UserBook; // Data from the logged-in user
-  addFromOLButton?: boolean;
+  addFromOLButton: boolean;
 }
 
 // Props for the main exported component
@@ -36,7 +36,7 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
 
   return (
     <OptionalLink
-      isLink={ false }
+      isLink={ true }
       href={ `/${ ROUTES.BOOK }/${ book.id }` }
       className="relative group rounded-lg shadow-md block"
     >

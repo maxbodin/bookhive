@@ -20,7 +20,7 @@ interface BooksGridProps {
   view: "poster" | "list";
   isOwner: boolean;
   readingSessions: ReadingSession[];    // The profile owner's reading sessions
-  addFromOLButton?: boolean;
+  addFromOLButton: boolean;
   isConnected?: boolean;
 }
 
@@ -139,7 +139,7 @@ export function BooksGrid( {
                     connectedUserBook={ connectedUserBook }
                     inFavoriteSection={ false }
                     readingSessions={ readingSessions }
-                  />
+                    addFromOLButton={ false }/>
                 ) }
               </div>
             );

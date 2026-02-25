@@ -110,13 +110,13 @@ export function EditableBookDetails( { book, isAdmin }: EditableBookDetailsProps
           </div>
         </div>
         <div className="flex justify-between items-center gap-2">
-            <Button type="button" variant="outline" onClick={ () => setIsEditing( false ) } disabled={ isPending }>
-              <X className="w-4 h-4 mr-2"/> Discard
-            </Button>
-            <Button type="submit" disabled={ isPending }>
-              { isPending ? <Spinner className="w-4 h-4 mr-2"/> : <Check className="w-4 h-4 mr-2"/> }
-              Save Changes
-            </Button>
+          <Button type="button" variant="outline" onClick={ () => setIsEditing( false ) } disabled={ isPending }>
+            <X className="w-4 h-4 mr-2"/> Discard
+          </Button>
+          <Button type="submit" disabled={ isPending }>
+            { isPending ? <Spinner className="w-4 h-4 mr-2"/> : <Check className="w-4 h-4 mr-2"/> }
+            Save Changes
+          </Button>
         </div>
       </form>
     );
@@ -140,37 +140,37 @@ export function EditableBookDetails( { book, isAdmin }: EditableBookDetailsProps
         { book.type && (
           <Badge variant="secondary" className="mt-4">
             { tBookTypes( book.type ) }
-        </Badge>
-      ) }
+          </Badge>
+        ) }
 
-      <Separator className="my-6"/>
+        <Separator className="my-6"/>
 
-      <div className="max-w-none">
-        <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "descriptionTitle" ) }</h2>
-        <p className="whitespace-pre-line">{ book.description ?? undefinedFallback }</p>
+        <div className="max-w-none">
+          <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "descriptionTitle" ) }</h2>
+          <p className="whitespace-pre-line">{ book.description ?? undefinedFallback }</p>
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "detailsTitle" ) }</h2>
+          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
+            <BookDetailItem label={ t( "publisher" ) } value={ book.publisher } fallbackText={ undefinedFallback }/>
+            <BookDetailItem label={ t( "publicationDate" ) } value={ book.publication_date }
+                            fallbackText={ undefinedFallback }/>
+            <BookDetailItem label={ t( "pages" ) } value={ book.pages } fallbackText={ undefinedFallback }/>
+            <BookDetailItem label={ t( "isbn10" ) } value={ book.isbn_10 } fallbackText={ undefinedFallback }/>
+            <BookDetailItem label={ t( "isbn13" ) } value={ book.isbn_13 } fallbackText={ undefinedFallback }/>
+            <BookDetailItem
+              label={ t( "dimensions" ) }
+              value={ book.height && book.length && book.width && `${ book.height } x ${ book.length } x ${ book.width } cm` }
+              fallbackText={ undefinedFallback }
+            />
+            <BookDetailItem label={ t( "weight" ) } value={ book.weight && `${ book.weight } g` }
+                            fallbackText={ undefinedFallback }/>
+            <BookDetailItem label={ t( "categories" ) } value={ book.categories && `${ book.categories.join( ", " ) }` }
+                            fallbackText={ undefinedFallback }/>
+          </dl>
+        </div>
       </div>
-
-      <div className="mt-8">
-        <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "detailsTitle" ) }</h2>
-        <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
-          <BookDetailItem label={ t( "publisher" ) } value={ book.publisher } fallbackText={ undefinedFallback }/>
-          <BookDetailItem label={ t( "publicationDate" ) } value={ book.publication_date }
-                          fallbackText={ undefinedFallback }/>
-          <BookDetailItem label={ t( "pages" ) } value={ book.pages } fallbackText={ undefinedFallback }/>
-          <BookDetailItem label={ t( "isbn10" ) } value={ book.isbn_10 } fallbackText={ undefinedFallback }/>
-          <BookDetailItem label={ t( "isbn13" ) } value={ book.isbn_13 } fallbackText={ undefinedFallback }/>
-          <BookDetailItem
-            label={ t( "dimensions" ) }
-            value={ book.height && book.length && book.width && `${ book.height } x ${ book.length } x ${ book.width } cm` }
-            fallbackText={ undefinedFallback }
-          />
-          <BookDetailItem label={ t( "weight" ) } value={ book.weight && `${ book.weight } g` }
-                          fallbackText={ undefinedFallback }/>
-          <BookDetailItem label={ t( "categories" ) } value={ book.categories && `${ book.categories.join( ", " ) }` }
-                          fallbackText={ undefinedFallback }/>
-        </dl>
-      </div>
-    </div>
       <div className="w-full">
         { isAdmin && (
           <Button
