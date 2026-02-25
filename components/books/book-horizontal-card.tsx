@@ -4,6 +4,9 @@ import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { SessionInfo } from "@/components/sessions/session-info";
 import { ReadingSession } from "@/app/types/reading-session";
 import { useTranslations } from "next-intl";
+import { ROUTES } from "@/app/utils/routes";
+import React from "react";
+import OptionalLink from "@/components/ui/optional-link";
 
 export interface BookHorizontalCardProps extends BookCardProps {
   readingSessions?: ReadingSession[];
@@ -24,29 +27,48 @@ export function BookHorizontalCard( {
   const isReadingInProgress = profileUserBook?.state === "reading" && !!profileUserBook.pages;
   const bookTitle = book.title ?? t( "untitled" );
 
+  const bookDetailUrl = `/${ ROUTES.BOOK }/${ book.id }`;
+
   return (
-    <div className="flex gap-4 group border rounded-lg shadow-sm hover:shadow-lg transition-shadow p-3 w-full">
+    <div
+      className="flex gap-4 group border rounded-lg shadow-sm hover:shadow-lg transition-shadow p-3 w-full">
       <div className="flex-shrink-0 w-24 md:w-28">
-        { book.cover_url ? (
-          <img
-            src={ book.cover_url }
-            alt={ t( "coverAlt", { title: bookTitle } ) }
-            className="w-full h-auto object-cover rounded aspect-[2/3] shadow-md"
-          />
-        ) : (
-          <div className="w-full flex items-center justify-center rounded aspect-[2/3] bg-gray-100 dark:bg-secondary">
-            <p className="text-primary text-xs">{ t( "noCover" ) }</p>
-          </div>
-        ) }
+        <OptionalLink
+          isLink={ true }
+          href={ bookDetailUrl }
+          className="block rounded"
+        >
+          { book.cover_url ? (
+            <img
+              src={ book.cover_url }
+              alt={ t( "coverAlt", { title: bookTitle } ) }
+              className="w-full h-auto object-cover rounded aspect-[2/3] shadow-md"
+            />
+          ) : (
+            <div className="w-full flex items-center justify-center rounded aspect-[2/3] bg-gray-100 dark:bg-secondary">
+              <p className="text-primary text-xs text-center p-1">{ t( "noCover" ) }</p>
+            </div>
+          ) }
+        </OptionalLink>
       </div>
 
       <div className="flex flex-col flex-grow justify-between">
         <div>
           <div className="flex items-start justify-between gap-2">
             <div className="flex-grow min-w-0">
-              <h3 className="text-lg font-bold" title={ bookTitle }>
-                { bookTitle }
-              </h3>
+              <OptionalLink
+                isLink={ true }
+                href={ bookDetailUrl }
+                className="inline-block rounded"
+              >
+                <h3
+                  className={ `text-lg font-bold hover:underline` }
+                  title={ bookTitle }
+                >
+                  { bookTitle }
+                </h3>
+              </OptionalLink>
+
               { book.authors && (
                 <p className="text-sm text-muted-foreground">
                   { t( "by", { authors: book.authors.join( ", " ) } ) }

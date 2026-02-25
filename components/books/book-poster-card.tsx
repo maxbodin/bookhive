@@ -6,8 +6,8 @@ import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button"
 import { useTranslations } from "next-intl";
 import React from "react";
 import { AddBookButton } from "@/components/open-library/add-book-button";
-import Link from "next/link";
 import { ROUTES } from "@/app/utils/routes";
+import OptionalLink from "@/components/ui/optional-link";
 
 // Shared interface for props used by all card types
 interface BookCardSharedProps {
@@ -22,30 +22,6 @@ export interface BookCardProps extends BookCardSharedProps {
   inFavoriteSection: boolean;
 }
 
-/**
- * Performant utility wrapper.
- * Renders a link if isLink is true, otherwise returns a safe layout div.
- */
-function OptionalLink( {
-                         isLink,
-                         href,
-                         className,
-                         children,
-                       }: {
-  isLink: boolean;
-  href: string;
-  className?: string;
-  children: React.ReactNode;
-} ) {
-  if (!isLink) {
-    return <div className={ className }>{ children }</div>;
-  }
-  return (
-    <Link href={ href } className={ className }>
-      { children }
-    </Link>
-  );
-}
 
 /**
  * Renders a minimalist book cover that links to the book's detail page.
@@ -101,7 +77,7 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
           <OptionalLink
             isLink={ !addFromOLButton }
             href={ `/${ ROUTES.BOOK }/${ book.id }` }
-            className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-t-lg"
+            className="block rounded-t-lg"
           >
             { book.cover_url ? (
               <img
@@ -131,7 +107,7 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
           <OptionalLink
             isLink={ !addFromOLButton }
             href={ `/${ ROUTES.BOOK }/${ book.id }` }
-            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md inline-block"
+            className="rounded-md inline-block"
           >
             <h3
               className={ `text-md font-bold ${ !addFromOLButton ? "hover:underline" : "" }` }
