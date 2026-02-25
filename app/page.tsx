@@ -122,28 +122,28 @@ export default async function Home( { searchParams }: HomePageProps ) {
 
           { currentUserProfile?.is_admin && query && query !== "" && (
             <>
-            <Separator className="w-full mx-auto my-8"/>
-            <h2
-              className="text-xl font-bold mb-4">{ t( "openlibraryResultsTitle", { count: OpenLibraryBooks.length } ) }</h2>
+              <Separator className="w-full mx-auto my-8"/>
+              <h2
+                className="text-xl font-bold mb-4">{ t( "openlibraryResultsTitle", { count: OpenLibraryBooks.length } ) }</h2>
 
-            <div className="flex flex-col items-center">
-              <Suspense key={ `${ query }-${ currentPage }-openlibrary` } fallback={ <BooksGridSkeleton/> }>
-                <BooksGrid
-                  books={ OpenLibraryBooks }
-                  view={ "poster" }
-                  isOwner={ false }
-                  profileUserBooks={ [] }
-                  connectedUserBooks={ [] }
-                  readingSessions={ [] }
-                  addFromOLButton={ true }
-                  isConnected={ isConnected }
-                />
-              </Suspense>
-            </div>
+              <div className="flex flex-col items-center">
+                <Suspense key={ `${ query }-${ currentPage }-openlibrary` } fallback={ <BooksGridSkeleton/> }>
+                  <BooksGrid
+                    books={ OpenLibraryBooks }
+                    view={ "poster" }
+                    isOwner={ false }
+                    profileUserBooks={ [] }
+                    connectedUserBooks={ [] }
+                    readingSessions={ [] }
+                    addFromOLButton={ true }
+                    isConnected={ isConnected }
+                  />
+                </Suspense>
+              </div>
             </>
-            ) }
-            </div>
-            </main>
-            </div>
-            );
-          }
+          ) }
+        </div>
+      </main>
+    </div>
+  );
+}

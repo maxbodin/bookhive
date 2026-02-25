@@ -368,6 +368,7 @@
   "AuthForm": {
     "title_signup": "Create an account",
     "title_signin": "Welcome back",
+    "title_recovery": "Recover your account",
     "signin_tab": "Sign in",
     "signup_tab": "Sign up",
     "email_label": "Email",
@@ -376,9 +377,16 @@
     "password_placeholder": "Enter your password",
     "submit_signup": "Create account",
     "submit_signin": "Sign in",
+    "submit_recovery": "Send Reset Link",
     "separator": "or continue with",
     "magic_link": "Sign in with Magic Link",
-    "error_password_weak": "Password is not strong enough. Please choose a stronger one."
+    "forgot_password_link": "Forgot password?",
+    "error_password_weak": "Password is not strong enough. Please choose a stronger one.",
+    "success_password_updated": "Password updated successfully.",
+    "back_to_signin": "Back to Sign In",
+    "title_reset_password": "Reset Password",
+    "new_password_label": "New Password",
+    "submit_reset_password": "Update Password"
   },
   "BookDetails": {
     "noCover": "No cover available",

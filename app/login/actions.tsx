@@ -7,6 +7,8 @@ import { createClient } from "@/app/utils/supabase/server";
 import passwordStrength from "@/lib/passwordStrength";
 import { ActionState } from "@/app/types/action-state";
 
+// TODO : Add translations in the following methods.
+
 /**
  * Logs in a user with email and password.
  * @param _prevState - The previous state (unused, but required for useFormState).
@@ -138,6 +140,70 @@ export async function signInWithOtp(
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  revalidatePath( "/", "layout" );
+  redirect( "/" );
+}
+
+/**
+ * Initiates the password recovery flow.
+ * @param _prevState - The previous state.
+ * @param formData - The form data containing the email.
+ */
+export async function forgotPassword(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const supabase = await createClient();
+  const origin = ( await headers() ).get( "origin" );
+
+  const email = formData.get( "email" ) as string;
+
+  if (!email) {
+    return { success: false, errors: { email: "Email is required." } };
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail( email, {
+    redirectTo: `${ origin }/auth/confirm?next=/reset-password`,
+  } );
+
+  if (error) {
+    // TODO: Return a generic error instead of real error message.
+    return { success: false, errors: { form: error.message } };
+  }
+
+  return { success: true, message: "Check your email for the password reset link." };
+}
+
+/**
+ * Updates the authenticated user's password.
+ * @param _prevState - The previous state.
+ * @param formData - The form data containing the new password.
+ */
+export async function updatePassword(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const supabase = await createClient();
+  const password = formData.get( "password" ) as string;
+  const errors: ActionState["errors"] = {};
+
+  if (!password) {
+    errors.password = "Password is required.";
+  } else
+    if (passwordStrength( password ) < 4) {
+      errors.password = "Password is not strong enough.";
+    }
+
+  if (Object.keys( errors ).length > 0) {
+    return { success: false, errors };
+  }
+
+  const { error } = await supabase.auth.updateUser( { password } );
+
+  if (error) {
+    return { success: false, errors: { form: error.message } };
+  }
+
   revalidatePath( "/", "layout" );
   redirect( "/" );
 }

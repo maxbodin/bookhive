@@ -364,6 +364,7 @@
   "AuthForm": {
     "title_signup": "Créer un compte",
     "title_signin": "Bienvenue",
+    "title_recovery": "Récupération de votre compte",
     "signin_tab": "Se connecter",
     "signup_tab": "S'inscrire",
     "email_label": "E-mail",
@@ -372,9 +373,16 @@
     "password_placeholder": "Entrez votre mot de passe",
     "submit_signup": "Créer un compte",
     "submit_signin": "Se connecter",
+    "submit_recovery": "Envoyer le lien de réinitialisation",
     "separator": "ou continuer avec",
     "magic_link": "Se connecter avec un lien magique",
-    "error_password_weak": "Le mot de passe n'est pas assez fort. Veuillez en choisir un plus robuste."
+    "forgot_password_link": "Mot de passe oublié ?",
+    "error_password_weak": "Le mot de passe n'est pas assez fort. Veuillez en choisir un plus robuste.",
+    "success_password_updated": "Mot de passe mis à jour avec succès.",
+    "back_to_signin": "Retour à la connexion",
+    "title_reset_password": "Réinitialisation du mot de passe",
+    "new_password_label": "Nouveau mot de passe",
+    "submit_reset_password": "Mettre à jour le mot de passe"
   },
   "BookDetails": {
     "noCover": "Aucune couverture disponible",
