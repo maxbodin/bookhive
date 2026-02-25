@@ -244,8 +244,11 @@
     }
   },
   "ProfileStatsSummary": {
-    "hoursRead": "Heures lues",
-    "pagesRead": "Pages lues"
+    "totalHoursLabel": "Total d'heures de lecture",
+    "hoursUnit": "{count, plural, =0 {0 heure} one {# heure} other {# heures}}",
+    "totalPagesLabel": "Total de pages lues",
+    "longestStreakLabel": "Plus longue série",
+    "daysUnit": "{count, plural, =0 {0 jour} one {# jour} other {# jours}}"
   },
   "ReadingActivityCalendar": {
     "title": "Activité de lecture",
