@@ -9,6 +9,7 @@ import ReadingLogger from "@/components/sessions/reading-logger";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Footer } from "@/components/footer";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist( {
   variable: "--font-geist-sans",
@@ -60,6 +61,7 @@ export default function RootLayout( {
         { children }
         <ReadingLogger/>
         <Footer/>
+        <Analytics/>
       </ThemeProvider>
     </NextIntlClientProvider>
     </body>
