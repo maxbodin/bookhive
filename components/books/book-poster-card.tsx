@@ -14,7 +14,6 @@ interface BookCardSharedProps {
   book: Book;
   profileUserBook?: UserBook;   // Data from the user whose profile is being viewed
   connectedUserBook?: UserBook; // Data from the logged-in user
-  isOwner: boolean;
   addFromOLButton?: boolean;
 }
 
@@ -68,7 +67,7 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
   const canToggleFavorite = connectedUserBook?.state === "read";
 
   return (
-    <div className="flex flex-col justify-between group border rounded-lg shadow-md">
+    <div className="flex flex-col justify-between group border rounded-lg shadow-md h-full">
       <div>
         <div className="relative">
           <Link href={ `/${ ROUTES.BOOK }/${ book.id }` }
@@ -128,18 +127,17 @@ export function BookPosterCard( {
                                   book,
                                   profileUserBook,
                                   connectedUserBook,
-                                  isOwner,
                                   inFavoriteSection,
                                   addFromOLButton
                                 }: BookCardProps ) {
   if (inFavoriteSection) {
     // In the "Favorites" section, always render the minimalist cover.
     // It still receives `connectedUserBook` to allow the connected user to take action.
-    return <FavoriteBookCover book={ book } profileUserBook={ profileUserBook } connectedUserBook={ connectedUserBook }
-                              isOwner={ isOwner }/>;
+    return <FavoriteBookCover book={ book } profileUserBook={ profileUserBook }
+                              connectedUserBook={ connectedUserBook }/>;
   }
 
   // In all other shelves, render the standard, detailed card.
   return <StandardBookCard book={ book } profileUserBook={ profileUserBook } connectedUserBook={ connectedUserBook }
-                           isOwner={ isOwner } addFromOLButton={ addFromOLButton }/>;
+                           addFromOLButton={ addFromOLButton }/>;
 }

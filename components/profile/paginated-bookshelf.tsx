@@ -107,6 +107,7 @@ export function PaginatedBookshelf( {
             view="poster"
             isOwner={ isOwner }
             readingSessions={ [] }
+            isConnected={ !!connectedUserId }
           />
 
           <PaginationBar

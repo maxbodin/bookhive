@@ -312,7 +312,8 @@
       "reading": "Reading",
       "read": "Read",
       "later": "Read Later",
-      "wishlist": "Wishlist"
+      "wishlist": "Wishlist",
+      "none": "No state"
     },
     "dialogs": {
       "reading": {
@@ -396,5 +397,8 @@
   },
   "BookDetailItem": {
     "undefined": "Undefined"
+  },
+  "BooksGrid": {
+    "filter": "States"
   }
 }

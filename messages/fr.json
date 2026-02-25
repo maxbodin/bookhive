@@ -308,7 +308,8 @@
       "reading": "En cours",
       "read": "Lu",
       "later": "À lire plus tard",
-      "wishlist": "Liste d'envies"
+      "wishlist": "Liste d'envies",
+      "none": "Aucun status"
     },
     "dialogs": {
       "reading": {
@@ -392,5 +393,8 @@
   },
   "BookDetailItem": {
     "undefined": "Non défini"
+  },
+  "BooksGrid": {
+    "filter": "Status"
   }
 }

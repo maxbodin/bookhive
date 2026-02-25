@@ -1,6 +1,6 @@
 import { BookOpenCheck, CalendarDays, Clock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 interface ReadingProgressProps {
   currentPage: number;
@@ -10,14 +10,14 @@ interface ReadingProgressProps {
   formattedLastSessionDate: string | null;
 }
 
-export default async function ReadingProgress( {
-                                                 currentPage,
-                                                 totalPages,
-                                                 totalHours,
-                                                 daysSinceLastSession,
-                                                 formattedLastSessionDate,
-                                               }: ReadingProgressProps ) {
-  const t = await getTranslations( "ReadingProgress" );
+export default function ReadingProgress( {
+                                           currentPage,
+                                           totalPages,
+                                           totalHours,
+                                           daysSinceLastSession,
+                                           formattedLastSessionDate,
+                                         }: ReadingProgressProps ) {
+  const t = useTranslations( "ReadingProgress" );
 
   // Avoid division by zero and ensure pages are valid.
   const progressPercentage = totalPages > 0 ? Math.round( ( currentPage / totalPages ) * 100 ) : 0;

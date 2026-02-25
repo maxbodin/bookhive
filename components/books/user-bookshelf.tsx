@@ -11,11 +11,18 @@ interface UserBookshelfProps {
   isOwner: boolean;
   connectedUserBooks: UserBook[];       // The logged-in user's data with books.
   readingSessions: ReadingSession[];    // The profile owner's reading sessions.
+  isConnected?: boolean;
 }
 
 const SHELVES_ORDER = ["reading", "read", "later", "wishlist"] as const;
 
-export async function UserBookshelf( { userBooks, isOwner, connectedUserBooks, readingSessions }: UserBookshelfProps ) {
+export async function UserBookshelf( {
+                                       userBooks,
+                                       isOwner,
+                                       connectedUserBooks,
+                                       readingSessions,
+                                       isConnected
+                                     }: UserBookshelfProps ) {
   const t = await getTranslations( "UserBookshelf" );
 
   const SHELF_TITLES: Record<typeof SHELVES_ORDER[number], string> = {
@@ -58,6 +65,7 @@ export async function UserBookshelf( { userBooks, isOwner, connectedUserBooks, r
                 view={ gridView }
                 isOwner={ isOwner }
                 readingSessions={ readingSessions }
+                isConnected={ isConnected }
               />
             </Suspense>
           </section>

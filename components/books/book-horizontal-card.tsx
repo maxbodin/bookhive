@@ -3,20 +3,20 @@ import { Badge } from "@/components/ui/badge";
 import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { SessionInfo } from "@/components/sessions/session-info";
 import { ReadingSession } from "@/app/types/reading-session";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 export interface BookHorizontalCardProps extends BookCardProps {
   readingSessions?: ReadingSession[];
 }
 
-export async function BookHorizontalCard( {
-                                            book,
-                                            profileUserBook,
-                                            connectedUserBook,
-                                            readingSessions = [],
-                                          }: BookHorizontalCardProps ) {
-  const t = await getTranslations( "BookCard" );
-  const tBookTypes = await getTranslations( "BookTypes" );
+export function BookHorizontalCard( {
+                                      book,
+                                      profileUserBook,
+                                      connectedUserBook,
+                                      readingSessions = [],
+                                    }: BookHorizontalCardProps ) {
+  const t = useTranslations( "BookCard" );
+  const tBookTypes = useTranslations( "BookTypes" );
 
   // Find the sessions that belong to the current book
   const bookSessions = readingSessions.filter( ( session ) => session.book_id === book.id );

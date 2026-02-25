@@ -48,6 +48,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
   // Fetch connected user.
   let connectedUserDataWithBooks: UserBook[] = [];
   const currentUser: User | null = await getCurrentUser();
+  const isConnected = !!currentUser;
 
   // Fetch books from Open Library if admin.
   let OpenLibraryBooks: Book[] = [];
@@ -93,10 +94,11 @@ export default async function Home( { searchParams }: HomePageProps ) {
             <BooksGrid
               books={ books }
               view={ "poster" }
-              isOwner={ true }
+              isOwner={ false }
               profileUserBooks={ [] }
               connectedUserBooks={ connectedUserDataWithBooks }
               readingSessions={ [] }
+              isConnected={ isConnected }
             />
           </Suspense>
 
@@ -115,11 +117,12 @@ export default async function Home( { searchParams }: HomePageProps ) {
                 <BooksGrid
                   books={ OpenLibraryBooks }
                   view={ "poster" }
-                  isOwner={ true }
+                  isOwner={ false }
                   profileUserBooks={ [] }
                   connectedUserBooks={ [] }
                   readingSessions={ [] }
                   addFromOLButton={ true }
+                  isConnected={ isConnected }
                 />
               </Suspense>
             </>
