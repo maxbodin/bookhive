@@ -21,7 +21,7 @@ const geistMono = Geist_Mono( {
   subsets: ["latin"],
 } );
 
-// Generate dynamic, translated metadata
+// Generate dynamic, translated metadata.
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations( "Layout" );
 

@@ -4,6 +4,7 @@ import { signOut } from "@/app/login/actions";
 import Link from "next/link";
 import { Username } from "@/components/username";
 import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
+import { ROUTES } from "@/app/utils/routes";
 
 export default async function AuthButtons() {
   const supabase = await createClient();
@@ -31,7 +32,7 @@ export default async function AuthButtons() {
         </>
       ) : (
         <Button asChild>
-          <Link href="/login">Sign in</Link>
+          <Link href={ `/${ ROUTES.LOGIN }` }>Sign in</Link>
         </Button>
       ) }
     </div>
