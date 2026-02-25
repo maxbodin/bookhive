@@ -1,56 +1,33 @@
-"use client";
-import { createClient } from "@/app/utils/supabase/client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Session } from "@supabase/supabase-js";
 import { getUsername } from "@/lib/getUsername";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-const supabase = createClient();
+interface UsernameProps {
+  email?: string;
+  customUsername?: string | null;
+}
 
-export function Username() {
-  const [session, setSession] = useState<Session | null>( null );
-  const [loading, setLoading] = useState<boolean>( true );
-  const t = useTranslations( "Username" );
+export async function Username( { email, customUsername }: UsernameProps ) {
+  const t = await getTranslations( "Username" );
 
-  useEffect( () => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession( session );
-      setLoading( false );
-    };
-
-    getSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange( ( _event, session ) => {
-      setSession( session );
-    } );
-
-    return () => {
-      authListener?.subscription.unsubscribe();
-    };
-  }, [] );
-
-  if (loading) {
+  if (!email) {
     return null;
   }
 
-  const username = session?.user ? getUsername( session.user.email ) : null;
+  const displayUsername = getUsername( email, customUsername );
 
   return (
     <div className="flex items-center">
-      { username && session?.user?.email ? (
-        <p className="text-lg font-semibold">
-          { t( "greeting" ) }{ " " }
-          <Link
-            href={ `/${ session.user.email }` }
-            className="hover:underline"
-          >
-            { username }
-          </Link>
-          !
-        </p>
-      ) : null }
+      <p className="text-lg font-semibold">
+        { t( "greeting" ) }{ " " }
+        <Link
+          href={ `/${ email }` }
+          className="hover:underline"
+        >
+          { displayUsername }
+        </Link>
+        !
+      </p>
     </div>
   );
 }

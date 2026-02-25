@@ -396,5 +396,15 @@
   },
   "BooksGrid": {
     "filter": "Status"
+  },
+  "EditableUsername": {
+    "title": "Modifier le nom d'utilisateur",
+    "description": "Choisissez un nouveau nom d'affichage.",
+    "placeholder": "ex. Kiffeur2Livres",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "success": "Nom d'utilisateur mis à jour avec succès.",
+    "unauthorized": "Requête non autorisée.",
+    "invalidUsername": "Nom d'utilisateur non valide."
   }
 }

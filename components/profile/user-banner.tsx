@@ -12,7 +12,7 @@ async function getAllProfiles() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from( "profiles" )
-    .select( "email, picture" )
+    .select( "email, picture, username" )
     .order( "created_at", { ascending: false } );
 
   if (error) {
@@ -42,13 +42,14 @@ export async function UserBanner() {
               <TooltipTrigger asChild>
                 <Link href={ `/${ encodeURIComponent( profile.email ) }` }>
                   <Avatar className="h-20 w-20 hover:ring-2 hover:ring-primary transition-all">
-                    <AvatarImage src={ profile.picture ?? undefined } alt={ getUsername( profile.email ) }/>
+                    <AvatarImage src={ profile.picture ?? undefined }
+                                 alt={ getUsername( profile.email, profile.username ) }/>
                     <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
                   </Avatar>
                 </Link>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{ getUsername( profile.email ) }</p>
+                <p>{ getUsername( profile.email, profile.username ) }</p>
               </TooltipContent>
             </Tooltip>
           ) ) }

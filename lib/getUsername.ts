@@ -1,9 +1,14 @@
 /**
- * Formats an email address into a displayable username.
+ * Formats an email address into a displayable username, or returns the custom username.
  * @param email - The user's email address.
+ * @param customUsername - The user's custom username from DB.
  * @returns A formatted username or the guest fallback.
  */
-export function getUsername( email?: string | null ): string {
+export function getUsername( email?: string | null, customUsername?: string | null ): string {
+  if (customUsername && customUsername.trim() !== "") {
+    return customUsername.trim();
+  }
+
   if (!email) {
     return "Guest"; // Fallback if user or email is undefined.
   }

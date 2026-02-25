@@ -32,6 +32,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ProfileStatsSummarySkeleton } from "@/components/skeletons/profile/profile-stats-summary-skeleton";
 import { YearSelectionProvider } from "@/app/contexts/year-selection-context";
+import { EditableUsername } from "@/components/profile/editable-username";
 
 interface UserProfilePageProps {
   params?: Promise<{ email: string }>;
@@ -68,7 +69,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
     const currentUser: User | null = await getCurrentUser();
     const isOwner: boolean = currentUser?.id === visitedProfile.id;
-    const visitedProfileUsername: string = getUsername( visitedProfile.email );
+    const visitedProfileUsername: string = getUsername( visitedProfile.email, visitedProfile.username );
 
     // Fetch favorite books.
     const visitedProfileFavoriteBooks: UserBook[] = await getUserFavoriteUsersBooks( visitedProfile.id, query, types );
@@ -149,7 +150,12 @@ export default async function UserProfile( { params, searchParams }: UserProfile
             <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
             <div className="flex-grow">
               <div className="flex flex-row items-center gap-6">
-                <h1 className="text-3xl font-bold">{ visitedProfileUsername }</h1>
+                <EditableUsername
+                  profile={ visitedProfile }
+                  isOwner={ isOwner }
+                  displayUsername={ visitedProfileUsername }
+                />
+
                 { visitedProfile.is_admin &&
                   <Badge variant="outline">
                     Admin

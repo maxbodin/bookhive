@@ -400,5 +400,15 @@
   },
   "BooksGrid": {
     "filter": "States"
+  },
+  "EditableUsername": {
+    "title": "Edit Username",
+    "description": "Choose a new display name.",
+    "placeholder": "e.g. BookLover67",
+    "cancel": "Cancel",
+    "save": "Save",
+    "success": "Username updated successfully!",
+    "unauthorized": "Unauthorized request.",
+    "invalidUsername": "Invalid username."
   }
 }
