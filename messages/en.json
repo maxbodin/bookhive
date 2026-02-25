@@ -402,7 +402,7 @@
     "filter": "States"
   },
   "EditableUsername": {
-    "title": "Edit Username",
+    "title": "Edit username",
     "description": "Choose a new display name.",
     "placeholder": "e.g. BookLover67",
     "cancel": "Cancel",

@@ -2,14 +2,14 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getBookById } from "@/app/actions/books/getBookById";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
+import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { getConnectedUserBookForBook } from "@/app/actions/users-books/getConnectedUserBookForBook";
-import { Badge } from "@/components/ui/badge";
 import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
 import { Separator } from "@/components/ui/separator";
-import BookDetailItem from "@/components/book/book-detail-item";
 import { BookReadingSessions } from "@/components/book/book-reading-sessions";
 import { BackButton } from "@/components/ui/back-button";
+import { EditableBookDetails } from "@/components/book/editable-book-details";
 
 interface BookDetailsPageProps {
   params?: Promise<{ id: string }>;
@@ -33,9 +33,13 @@ export default async function BookDetailsPage( { params }: BookDetailsPageProps 
     ? await getConnectedUserBookForBook( currentUser.id, book.id )
     : undefined;
 
+  let isAdmin = false;
+  if (currentUser?.email) {
+    const profile = await getUserProfile( currentUser.email );
+    isAdmin = profile?.is_admin ?? false;
+  }
 
   const t = await getTranslations( "BookDetails" );
-  const tBookTypes = await getTranslations( "BookTypes" );
 
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
   const canToggleFavorite = connectedUserBook?.state === "read";
@@ -73,45 +77,7 @@ export default async function BookDetailsPage( { params }: BookDetailsPageProps 
         </aside>
 
         <main className="md:col-span-2">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl" title={ book.title ?? t( "undefined" ) }>
-            { book.title ?? t( "undefined" ) }
-          </h1>
-
-          <p className="mt-2 text-xl text-muted-foreground">
-            { book.authors && book.authors.length > 0
-              ? `${ t( "by" ) } ${ book.authors.join( ", " ) }`
-              : t( "undefined" ) }
-          </p>
-
-          { book.type && (
-            <Badge variant="secondary" className="mt-4">
-              { tBookTypes( book.type ) }
-            </Badge>
-          ) }
-
-          <Separator className="my-6"/>
-
-          <div className="max-w-none">
-            <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "descriptionTitle" ) }</h2>
-            <p>{ book.description ?? t( "undefined" ) }</p>
-          </div>
-
-          <div className="mt-8">
-            <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "detailsTitle" ) }</h2>
-            <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
-              <BookDetailItem label={ t( "publisher" ) } value={ book.publisher }/>
-              <BookDetailItem label={ t( "publicationDate" ) } value={ book.publication_date }/>
-              <BookDetailItem label={ t( "pages" ) } value={ book.pages }/>
-              <BookDetailItem label={ t( "isbn10" ) } value={ book.isbn_10 }/>
-              <BookDetailItem label={ t( "isbn13" ) } value={ book.isbn_13 }/>
-              <BookDetailItem label={ t( "dimensions" ) }
-                              value={ book.height && book.length && book.width &&
-                                `${ book.height ?? t( "undefined" ) } x ${ book.length ?? t( "undefined" ) } x ${ book.width ?? t( "undefined" ) } cm` }/>
-              <BookDetailItem label={ t( "weight" ) } value={ book.weight && `${ book.weight } g` }/>
-              <BookDetailItem label={ t( "categories" ) }
-                              value={ book.categories && `${ book.categories.join( ", " ) }` }/>
-            </dl>
-          </div>
+          <EditableBookDetails book={ book } isAdmin={ isAdmin }/>
         </main>
       </div>
 
