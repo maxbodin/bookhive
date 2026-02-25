@@ -123,16 +123,10 @@ export function UserStats( { userBooks }: UserStatsProps ) {
     <div className="flex flex-col space-y-2">
       <BooksByStatusCard data={ stats.booksByState }/>
       <BooksByTypesCard data={ stats.booksByType }/>
-      <AverageCompletionCard avgDays={ stats.avgReadingDays }
-                             selectedYear={ selectedYear }
-                             onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }/>
-      <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay }
-                        selectedYear={ selectedYear }
-                        onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }/>
+      <AverageCompletionCard avgDays={ stats.avgReadingDays }/>
+      <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay }/>
       <MonthlyCountByStateCard
         data={ stats.monthlyActivityData }
-        selectedYear={ selectedYear }
-        onYearChange={ ( year ) => setSelectedYear( Number( year ) ) }
       />
     </div>
   );
