@@ -1,6 +1,7 @@
 import Link from "next/link";
 import LocaleSwitcher from "@/components/locale-switcher";
 import { getTranslations } from "next-intl/server";
+import { ROUTES } from "@/app/utils/routes";
 
 export async function Footer() {
   const t = await getTranslations( "Footer" );
@@ -22,16 +23,16 @@ export async function Footer() {
           <LocaleSwitcher/>
 
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium text-muted-foreground">
-            <Link href="/about" className="transition-colors hover:text-primary">
+            <Link href={ `/${ ROUTES.ABOUT }` } className="transition-colors hover:text-primary">
               About
             </Link>
-            <Link href="/terms" className="transition-colors hover:text-primary">
+            <Link href={ `/${ ROUTES.TERMS }` } className="transition-colors hover:text-primary">
               Terms of Service
             </Link>
-            <Link href="/privacy" className="transition-colors hover:text-primary">
+            <Link href={ `/${ ROUTES.PRIVACY }` } className="transition-colors hover:text-primary">
               Privacy Policy
             </Link>
-            <Link href="/contact" className="transition-colors hover:text-primary">
+            <Link href={ `/${ ROUTES.CONTACT }` } className="transition-colors hover:text-primary">
               Contact
             </Link>
           </nav>

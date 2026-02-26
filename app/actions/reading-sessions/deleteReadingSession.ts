@@ -44,7 +44,7 @@ export async function deleteReadingSession( sessionId: number ): Promise<ActionS
     return { success: false, message: "Database error: Could not delete session." };
   }
 
-  revalidatePath( `/${ ROUTES.PROFILE }/[email]` );
+  revalidatePath( `/${user.email}` );
 
   return { success: true, message: "Session deleted successfully." };
 }

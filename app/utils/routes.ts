@@ -1,6 +1,9 @@
 export const enum ROUTES {
   ERROR = "error",
-  PROFILE = "profile",
   BOOK = "book",
   LOGIN = "login",
+  ABOUT = "about",
+  TERMS = "terms",
+  PRIVACY = "privacy",
+  CONTACT = "contact",
 }
