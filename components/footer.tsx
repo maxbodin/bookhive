@@ -16,7 +16,7 @@ export async function Footer() {
               <span className="text-xl font-bold">{ t( "title" ) }</span>
             </Link>
             <p className="mt-2 text-sm text-muted-foreground">
-              © { currentYear } { t( "title" ) }. All rights reserved.
+              © { currentYear } { t( "title" ) }. { t( "copyright" ) }
             </p>
           </div>
 
@@ -24,16 +24,16 @@ export async function Footer() {
 
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium text-muted-foreground">
             <Link href={ `/${ ROUTES.ABOUT }` } className="transition-colors hover:text-primary">
-              About
+              { t( "link_about" ) }
             </Link>
             <Link href={ `/${ ROUTES.TERMS }` } className="transition-colors hover:text-primary">
-              Terms of Service
+              { t( "link_terms" ) }
             </Link>
             <Link href={ `/${ ROUTES.PRIVACY }` } className="transition-colors hover:text-primary">
-              Privacy Policy
+              { t( "link_privacy" ) }
             </Link>
             <Link href={ `/${ ROUTES.CONTACT }` } className="transition-colors hover:text-primary">
-              Contact
+              { t( "link_contact" ) }
             </Link>
           </nav>
         </div>

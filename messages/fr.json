@@ -54,7 +54,12 @@
     "description": "Suivez vos livres et vos objectifs de lecture"
   },
   "Footer": {
-    "title": "BookHive"
+    "title": "BookHive",
+    "copyright": "Tous droits réservés.",
+    "link_about": "À propos",
+    "link_terms": "Conditions d'utilisation",
+    "link_privacy": "Politique de confidentialité",
+    "link_contact": "Contact"
   },
   "HomePage": {
     "users": "Utilisateurs",

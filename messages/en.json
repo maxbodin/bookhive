@@ -54,7 +54,12 @@
     "description": "Keep track of your books and reading goals"
   },
   "Footer": {
-    "title": "BookHive"
+    "title": "BookHive",
+    "copyright": "All rights reserved.",
+    "link_about": "About",
+    "link_terms": "Terms of Service",
+    "link_privacy": "Privacy Policy",
+    "link_contact": "Contact"
   },
   "HomePage": {
     "users": "Users",
