@@ -9,7 +9,7 @@ export const contentType = "image/png";
  * Helper to fetch fonts from the /public directory.
  * @param url
  */
-async function getFontData( url: string ) {
+async function getFontData( url: string | URL ) {
   const response = await fetch( url );
   return response.arrayBuffer();
 }

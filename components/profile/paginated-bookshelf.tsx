@@ -108,6 +108,7 @@ export function PaginatedBookshelf( {
             isOwner={ isOwner }
             readingSessions={ [] }
             isConnected={ !!connectedUserId }
+            addFromOLButton={ false }
           />
 
           <PaginationBar

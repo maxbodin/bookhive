@@ -66,6 +66,7 @@ export async function UserBookshelf( {
                 isOwner={ isOwner }
                 readingSessions={ readingSessions }
                 isConnected={ isConnected }
+                addFromOLButton={ false }
               />
             </Suspense>
           </section>
