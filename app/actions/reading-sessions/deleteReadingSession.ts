@@ -3,7 +3,6 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/app/utils/supabase/server";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
 import { ActionState } from "@/app/types/action-state";
-import { ROUTES } from "@/app/utils/routes";
 
 /**
  * Deletes a reading session, ensuring the user is the owner.
@@ -44,7 +43,7 @@ export async function deleteReadingSession( sessionId: number ): Promise<ActionS
     return { success: false, message: "Database error: Could not delete session." };
   }
 
-  revalidatePath( `/${user.email}` );
+  revalidatePath( `/${ user.email }` );
 
   return { success: true, message: "Session deleted successfully." };
 }
