@@ -445,7 +445,6 @@
   },
   "TermsPage": {
     "title": "Terms of Service",
-    "last_updated": "Last updated: {date}",
     "section_acceptance_title": "Acceptance of Terms",
     "section_acceptance_text": "By accessing or using BookHive, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the service.",
     "section_accounts_title": "User Accounts",

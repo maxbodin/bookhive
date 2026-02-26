@@ -441,7 +441,6 @@
   },
   "TermsPage": {
     "title": "Conditions d'utilisation",
-    "last_updated": "Dernière mise à jour : {date}",
     "section_acceptance_title": "Acceptation des conditions",
     "section_acceptance_text": "En accédant ou en utilisant BookHive, vous acceptez d'être lié par ces conditions. Si vous n'êtes pas d'accord avec une partie des conditions, vous ne pouvez pas accéder au service.",
     "section_accounts_title": "Comptes utilisateurs",
