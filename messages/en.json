@@ -425,18 +425,18 @@
     "invalidUsername": "Invalid username."
   },
   "AboutPage": {
-    "hero_title": "Your Personal Library, Reimagined.",
-    "hero_subtitle": "BookHive is the modern, open-source way to track what you read, manage your shelves, and visualize your reading habits without sacrificing privacy.",
-    "cta_start": "Start Tracking",
-    "feature_library_title": "Organize Everything",
-    "feature_library_desc": "Keep track of books you've read, want to read, or are currently reading with intuitive shelves.",
-    "feature_privacy_title": "Privacy First",
-    "feature_privacy_desc": "Your data is yours. We use minimal tracking and robust security via Supabase authentication.",
-    "feature_speed_title": "Lightning Fast",
-    "feature_speed_desc": "Built with Next.js 15 and Server Components for instant page loads and smooth interactions.",
-    "mission_title": "Our Mission",
-    "mission_text_1": "BookHive was born out of frustration with bloated, ad-filled book tracking sites. We believe managing your reading life should be simple, beautiful, and distraction-free.",
-    "mission_text_2": "As an open-source project, BookHive allows the community to verify the code, contribute features, and own their data."
+    "hero_title": "Your library, reinvented.",
+    "hero_subtitle": "BookHive is the modern solution to track your reading, organize your shelves, analyze your reading habits with ease, follow what your friends are reading, and discover new books.",
+    "cta_start": "Start tracking",
+    "feature_library_title": "Organize your shelves",
+    "feature_library_desc": "Keep track of the books you’ve read, want to read, or are currently reading with intuitive shelves.",
+    "feature_privacy_title": "Privacy first",
+    "feature_privacy_desc": "Your data belongs to you. We use minimal tracking and robust security through Supabase authentication.",
+    "feature_track_title": "Track your reading sessions",
+    "feature_track_desc": "Log each reading session, track the time spent and pages read, and visualize your progress over time to stay motivated.",
+    "mission_title": "Our mission",
+    "mission_text_1": "BookHive was born out of frustration with outdated, cluttered, and ad-filled library tracking websites. We believe managing your online library should be simple and distraction-free.",
+    "mission_text_2": "BookHive allows the community to review the code and contribute features through the GitHub project."
   },
   "ContactPage": {
     "title": "Contact Us",

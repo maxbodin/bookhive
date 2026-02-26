@@ -421,18 +421,18 @@
     "invalidUsername": "Nom d'utilisateur non valide."
   },
   "AboutPage": {
-    "hero_title": "Votre bibliothèque personnelle, réinventée.",
-    "hero_subtitle": "BookHive est la solution moderne et open-source pour suivre vos lectures, gérer vos étagères et visualiser vos habitudes de lecture sans sacrifier votre vie privée.",
+    "hero_title": "Votre bibliothèque, réinventée.",
+    "hero_subtitle": "BookHive est la solution moderne pour suivre vos lectures, organiser vos étagères, analyser vos habitudes de lecture en toute simplicité, suivre ce que vos amis lisent et découvrir de nouveaux livres.",
     "cta_start": "Commencer le suivi",
-    "feature_library_title": "Organisez tout",
+    "feature_library_title": "Organisez vos étagères",
     "feature_library_desc": "Gardez une trace des livres que vous avez lus, que vous voulez lire ou que vous lisez actuellement grâce à des étagères intuitives.",
     "feature_privacy_title": "Confidentialité avant tout",
-    "feature_privacy_desc": "Vos données vous appartiennent. Nous utilisons un suivi minimal et une sécurité robuste via l'authentification Supabase.",
-    "feature_speed_title": "Ultra rapide",
-    "feature_speed_desc": "Conçu avec Next.js 15 et les Server Components pour des chargements instantanés et des interactions fluides.",
+    "feature_privacy_desc": "Vos données vous appartiennent. Nous utilisons un suivi minimal et une sécurité robuste via l'authentification de Supabase.",
+    "feature_track_title": "Gardez une trace de vos sessions de lecture",
+    "feature_track_desc": "Enregistrez chaque session de lecture, suivez le temps passé et le nombre de pages lues, et visualisez votre progression au fil du temps pour rester motivé.",
     "mission_title": "Notre mission",
-    "mission_text_1": "BookHive est né de la frustration causée par les sites de suivi de livres surchargés et remplis de publicités. Nous pensons que gérer sa vie de lecteur doit être simple, beau et sans distraction.",
-    "mission_text_2": "En tant que projet open-source, BookHive permet à la communauté de vérifier le code, de contribuer aux fonctionnalités et de rester propriétaire de ses données."
+    "mission_text_1": "BookHive est né de la frustration causée par les sites de suivi de bibliothèques vieillissants, surchargés et remplis de publicités. Nous pensons que gérer sa bibliothèque en ligne doit être simple et sans distraction.",
+    "mission_text_2": "BookHive permet à la communauté de vérifier le code et de contribuer aux fonctionnalités sur le projet Github."
   },
   "ContactPage": {
     "title": "Contactez-nous",
