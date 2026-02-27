@@ -1,21 +1,20 @@
 import React, { useActionState, useEffect, useState } from "react";
 import { ActionState } from "@/app/types/action-state";
-import { forgotPassword, login, signInWithOtp, signup } from "@/app/login/actions";
+import { forgotPassword, login, signup } from "@/app/login/actions";
 import passwordStrength from "@/lib/passwordStrength";
 import { toast } from "sonner";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { Eye, EyeOff, MailIcon, Sparkles } from "lucide-react";
+import { Eye, EyeOff, MailIcon } from "lucide-react";
 import PasswordStrengthMeter from "@/components/login/password-strength-meter";
 import SubmitButton from "@/components/login/submit-button";
-import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
 
 const initialState: ActionState = { success: false };
 
 export default function AuthFormContent( {
                                            mode,
-                                           setMode
+                                           setMode,
                                          }: {
   mode: "signin" | "signup" | "forgot_password";
   setMode: ( mode: "signin" | "signup" | "forgot_password" ) => void;
@@ -30,17 +29,11 @@ export default function AuthFormContent( {
   if (mode === "forgot_password") action = forgotPassword;
 
   const [state, formAction] = useActionState( action, initialState );
-  const [otpState, otpAction] = useActionState( signInWithOtp, initialState );
-
   const passwordScore: number = passwordStrength( passwordInput );
 
   useEffect( () => {
     if (state.errors) setErrors( ( prev ) => ( { ...prev, ...state.errors } ) );
   }, [state.errors] );
-
-  useEffect( () => {
-    if (otpState.errors) setErrors( ( prev ) => ( { ...prev, ...otpState.errors } ) );
-  }, [otpState.errors] );
 
   useEffect( () => {
     if (state.success && state.message) {
@@ -50,15 +43,6 @@ export default function AuthFormContent( {
         toast.error( state.errors.form );
       }
   }, [state] );
-
-  useEffect( () => {
-    if (otpState.success && otpState.message) {
-      toast.success( otpState.message );
-    } else
-      if (!otpState.success && otpState.errors?.form) {
-        toast.error( otpState.errors.form );
-      }
-  }, [otpState] );
 
   const handleSignupSubmit = ( formData: FormData ) => {
     if (passwordScore < 4) {
@@ -159,25 +143,6 @@ export default function AuthFormContent( {
           </SubmitButton>
         </div>
       </form>
-
-      { mode !== "forgot_password" && (
-        <>
-          <div className="relative my-6">
-            <Separator/>
-            <div
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-3 text-xs text-muted-foreground whitespace-nowrap">
-              { t( "separator" ) }
-            </div>
-          </div>
-
-          <form action={ otpAction } className="grid grid-cols-1 gap-3">
-            <SubmitButton variant="outline" className="flex items-center justify-center gap-2">
-              <Sparkles className="h-4 w-4"/>
-              { t( "magic_link" ) }
-            </SubmitButton>
-          </form>
-        </>
-      ) }
 
       {/* Back to sign in button for forgot password mode. */ }
       { mode === "forgot_password" && (

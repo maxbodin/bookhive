@@ -384,7 +384,6 @@
     "submit_signin": "Sign in",
     "submit_recovery": "Send Reset Link",
     "separator": "or continue with",
-    "magic_link": "Sign in with Magic Link",
     "forgot_password_link": "Forgot password?",
     "error_password_weak": "Password is not strong enough. Please choose a stronger one.",
     "success_password_updated": "Password updated successfully.",

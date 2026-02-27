@@ -100,41 +100,6 @@ export async function signup(
 }
 
 /**
- * Sends a magic link for signing in.
- * @param _prevState - The previous state.
- * @param formData - The form data containing the email.
- */
-export async function signInWithOtp(
-  _prevState: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
-  const supabase = await createClient();
-  const origin = ( await headers() ).get( "origin" );
-
-  const email = formData.get( "email" ) as string;
-
-  if (!email) {
-    return { success: false, errors: { email: "Email is required." } };
-  }
-
-  const { error } = await supabase.auth.signInWithOtp( {
-    email: email,
-    options: {
-      emailRedirectTo: `${ origin }${ email }`,
-    },
-  } );
-
-  if (error) {
-    return {
-      success: false,
-      errors: { form: error.message },
-    };
-  }
-
-  return { success: true, message: "Check your email for the magic link." };
-}
-
-/**
  * Signs out the current user.
  */
 export async function signOut() {
