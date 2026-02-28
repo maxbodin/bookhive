@@ -71,7 +71,7 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
   const canToggleFavorite = connectedUserBook?.state === "read";
 
   return (
-    <div className="flex flex-col justify-between group border rounded-lg shadow-md h-full">
+    <div className="flex flex-col justify-between group border rounded-lg shadow-md h-full w-full overflow-hidden">
       <div>
         <div className="relative">
           <OptionalLink
@@ -103,14 +103,14 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
             <FavoriteToggleButton bookId={ book.id } isFavorite={ isConnectedUserFavorite }/>
           ) }
         </div>
-        <div className="p-3">
+        <div className="p-3 w-full">
           <OptionalLink
             isLink={ !addFromOLButton }
             href={ `/${ ROUTES.BOOK }/${ book.id }` }
-            className="rounded-md inline-block"
+            className="rounded-md inline-block w-full"
           >
             <h3
-              className={ `text-md font-bold ${ !addFromOLButton ? "hover:underline" : "" }` }
+              className={ `text-md font-bold break-words whitespace-normal ${ !addFromOLButton ? "hover:underline" : "" }` }
               title={ book.title ?? "Untitled" }
             >
               { book.title ?? "Untitled" }
@@ -118,11 +118,13 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
           </OptionalLink>
 
           { book.authors && (
-            <p className="text-sm text-muted-foreground">{ book.authors.join( ", " ) }</p>
+            <p className="text-sm text-muted-foreground break-words whitespace-normal">
+              { book.authors.join( ", " ) }
+            </p>
           ) }
         </div>
       </div>
-      <div className="p-3 pt-0 mt-auto">
+      <div className="p-3 pt-0 mt-auto w-full">
         { addFromOLButton && book.open_library_key ? (
           <AddBookButton openLibraryKey={ book.open_library_key }/>
         ) : (
