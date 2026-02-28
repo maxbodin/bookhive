@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Username } from "@/components/username";
 import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { ROUTES } from "@/app/utils/routes";
+import { getTranslations } from "next-intl/server";
 
 export default async function AuthButtons() {
   const supabase = await createClient();
@@ -17,6 +18,8 @@ export default async function AuthButtons() {
     profile = await getUserProfile( user.email );
   }
 
+  const t = await getTranslations( "AuthButtons" );
+
   return (
     <div className="flex items-center gap-4">
       { user ? (
@@ -26,13 +29,13 @@ export default async function AuthButtons() {
           </div>
           <form action={ signOut }>
             <Button variant="outline" type="submit">
-              Sign out
+              { t( "signOut" ) }
             </Button>
           </form>
         </>
       ) : (
         <Button asChild>
-          <Link href={ `/${ ROUTES.LOGIN }` }>Sign in</Link>
+          <Link href={ `/${ ROUTES.LOGIN }` }>{ t( "signIn" ) }</Link>
         </Button>
       ) }
     </div>
