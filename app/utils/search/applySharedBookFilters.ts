@@ -3,6 +3,23 @@ import { BookType } from "@/app/types/book";
 const VALID_BOOK_TYPES: BookType[] = ["bd", "manga", "roman"];
 
 /**
+ * Converts a standard search string into a case-insensitive, accent-insensitive
+ */
+function buildAccentInsensitiveRegex( query: string ): string {
+  const normalized = query.normalize( "NFD" ).replace( /[\u0300-\u036f]/g, "" ).toLowerCase();
+  const escaped = normalized.replace( /[.*+?^${}()|[\]\\]/g, "\\$&" );
+
+  return escaped
+    .replace( /a/g, "[aáàâäãå]" )
+    .replace( /e/g, "[eéèêë]" )
+    .replace( /i/g, "[iíìîï]" )
+    .replace( /o/g, "[oóòôöõ]" )
+    .replace( /u/g, "[uúùûü]" )
+    .replace( /c/g, "[cç]" )
+    .replace( /n/g, "[nñ]" );
+}
+
+/**
  * Applies shared text search (title/authors) and type filters to a Supabase query builder.
  * Safely handles both top-level tables and joined/embedded tables.
  *
@@ -21,28 +38,23 @@ export function applySharedBookFilters(
   // If we are targeting a joined table, we pass it to the .or() options.
   const options = foreignTable ? { foreignTable } : undefined;
 
-  // Apply text search filter (title OR authors)
+  // Apply text search filter.
   if (query) {
     const sanitizedQuery = query.trim().toLowerCase();
+    const regexPattern = buildAccentInsensitiveRegex( sanitizedQuery );
 
-    const textFilters = [
-      `title.ilike.%${ sanitizedQuery }%`,
-      `description.ilike.%${ sanitizedQuery }%`,
-      `publisher.ilike.%${ sanitizedQuery }%`,
-      `isbn_10.ilike.%${ sanitizedQuery }%`,
-      `isbn_13.ilike.%${ sanitizedQuery }%`,
-      `authors.cs.{${ sanitizedQuery }}`
-    ];
+    // Wrap the pattern in double quotes and escape internal quotes for PostgREST.
+    const safePattern = `"${ regexPattern.replace( /"/g, "\\\"" ) }"`;
 
-    queryBuilder = queryBuilder.or( textFilters.join( "," ), options );
+    // Because we created a unified column `searchable_text` in the books table, we only need one condition now!
+    // This searches title, description, publisher, and partial authors all at once.
+    queryBuilder = queryBuilder.or( `searchable_text.imatch.${ safePattern }`, options );
   }
 
   // Apply type filter.
   if (types) {
     const typeArray = types.split( "," );
-
     const includesNull = typeArray.includes( "null" );
-
     const validTypes = typeArray.filter( ( t ) => VALID_BOOK_TYPES.includes( t as BookType ) );
 
     if (validTypes.length > 0 && includesNull) {
