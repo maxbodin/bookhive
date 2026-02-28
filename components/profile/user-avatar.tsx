@@ -13,12 +13,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, ViewTransition } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { getInitial } from "@/lib/getInitial";
 import { Profile } from "@/app/types/profile";
 import { updateProfilePicture } from "@/app/actions/profiles/updateProfilePicture";
 import { useTranslations } from "next-intl";
+import { getSafeTransitionNameFromEmail } from "@/app/utils/profiles/getSafeTransitionName";
 
 interface UserAvatarProps {
   profile: Profile;
@@ -48,10 +49,17 @@ export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
   };
 
   const avatar = (
-    <Avatar className="h-24 w-24 md:h-32 md:w-32 text-4xl">
-      <AvatarImage src={ profile.picture ?? undefined } alt={ profile.email }/>
-      <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
-    </Avatar>
+    <ViewTransition name={ `avatar-${ getSafeTransitionNameFromEmail( profile.email ) }` }>
+      <Avatar className="h-24 w-24 md:h-32 md:w-32 text-4xl">
+        <AvatarImage
+          src={ profile.picture ?? undefined }
+          alt={ profile.email }
+          fetchPriority="high"
+          loading="eager"
+        />
+        <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
+      </Avatar>
+    </ViewTransition>
   );
 
   if (!isOwner) {

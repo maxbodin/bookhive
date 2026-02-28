@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, ViewTransition } from "react";
 import { getTranslations } from "next-intl/server";
 import { BooksGrid } from "@/components/books/books-grid";
 import { UserBanner } from "@/components/profile/user-banner";
@@ -81,69 +81,71 @@ export default async function Home( { searchParams }: HomePageProps ) {
     totalBooks === 0;
 
   return (
-    <div className="min-h-screen pb-10 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 items-center">
-        <div className="w-full max-w-7xl mx-auto px-4 py-6">
-          <h2 className="text-xl font-bold mb-4">{ t( "users" ) }</h2>
-          <Suspense fallback={ <UserBannerSkeleton/> }>
-            <UserBanner/>
-          </Suspense>
-
-          <Separator className="w-full mx-auto my-6"/>
-          <h2 className="text-xl font-bold mb-4">{ t( "allBooks", { count: totalBooks } ) }</h2>
-
-          <div className="flex flex-col items-center">
-            <PaginationControls
-              totalPages={ totalPages }
-              currentPage={ currentPage }
-            />
-
-            <Suspense key={ `${ query }-${ currentPage }-sovereign` } fallback={ <BooksGridSkeleton/> }>
-              <BooksGrid
-                books={ books }
-                view={ "poster" }
-                isOwner={ false }
-                profileUserBooks={ [] }
-                connectedUserBooks={ connectedUserDataWithBooks }
-                readingSessions={ [] }
-                isConnected={ isConnected }
-                addFromOLButton={ false }/>
+    <ViewTransition>
+      <div className="min-h-screen pb-10 font-[family-name:var(--font-geist-sans)]">
+        <main className="flex flex-col gap-8 items-center">
+          <div className="w-full max-w-7xl mx-auto px-4 py-6">
+            <h2 className="text-xl font-bold mb-4">{ t( "users" ) }</h2>
+            <Suspense fallback={ <UserBannerSkeleton/> }>
+              <UserBanner/>
             </Suspense>
 
-            <PaginationControls
-              totalPages={ totalPages }
-              currentPage={ currentPage }
-            />
+            <Separator className="w-full mx-auto my-6"/>
+            <h2 className="text-xl font-bold mb-4">{ t( "allBooks", { count: totalBooks } ) }</h2>
 
-            { showCreateButton && (
-              <CreateBookDialog initialTitle={ query }/>
+            <div className="flex flex-col items-center">
+              <PaginationControls
+                totalPages={ totalPages }
+                currentPage={ currentPage }
+              />
+
+              <Suspense key={ `${ query }-${ currentPage }-sovereign` } fallback={ <BooksGridSkeleton/> }>
+                <BooksGrid
+                  books={ books }
+                  view={ "poster" }
+                  isOwner={ false }
+                  profileUserBooks={ [] }
+                  connectedUserBooks={ connectedUserDataWithBooks }
+                  readingSessions={ [] }
+                  isConnected={ isConnected }
+                  addFromOLButton={ false }/>
+              </Suspense>
+
+              <PaginationControls
+                totalPages={ totalPages }
+                currentPage={ currentPage }
+              />
+
+              { showCreateButton && (
+                <CreateBookDialog initialTitle={ query }/>
+              ) }
+            </div>
+
+            { currentUserProfile?.is_admin && query && query !== "" && (
+              <>
+                <Separator className="w-full mx-auto my-8"/>
+                <h2
+                  className="text-xl font-bold mb-4">{ t( "openlibraryResultsTitle", { count: OpenLibraryBooks.length } ) }</h2>
+
+                <div className="flex flex-col items-center">
+                  <Suspense key={ `${ query }-${ currentPage }-openlibrary` } fallback={ <BooksGridSkeleton/> }>
+                    <BooksGrid
+                      books={ OpenLibraryBooks }
+                      view={ "poster" }
+                      isOwner={ false }
+                      profileUserBooks={ [] }
+                      connectedUserBooks={ [] }
+                      readingSessions={ [] }
+                      addFromOLButton={ true }
+                      isConnected={ isConnected }
+                    />
+                  </Suspense>
+                </div>
+              </>
             ) }
           </div>
-
-          { currentUserProfile?.is_admin && query && query !== "" && (
-            <>
-              <Separator className="w-full mx-auto my-8"/>
-              <h2
-                className="text-xl font-bold mb-4">{ t( "openlibraryResultsTitle", { count: OpenLibraryBooks.length } ) }</h2>
-
-              <div className="flex flex-col items-center">
-                <Suspense key={ `${ query }-${ currentPage }-openlibrary` } fallback={ <BooksGridSkeleton/> }>
-                  <BooksGrid
-                    books={ OpenLibraryBooks }
-                    view={ "poster" }
-                    isOwner={ false }
-                    profileUserBooks={ [] }
-                    connectedUserBooks={ [] }
-                    readingSessions={ [] }
-                    addFromOLButton={ true }
-                    isConnected={ isConnected }
-                  />
-                </Suspense>
-              </div>
-            </>
-          ) }
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </ViewTransition>
   );
 }

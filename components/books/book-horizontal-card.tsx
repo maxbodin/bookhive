@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { ROUTES } from "@/app/utils/routes";
 import React from "react";
 import OptionalLink from "@/components/ui/optional-link";
+import BookCover from "@/components/books/book-cover";
 
 export interface BookHorizontalCardProps extends BookCardProps {
   readingSessions?: ReadingSession[];
@@ -27,28 +28,13 @@ export function BookHorizontalCard( {
   const isReadingInProgress = profileUserBook?.state === "reading" && !!profileUserBook.pages;
   const bookTitle = book.title ?? t( "untitled" );
 
-  const bookDetailUrl = `/${ ROUTES.BOOK }/${ book.id }`;
+  const bookDetailUrl = `/${ ROUTES.BOOK }/${ book.id }?ref=horiz`;
 
   return (
-    <div
-      className="flex gap-4 group border rounded-lg shadow-sm hover:shadow-lg transition-shadow p-3 w-full">
+    <div className="flex gap-4 group border rounded-lg shadow-sm hover:shadow-lg transition-shadow p-3 w-full">
       <div className="flex-shrink-0 w-24 md:w-28">
-        <OptionalLink
-          isLink={ true }
-          href={ bookDetailUrl }
-          className="block rounded"
-        >
-          { book.cover_url ? (
-            <img
-              src={ book.cover_url }
-              alt={ t( "coverAlt", { title: bookTitle } ) }
-              className="w-full h-auto object-cover rounded aspect-[2/3] shadow-md"
-            />
-          ) : (
-            <div className="w-full flex items-center justify-center rounded aspect-[2/3] bg-gray-100 dark:bg-secondary">
-              <p className="text-primary text-xs text-center p-1">{ t( "noCover" ) }</p>
-            </div>
-          ) }
+        <OptionalLink isLink={ true } href={ bookDetailUrl } className="block rounded">
+          <BookCover book={ book } className="rounded shadow-md" transitionSuffix="horiz"/>
         </OptionalLink>
       </div>
 
@@ -56,15 +42,8 @@ export function BookHorizontalCard( {
         <div>
           <div className="flex items-start justify-between gap-2">
             <div className="flex-grow min-w-0">
-              <OptionalLink
-                isLink={ true }
-                href={ bookDetailUrl }
-                className="inline-block rounded"
-              >
-                <h3
-                  className={ `text-lg font-bold hover:underline` }
-                  title={ bookTitle }
-                >
+              <OptionalLink isLink={ true } href={ bookDetailUrl } className="inline-block rounded">
+                <h3 className="text-lg font-bold hover:underline" title={ bookTitle }>
                   { bookTitle }
                 </h3>
               </OptionalLink>
@@ -82,15 +61,13 @@ export function BookHorizontalCard( {
             ) }
           </div>
 
-          {/* Pass the filtered sessions for this specific book to SessionInfo */ }
+          {/* Pass the filtered sessions for this specific book to SessionInfo. */ }
           <SessionInfo userBook={ profileUserBook } sessions={ bookSessions }/>
         </div>
 
         <div className="flex items-end justify-between mt-4">
           <div className="text-xs text-muted-foreground">
-            { !isReadingInProgress && book.pages && (
-              <p>{ t( "pages", { count: book.pages } ) }</p>
-            ) }
+            { !isReadingInProgress && book.pages && <p>{ t( "pages", { count: book.pages } ) }</p> }
           </div>
           <div className="w-40 flex-shrink-0">
             <BookStateDropdown bookId={ book.id } currentStateRecord={ connectedUserBook }/>

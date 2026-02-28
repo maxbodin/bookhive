@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTransition } from "react";
 
 /**
  * A reusable client component that navigates to the previous page in the browser's history.
@@ -15,11 +16,19 @@ import { cn } from "@/lib/utils";
  */
 export function BackButton( { className, children, ...props }: ButtonProps ) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const handleBack = () => {
+    startTransition( () => {
+      router.back();
+    } );
+  };
 
   return (
     <Button
       variant="ghost"
-      onClick={ () => router.back() }
+      onClick={ handleBack }
+      disabled={ isPending || props.disabled }
       className={ cn( "flex items-center gap-2 text-sm text-muted-foreground hover:text-primary", className ) }
       { ...props }
     >

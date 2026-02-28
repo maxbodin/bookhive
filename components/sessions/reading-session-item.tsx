@@ -5,7 +5,7 @@ import { ReadingSessionWithBook } from "@/app/types/reading-session";
 import { calculateSessionDuration } from "@/app/utils/reading-sessions/calculateSessionDuration";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion, PanInfo, useMotionValue, useTransform } from "framer-motion";
-import { useState, useTransition } from "react";
+import React, { useState, useTransition, ViewTransition } from "react";
 import { deleteReadingSession } from "@/app/actions/reading-sessions/deleteReadingSession";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -50,11 +50,7 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
   const backgroundOpacity = useTransform( x, [0, REVEAL_WIDTH], [0.5, 1] );
 
   const handleDragEnd = ( _event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo ) => {
-    if (info.offset.x > DRAG_THRESHOLD) {
-      setIsRevealed( true );
-    } else {
-      setIsRevealed( false );
-    }
+    setIsRevealed( info.offset.x > DRAG_THRESHOLD );
   };
 
   const handleConfirmDelete = () => {
@@ -73,16 +69,12 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
   };
 
   const handleContentClick = () => {
-    if (isRevealed) {
-      setIsRevealed( false );
-    }
+    if (isRevealed) setIsRevealed( false );
   };
 
   const handleDialogChange = ( open: boolean ) => {
     setIsDialogOpen( open );
-    if (!open) {
-      setIsRevealed( false );
-    }
+    if (!open) setIsRevealed( false );
   };
 
   const startPage = session.start_page ?? 0;
@@ -98,20 +90,25 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
     ? Math.round( ( endPage / totalPages ) * 100 )
     : 0;
 
+  // Contextual URL to pass the exact session identifier for unique transitioning.
+  const bookDetailUrl = `/${ ROUTES.BOOK }/${ session.book_id }?ref=session&sessionId=${ session.id }`;
+
   const coverContent = (
-    <>
+    <ViewTransition name={ `book-cover-${ session.book_id }-session-${ session.id }` }>
       { session.book?.cover_url ? (
         <img
           src={ session.book.cover_url }
           alt={ `Cover of ${ session.book.title }` }
           className="w-full h-auto object-cover rounded-lg aspect-[2/3]"
+          loading="lazy"
+          decoding="async"
         />
       ) : (
         <div className="w-full flex items-center justify-center rounded-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
           <p className="text-primary text-sm">{ t( "noCover" ) }</p>
         </div>
       ) }
-    </>
+    </ViewTransition>
   );
 
   const sessionContent = (
@@ -124,7 +121,7 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
       <div className="w-16 flex-shrink-0">
         { session.book ? (
           <Link
-            href={ `/${ ROUTES.BOOK }/${ session.book_id }` }
+            href={ bookDetailUrl }
             className="rounded-lg"
             onClick={ ( e ) => e.stopPropagation() }
           >
@@ -140,7 +137,7 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
           <div className="flex justify-between items-start gap-4">
             <div className="flex-grow">
               <Link
-                href={ `/${ ROUTES.BOOK }/${ session.book_id }` }
+                href={ bookDetailUrl }
                 className="rounded-md"
                 onClick={ ( e ) => e.stopPropagation() }
               >
@@ -163,9 +160,7 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2 text-muted-foreground text-xs">
               <Book className="h-3.5 w-3.5"/>
-              <span>
-                  { t( "pagesRead", { count: pagesRead } ) }
-                </span>
+              <span>{ t( "pagesRead", { count: pagesRead } ) }</span>
             </div>
             <span className="text-xs text-muted-foreground">
                 ({ t( "pageRange", { start: startPage, end: endPage } ) })
@@ -197,9 +192,7 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
   );
 
   // If the user is not the owner, render a simple, non-interactive item.
-  if (!isOwner) {
-    return sessionContent;
-  }
+  if (!isOwner) return sessionContent;
 
   // If the user is the owner, wrap the content with sliding functionality for deletion.
   return (

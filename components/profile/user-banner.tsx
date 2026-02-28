@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUsername } from "@/lib/getUsername";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getInitial } from "@/lib/getInitial";
+import { ViewTransition } from "react";
+import { getSafeTransitionNameFromEmail } from "@/app/utils/profiles/getSafeTransitionName";
 
 /**
  * Récupère les profils utilisateurs depuis la base de données.
@@ -40,12 +42,18 @@ export async function UserBanner() {
           { profiles.map( ( profile ) => (
             <Tooltip key={ profile.email }>
               <TooltipTrigger asChild>
-                <Link href={ `/${ encodeURIComponent( profile.email ) }` }>
-                  <Avatar className="h-20 w-20 hover:ring-2 hover:ring-primary transition-all">
-                    <AvatarImage src={ profile.picture ?? undefined }
-                                 alt={ getUsername( profile.email, profile.username ) }/>
-                    <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
-                  </Avatar>
+                <Link href={ `/${ encodeURIComponent( profile.email ) }` } className="block">
+                  <ViewTransition name={ `avatar-${ getSafeTransitionNameFromEmail( profile.email ) }` }>
+                    <Avatar className="h-20 w-20 hover:ring-2 hover:ring-primary transition-all">
+                      <AvatarImage
+                        src={ profile.picture ?? undefined }
+                        alt={ getUsername( profile.email, profile.username ) }
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
+                    </Avatar>
+                  </ViewTransition>
                 </Link>
               </TooltipTrigger>
               <TooltipContent>

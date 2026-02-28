@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { UserBook } from "@/app/types/user-book";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
 import { useTranslations } from "next-intl";
-import React from "react";
 import { AddBookButton } from "@/components/open-library/add-book-button";
 import { ROUTES } from "@/app/utils/routes";
 import OptionalLink from "@/components/ui/optional-link";
+import BookCover from "@/components/books/book-cover";
 
 // Shared interface for props used by all card types
 interface BookCardSharedProps {
@@ -24,12 +24,13 @@ export interface BookCardProps extends BookCardSharedProps {
 
 
 /**
- * Renders a minimalist book cover that links to the book's detail page.
- * The interactive favorite button reflects the CONNECTED user's status.
+ * Renders the minimalist favorite book cover.
+ *
+ * @param book
+ * @param connectedUserBook
+ * @constructor
  */
 function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
-  const t = useTranslations( "BookCard" );
-
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
   // A user can only favorite a book if they are connected and have it marked as 'read'.
   const canToggleFavorite = connectedUserBook?.state === "read";
@@ -37,20 +38,10 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
   return (
     <OptionalLink
       isLink={ true }
-      href={ `/${ ROUTES.BOOK }/${ book.id }` }
+      href={ `/${ ROUTES.BOOK }/${ book.id }?ref=fav` }
       className="relative group rounded-lg shadow-md block"
     >
-      { book.cover_url ? (
-        <img
-          src={ book.cover_url }
-          alt={ `Cover of ${ book.title }` }
-          className="w-full h-auto object-cover rounded-lg aspect-[2/3]"
-        />
-      ) : (
-        <div className="w-full flex items-center justify-center rounded-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
-          <p className="text-primary text-sm">{ t( "noCover" ) }</p>
-        </div>
-      ) }
+      <BookCover book={ book } className="rounded-lg" transitionSuffix="fav"/>
       {/* The toggle button is only shown if the connected user can interact with it. */ }
       { canToggleFavorite && (
         <FavoriteToggleButton bookId={ book.id } isFavorite={ isConnectedUserFavorite }/>
@@ -60,11 +51,15 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
 }
 
 /**
- * Renders the full book card with details and actions.
+ * Renders the full standard book card with details and actions.
  * The favorite button's state is tied to the CONNECTED user.
+ *
+ * @param book
+ * @param connectedUserBook
+ * @param addFromOLButton
+ * @constructor
  */
 function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCardSharedProps ) {
-  const t = useTranslations( "BookCard" );
   const tBookTypes = useTranslations( "BookTypes" );
 
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
@@ -76,21 +71,10 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
         <div className="relative">
           <OptionalLink
             isLink={ !addFromOLButton }
-            href={ `/${ ROUTES.BOOK }/${ book.id }` }
+            href={ `/${ ROUTES.BOOK }/${ book.id }?ref=std` }
             className="block rounded-t-lg"
           >
-            { book.cover_url ? (
-              <img
-                src={ book.cover_url }
-                alt={ `Cover of ${ book.title }` }
-                className="w-full h-auto object-cover rounded-t-lg aspect-[2/3]"
-              />
-            ) : (
-              <div
-                className="w-full flex items-center justify-center rounded-t-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
-                <p className="text-primary text-sm">{ t( "noCover" ) }</p>
-              </div>
-            ) }
+            <BookCover book={ book } className="rounded-t-lg" transitionSuffix="std"/>
           </OptionalLink>
 
           { book.type && (
@@ -106,7 +90,7 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
         <div className="p-3 w-full">
           <OptionalLink
             isLink={ !addFromOLButton }
-            href={ `/${ ROUTES.BOOK }/${ book.id }` }
+            href={ `/${ ROUTES.BOOK }/${ book.id }?ref=std` }
             className="rounded-md inline-block w-full"
           >
             <h3
@@ -139,32 +123,11 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
 /**
  * Main component that decides whether to render a standard card or a favorite cover.
  */
-export function BookPosterCard( {
-                                  book,
-                                  profileUserBook,
-                                  connectedUserBook,
-                                  inFavoriteSection,
-                                  addFromOLButton,
-                                }: BookCardProps ) {
-  if (inFavoriteSection) {
+export function BookPosterCard( props: BookCardProps ) {
+  if (props.inFavoriteSection) {
     // In the "Favorites" section, always render the minimalist cover.
-    return (
-      <FavoriteBookCover
-        book={ book }
-        profileUserBook={ profileUserBook }
-        connectedUserBook={ connectedUserBook }
-        addFromOLButton={ addFromOLButton }
-      />
-    );
+    return <FavoriteBookCover { ...props } />;
   }
-
   // In all other shelves, render the standard, detailed card.
-  return (
-    <StandardBookCard
-      book={ book }
-      profileUserBook={ profileUserBook }
-      connectedUserBook={ connectedUserBook }
-      addFromOLButton={ addFromOLButton }
-    />
-  );
+  return <StandardBookCard { ...props } />;
 }

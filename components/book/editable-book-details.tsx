@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, ViewTransition } from "react";
 import { Book } from "@/app/types/book";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -19,9 +19,10 @@ import { Spinner } from "@/components/ui/spinner";
 interface EditableBookDetailsProps {
   book: Book;
   isAdmin: boolean;
+  transitionRef: string;
 }
 
-export function EditableBookDetails( { book, isAdmin }: EditableBookDetailsProps ) {
+export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableBookDetailsProps ) {
   const t = useTranslations( "BookDetails" );
   const tBookTypes = useTranslations( "BookTypes" );
 
@@ -124,64 +125,69 @@ export function EditableBookDetails( { book, isAdmin }: EditableBookDetailsProps
 
   // View Mode.
   return (
-    <div className="animate-in fade-in flex flex-col gap-4">
-      <div className="md:col-span-2">
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl"
-            title={ book.title ?? undefinedFallback }>
-          { book.title ?? undefinedFallback }
-        </h1>
+    <ViewTransition>
+      <div className="animate-in fade-in flex flex-col gap-4">
+        <div className="md:col-span-2">
+          <ViewTransition name={ `book-title-${ book.id }-${ transitionRef }` }>
+            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl"
+                title={ book.title ?? undefinedFallback }>
+              { book.title ?? undefinedFallback }
+            </h1>
+          </ViewTransition>
 
-        <p className="mt-2 text-xl text-muted-foreground">
-          { book.authors && book.authors.length > 0
-            ? `${ t( "by" ) } ${ book.authors.join( ", " ) }`
-            : undefinedFallback }
-        </p>
+          <p className="mt-2 text-xl text-muted-foreground">
+            { book.authors && book.authors.length > 0
+              ? `${ t( "by" ) } ${ book.authors.join( ", " ) }`
+              : undefinedFallback }
+          </p>
 
-        { book.type && (
-          <Badge variant="secondary" className="mt-4">
-            { tBookTypes( book.type ) }
-          </Badge>
-        ) }
+          { book.type && (
+            <Badge variant="secondary" className="mt-4">
+              { tBookTypes( book.type ) }
+            </Badge>
+          ) }
 
-        <Separator className="my-6"/>
+          <Separator className="my-6"/>
 
-        <div className="max-w-none">
-          <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "descriptionTitle" ) }</h2>
-          <p className="whitespace-pre-line">{ book.description ?? undefinedFallback }</p>
+          <div className="max-w-none">
+            <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "descriptionTitle" ) }</h2>
+            <p className="whitespace-pre-line">{ book.description ?? undefinedFallback }</p>
+          </div>
+
+          <div className="mt-8">
+            <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "detailsTitle" ) }</h2>
+            <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
+              <BookDetailItem label={ t( "publisher" ) } value={ book.publisher } fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "publicationDate" ) } value={ book.publication_date }
+                              fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "pages" ) } value={ book.pages } fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "isbn10" ) } value={ book.isbn_10 } fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "isbn13" ) } value={ book.isbn_13 } fallbackText={ undefinedFallback }/>
+              <BookDetailItem
+                label={ t( "dimensions" ) }
+                value={ book.height && book.length && book.width && `${ book.height } x ${ book.length } x ${ book.width } cm` }
+                fallbackText={ undefinedFallback }
+              />
+              <BookDetailItem label={ t( "weight" ) } value={ book.weight && `${ book.weight } g` }
+                              fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "categories" ) }
+                              value={ book.categories && `${ book.categories.join( ", " ) }` }
+                              fallbackText={ undefinedFallback }/>
+            </dl>
+          </div>
         </div>
-
-        <div className="mt-8">
-          <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "detailsTitle" ) }</h2>
-          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
-            <BookDetailItem label={ t( "publisher" ) } value={ book.publisher } fallbackText={ undefinedFallback }/>
-            <BookDetailItem label={ t( "publicationDate" ) } value={ book.publication_date }
-                            fallbackText={ undefinedFallback }/>
-            <BookDetailItem label={ t( "pages" ) } value={ book.pages } fallbackText={ undefinedFallback }/>
-            <BookDetailItem label={ t( "isbn10" ) } value={ book.isbn_10 } fallbackText={ undefinedFallback }/>
-            <BookDetailItem label={ t( "isbn13" ) } value={ book.isbn_13 } fallbackText={ undefinedFallback }/>
-            <BookDetailItem
-              label={ t( "dimensions" ) }
-              value={ book.height && book.length && book.width && `${ book.height } x ${ book.length } x ${ book.width } cm` }
-              fallbackText={ undefinedFallback }
-            />
-            <BookDetailItem label={ t( "weight" ) } value={ book.weight && `${ book.weight } g` }
-                            fallbackText={ undefinedFallback }/>
-            <BookDetailItem label={ t( "categories" ) } value={ book.categories && `${ book.categories.join( ", " ) }` }
-                            fallbackText={ undefinedFallback }/>
-          </dl>
+        <div className="w-full">
+          { isAdmin && (
+            <Button
+              variant="outline"
+              onClick={ () => setIsEditing( true ) }
+              className="max-w-sm w-fit"
+            >
+              <Pencil className="w-4 h-4 mr-2"/> Edit Details
+            </Button>
+          ) }
         </div>
       </div>
-      <div className="w-full">
-        { isAdmin && (
-          <Button
-            variant="outline"
-            onClick={ () => setIsEditing( true ) }
-            className="max-w-sm w-fit"
-          >
-            <Pencil className="w-4 h-4 mr-2"/> Edit Details
-          </Button>
-        ) }
-      </div>
-    </div>
+    </ViewTransition>
   );
 }
