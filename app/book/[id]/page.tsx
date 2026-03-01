@@ -1,4 +1,4 @@
-import { ViewTransition } from "react";
+import React, { ViewTransition } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getBookById } from "@/app/actions/books/getBookById";
@@ -13,6 +13,7 @@ import { BackButton } from "@/components/ui/back-button";
 import { EditableBookDetails } from "@/components/book/editable-book-details";
 import { Metadata, ResolvingMetadata } from "next";
 import { ROUTES } from "@/app/utils/routes";
+import BookCover from "@/components/books/book-cover";
 
 const BASE_URL = "https://bookhive.maximebodin.com";
 const REFS = ["fav", "std", "horiz", "session"] as const;
@@ -96,10 +97,10 @@ export default async function BookDetailsPage( { params, searchParams }: BookDet
 
   const transitionRef: RefType = REFS.includes( refParam as RefType ) ? ( refParam as RefType ) : "std";
 
-  // Construct the exact unique transition name based on the origin source.
-  let viewTransitionName = `book-cover-${ book.id }-${ transitionRef }`;
+  // Construct the exact unique transition suffix based on the origin source.
+  let viewTransitionSuffix = `${ transitionRef }`;
   if (transitionRef === "session" && sessionIdParam) {
-    viewTransitionName = `book-cover-${ book.id }-session-${ sessionIdParam }`;
+    viewTransitionSuffix = `session-${ sessionIdParam }`;
   }
 
   const currentUser = await getCurrentUser();
@@ -133,23 +134,11 @@ export default async function BookDetailsPage( { params, searchParams }: BookDet
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             <aside className="md:col-span-1 flex flex-col items-center gap-6">
               <div className="relative w-full max-w-xs md:max-w-full">
-                <ViewTransition name={ viewTransitionName }>
-                  { book.cover_url ? (
-                    <img
-                      src={ book.cover_url }
-                      alt={ `Cover of ${ book.title }` }
-                      className="w-full rounded-lg shadow-xl aspect-[2/3] object-cover"
-                      fetchPriority="high"
-                      loading="eager"
-                      decoding="sync"
-                    />
-                  ) : (
-                    <div
-                      className="w-full flex items-center justify-center rounded-lg aspect-[2/3] bg-gray-100 dark:bg-secondary shadow-lg">
-                      <p className="text-primary">{ t( "noCover" ) }</p>
-                    </div>
-                  ) }
-                </ViewTransition>
+                <BookCover book={ book } className="rounded-lg shadow-xl"
+                           transitionSuffix={ viewTransitionSuffix }
+                           fetchPriority="high"
+                           loading="eager"
+                           decoding="sync"/>
 
                 { canToggleFavorite && (
                   <FavoriteToggleButton bookId={ book.id } isFavorite={ isConnectedUserFavorite }/>

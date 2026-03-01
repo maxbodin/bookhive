@@ -388,20 +388,40 @@
     "new_password_label": "Nouveau mot de passe",
     "submit_reset_password": "Mettre à jour le mot de passe"
   },
+  "ServerActions": {
+    "updateBook": {
+      "unauthorized": "Accès non autorisé.",
+      "adminOnly": "Seul les administrateurs peuvent modifier des livres..",
+      "error": "Échec de la mise à jour des détails du livre.",
+      "success": "Mise à jour du livre avec succès!"
+    }
+  },
   "BookDetails": {
-    "noCover": "Aucune couverture disponible",
+    "undefined": "Non défini",
     "by": "par",
-    "descriptionTitle": "Description",
     "detailsTitle": "Détails",
-    "publisher": "Éditeur",
-    "publicationDate": "Date de publication",
-    "pages": "Nombre de pages",
-    "isbn10": "ISBN-10",
-    "isbn13": "ISBN-13",
     "dimensions": "Dimensions",
-    "weight": "Poids",
-    "categories": "Catégories",
-    "undefined": "Non défini"
+    "edit": {
+      "title": "Titre",
+      "coverUrl": "URL de la couverture",
+      "authors": "Auteurs (séparés par des virgules)",
+      "type": "Type",
+      "selectType": "Sélectionner un type",
+      "description": "Description",
+      "publisher": "Éditeur",
+      "publicationDate": "Date de publication",
+      "pages": "Nombre de pages",
+      "isbn10": "ISBN-10",
+      "isbn13": "ISBN-13",
+      "categories": "Catégories",
+      "height": "Hauteur (cm)",
+      "length": "Longueur (cm)",
+      "width": "Largeur (cm)",
+      "weight": "Poids (g)",
+      "discard": "Annuler",
+      "save": "Sauvegarder",
+      "editButton": "Modifier les détails"
+    }
   },
   "BookDetailItem": {
     "undefined": "Non défini"
@@ -476,5 +496,8 @@
     "cookies_text": "Nous utilisons des cookies principalement pour maintenir votre session d'authentification. Nous n'utilisons pas de cookies de suivi tiers à des fins publicitaires.",
     "rights_title": "Vos droits sur les données",
     "rights_text": "Vous avez le droit d'accéder, de mettre à jour ou de supprimer les informations que nous détenons sur vous. Vous pouvez effectuer la plupart de ces actions directement dans les paramètres de votre profil."
+  },
+  "LocaleSwitcher": {
+    "label": "Changer la langue, la langue actuelle est {locale}"
   }
 }

@@ -9,12 +9,25 @@ import React, { ViewTransition } from "react";
  * @param book
  * @param className
  * @param transitionSuffix
+ * @param fetchPriority
+ * @param loading
+ * @param decoding
  * @constructor
  */
-export default function BookCover( { book, className, transitionSuffix }: {
-  book: Book;
+export default function BookCover( {
+                                     book,
+                                     className,
+                                     transitionSuffix,
+                                     fetchPriority = "low",
+                                     loading = "lazy",
+                                     decoding = "async"
+                                   }: {
+  book: Book | Partial<Book>;
   className: string;
-  transitionSuffix: string
+  transitionSuffix: string;
+  fetchPriority?: "high" | "low" | "auto";
+  loading?: "eager" | "lazy";
+  decoding?: "async" | "auto" | "sync";
 } ) {
   const t = useTranslations( "BookCard" );
 
@@ -25,8 +38,9 @@ export default function BookCover( { book, className, transitionSuffix }: {
           src={ book.cover_url }
           alt={ t( "coverAlt", { title: book.title ?? "Untitled" } ) }
           className={ `w-full h-auto object-cover aspect-[2/3] ${ className }` }
-          loading="lazy"
-          decoding="async"
+          loading={ loading }
+          decoding={ decoding }
+          fetchPriority={ fetchPriority }
         />
       ) : (
         <div

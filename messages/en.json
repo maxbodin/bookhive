@@ -392,20 +392,40 @@
     "new_password_label": "New Password",
     "submit_reset_password": "Update Password"
   },
+  "ServerActions": {
+    "updateBook": {
+      "unauthorized": "Unauthorized access.",
+      "adminOnly": "Only administrators can edit books.",
+      "error": "Failed to update book details.",
+      "success": "Book updated successfully!"
+    }
+  },
   "BookDetails": {
-    "noCover": "No cover available",
+    "undefined": "Undefined",
     "by": "by",
-    "descriptionTitle": "Description",
     "detailsTitle": "Details",
-    "publisher": "Publisher",
-    "publicationDate": "Published",
-    "pages": "Pages",
-    "isbn10": "ISBN-10",
-    "isbn13": "ISBN-13",
     "dimensions": "Dimensions",
-    "weight": "Weight",
-    "categories": "Categories",
-    "undefined": "Undefined"
+    "edit": {
+      "title": "Title",
+      "coverUrl": "Cover URL",
+      "authors": "Authors (comma-separated)",
+      "type": "Type",
+      "selectType": "Select type",
+      "description": "Description",
+      "publisher": "Publisher",
+      "publicationDate": "Published",
+      "pages": "Pages",
+      "isbn10": "ISBN-10",
+      "isbn13": "ISBN-13",
+      "categories": "Categories",
+      "height": "Height (cm)",
+      "length": "Length (cm)",
+      "width": "Width (cm)",
+      "weight": "Weight (g)",
+      "discard": "Discard",
+      "save": "Save Changes",
+      "editButton": "Edit Details"
+    }
   },
   "BookDetailItem": {
     "undefined": "Undefined"
@@ -480,5 +500,8 @@
     "cookies_text": "We use cookies primarily for maintaining your authentication session. We do not use third-party tracking cookies for advertising.",
     "rights_title": "Your Data Rights",
     "rights_text": "You have the right to access, update, or delete the information we have on you. You can perform most of these actions directly within your profile settings."
+  },
+  "LocaleSwitcher": {
+    "label": "Change language, current is {locale}"
   }
 }

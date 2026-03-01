@@ -50,20 +50,26 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
     return (
       <form onSubmit={ handleSubmit } className="flex flex-col gap-6 animate-in fade-in">
         <div className="grid gap-4">
-          <div>
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" name="title" defaultValue={ book.title ?? "" } required/>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="title">{ t( "edit.title" ) }</Label>
+              <Input id="title" name="title" defaultValue={ book.title ?? "" } required/>
+            </div>
+            <div>
+              <Label htmlFor="cover_url">{ t( "edit.coverUrl" ) }</Label>
+              <Input id="cover_url" name="cover_url" defaultValue={ book.cover_url ?? "" }/>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="authors">Authors (comma-separated)</Label>
+              <Label htmlFor="authors">{ t( "edit.authors" ) }</Label>
               <Input id="authors" name="authors" defaultValue={ book.authors?.join( ", " ) ?? "" }/>
             </div>
             <div>
-              <Label htmlFor="type">Type</Label>
+              <Label htmlFor="type">{ t( "edit.type" ) }</Label>
               <Select name="type" defaultValue={ book.type ?? "" }>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type"/>
+                  <SelectValue placeholder={ t( "edit.selectType" ) }/>
                 </SelectTrigger>
                 <SelectContent>
                   {/* TODO : Use book type. */ }
@@ -75,48 +81,66 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
             </div>
           </div>
           <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" name="description" defaultValue={ book.description ?? "" } rows={ 20 }/>
+            <Label htmlFor="description">{ t( "edit.description" ) }</Label>
+            <Textarea id="description" name="description" defaultValue={ book.description ?? "" } rows={ 15 }/>
           </div>
         </div>
 
         <Separator/>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div><Label htmlFor="publisher">Publisher</Label><Input id="publisher" name="publisher"
-                                                                  defaultValue={ book.publisher ?? "" }/></div>
-          <div><Label htmlFor="publication_date">Publication Date</Label><Input id="publication_date"
-                                                                                name="publication_date"
-                                                                                defaultValue={ book.publication_date ?? "" }/>
+          <div>
+            <Label htmlFor="publisher">{ t( "edit.publisher" ) }</Label>
+            <Input id="publisher" name="publisher" defaultValue={ book.publisher ?? "" }/>
           </div>
-          <div><Label htmlFor="pages">Pages</Label><Input id="pages" name="pages" type="number"
-                                                          defaultValue={ book.pages ?? "" }/></div>
-          <div><Label htmlFor="isbn_10">ISBN 10</Label><Input id="isbn_10" name="isbn_10"
-                                                              defaultValue={ book.isbn_10 ?? "" }/></div>
-          <div><Label htmlFor="isbn_13">ISBN 13</Label><Input id="isbn_13" name="isbn_13"
-                                                              defaultValue={ book.isbn_13 ?? "" }/></div>
-          <div><Label htmlFor="categories">Categories (comma-separated)</Label><Input id="categories" name="categories"
-                                                                                      defaultValue={ book.categories?.join( ", " ) ?? "" }/>
+          <div>
+            <Label htmlFor="publication_date">{ t( "edit.publicationDate" ) }</Label>
+            <Input id="publication_date" name="publication_date" defaultValue={ book.publication_date ?? "" }/>
+          </div>
+          <div>
+            <Label htmlFor="pages">{ t( "edit.pages" ) }</Label>
+            <Input id="pages" name="pages" type="number" defaultValue={ book.pages ?? "" }/>
+          </div>
+          <div>
+            <Label htmlFor="isbn_10">{ t( "edit.isbn10" ) }</Label>
+            <Input id="isbn_10" name="isbn_10" defaultValue={ book.isbn_10 ?? "" }/>
+          </div>
+          <div>
+            <Label htmlFor="isbn_13">{ t( "edit.isbn13" ) }</Label>
+            <Input id="isbn_13" name="isbn_13" defaultValue={ book.isbn_13 ?? "" }/>
+          </div>
+          <div>
+            <Label htmlFor="categories">{ t( "edit.categories" ) }</Label>
+            <Input id="categories" name="categories" defaultValue={ book.categories?.join( ", " ) ?? "" }/>
           </div>
 
-          <div className="col-span-full grid grid-cols-4 gap-4 mt-2 p-4 bg-secondary/10 rounded-lg border">
-            <div><Label htmlFor="height">Height (cm)</Label><Input id="height" name="height" type="number" step="0.1"
-                                                                   defaultValue={ book.height ?? "" }/></div>
-            <div><Label htmlFor="length">Length (cm)</Label><Input id="length" name="length" type="number" step="0.1"
-                                                                   defaultValue={ book.length ?? "" }/></div>
-            <div><Label htmlFor="width">Width (cm)</Label><Input id="width" name="width" type="number" step="0.1"
-                                                                 defaultValue={ book.width ?? "" }/></div>
-            <div><Label htmlFor="weight">Weight (g)</Label><Input id="weight" name="weight" type="number"
-                                                                  defaultValue={ book.weight ?? "" }/></div>
+          <div
+            className="col-span-full grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 p-4 rounded-lg border">
+            <div>
+              <Label htmlFor="height">{ t( "edit.height" ) }</Label>
+              <Input id="height" name="height" type="number" step="0.1" defaultValue={ book.height ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="length">{ t( "edit.length" ) }</Label>
+              <Input id="length" name="length" type="number" step="0.1" defaultValue={ book.length ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="width">{ t( "edit.width" ) }</Label>
+              <Input id="width" name="width" type="number" step="0.1" defaultValue={ book.width ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="weight">{ t( "edit.weight" ) }</Label>
+              <Input id="weight" name="weight" type="number" defaultValue={ book.weight ?? "" }/>
+            </div>
           </div>
         </div>
         <div className="flex justify-between items-center gap-2">
           <Button type="button" variant="outline" onClick={ () => setIsEditing( false ) } disabled={ isPending }>
-            <X className="w-4 h-4 mr-2"/> Discard
+            <X className="w-4 h-4 mr-2"/> { t( "edit.discard" ) }
           </Button>
           <Button type="submit" disabled={ isPending }>
             { isPending ? <Spinner className="w-4 h-4 mr-2"/> : <Check className="w-4 h-4 mr-2"/> }
-            Save Changes
+            { t( "edit.save" ) }
           </Button>
         </div>
       </form>
@@ -150,27 +174,28 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
           <Separator className="my-6"/>
 
           <div className="max-w-none">
-            <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "descriptionTitle" ) }</h2>
+            <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "edit.description" ) }</h2>
             <p className="whitespace-pre-line">{ book.description ?? undefinedFallback }</p>
           </div>
 
           <div className="mt-8">
             <h2 className="text-xl text-muted-foreground font-semibold mb-4">{ t( "detailsTitle" ) }</h2>
             <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
-              <BookDetailItem label={ t( "publisher" ) } value={ book.publisher } fallbackText={ undefinedFallback }/>
-              <BookDetailItem label={ t( "publicationDate" ) } value={ book.publication_date }
+              <BookDetailItem label={ t( "edit.publisher" ) } value={ book.publisher }
                               fallbackText={ undefinedFallback }/>
-              <BookDetailItem label={ t( "pages" ) } value={ book.pages } fallbackText={ undefinedFallback }/>
-              <BookDetailItem label={ t( "isbn10" ) } value={ book.isbn_10 } fallbackText={ undefinedFallback }/>
-              <BookDetailItem label={ t( "isbn13" ) } value={ book.isbn_13 } fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "edit.publicationDate" ) } value={ book.publication_date }
+                              fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "edit.pages" ) } value={ book.pages } fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "edit.isbn10" ) } value={ book.isbn_10 } fallbackText={ undefinedFallback }/>
+              <BookDetailItem label={ t( "edit.isbn13" ) } value={ book.isbn_13 } fallbackText={ undefinedFallback }/>
               <BookDetailItem
                 label={ t( "dimensions" ) }
                 value={ book.height && book.length && book.width && `${ book.height } x ${ book.length } x ${ book.width } cm` }
                 fallbackText={ undefinedFallback }
               />
-              <BookDetailItem label={ t( "weight" ) } value={ book.weight && `${ book.weight } g` }
+              <BookDetailItem label={ t( "edit.weight" ) } value={ book.weight && `${ book.weight } g` }
                               fallbackText={ undefinedFallback }/>
-              <BookDetailItem label={ t( "categories" ) }
+              <BookDetailItem label={ t( "edit.categories" ) }
                               value={ book.categories && `${ book.categories.join( ", " ) }` }
                               fallbackText={ undefinedFallback }/>
             </dl>
@@ -183,7 +208,7 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
               onClick={ () => setIsEditing( true ) }
               className="max-w-sm w-fit"
             >
-              <Pencil className="w-4 h-4 mr-2"/> Edit Details
+              <Pencil className="w-4 h-4 mr-2"/> { t( "edit.editButton" ) }
             </Button>
           ) }
         </div>

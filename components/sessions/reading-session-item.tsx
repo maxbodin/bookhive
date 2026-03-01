@@ -5,7 +5,7 @@ import { ReadingSessionWithBook } from "@/app/types/reading-session";
 import { calculateSessionDuration } from "@/app/utils/reading-sessions/calculateSessionDuration";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion, PanInfo, useMotionValue, useTransform } from "framer-motion";
-import React, { useState, useTransition, ViewTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { deleteReadingSession } from "@/app/actions/reading-sessions/deleteReadingSession";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import { ROUTES } from "@/app/utils/routes";
+import BookCover from "@/components/books/book-cover";
 
 interface ReadingSessionItemProps {
   session: ReadingSessionWithBook;
@@ -94,21 +95,8 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
   const bookDetailUrl = `/${ ROUTES.BOOK }/${ session.book_id }?ref=session&sessionId=${ session.id }`;
 
   const coverContent = (
-    <ViewTransition name={ `book-cover-${ session.book_id }-session-${ session.id }` }>
-      { session.book?.cover_url ? (
-        <img
-          src={ session.book.cover_url }
-          alt={ `Cover of ${ session.book.title }` }
-          className="w-full h-auto object-cover rounded-lg aspect-[2/3]"
-          loading="lazy"
-          decoding="async"
-        />
-      ) : (
-        <div className="w-full flex items-center justify-center rounded-lg aspect-[2/3] bg-gray-100 dark:bg-secondary">
-          <p className="text-primary text-sm">{ t( "noCover" ) }</p>
-        </div>
-      ) }
-    </ViewTransition>
+    <BookCover book={ { id: session.book_id, ...session.book } } className="rounded-lg"
+               transitionSuffix={ `session-${ session.id }` }/>
   );
 
   const sessionContent = (
