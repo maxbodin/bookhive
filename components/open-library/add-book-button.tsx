@@ -27,7 +27,7 @@ export function AddBookButton( { openLibraryKey }: { openLibraryKey: string } ) 
       variant="secondary"
       onClick={ handleAddBook }
       disabled={ isPending }
-      className="w-full h-auto min-h-8 text-sm whitespace-normal leading-tight flex items-center justify-center"
+      className="w-fit h-auto min-h-8 text-sm whitespace-normal leading-tight flex items-center justify-center"
     >
       <PlusCircle className="h-3.5 w-3.5 shrink-0"/>
       <span className="text-center">{ isPending ? t( "adding" ) : t( "addBook" ) }</span>

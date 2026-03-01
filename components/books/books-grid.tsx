@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Book } from "@/app/types/book";
 import { NoResults } from "@/components/books/no-results";
-import { BookPosterCard } from "./book-poster-card";
+import { BookCompactHorizontalCard, BookPosterCard } from "./book-poster-card";
 import { BookHorizontalCard } from "./book-horizontal-card";
 import { UserBook } from "@/app/types/user-book";
 import { ReadingSession } from "@/app/types/reading-session";
@@ -28,7 +28,7 @@ type BookStateFilterValue = BookState | "none";
 
 /**
  * Flexible component that renders a collection of books, handling multiple user contexts
- * and allowing display mode switching between grid and carousel for poster view.
+ * and allowing display mode switching between different views.
  *
  * @param books
  * @param profileUserBooks
@@ -81,10 +81,13 @@ export function BooksGrid( {
     return <NoResults/>;
   }
 
-  const containerClasses =
-    view === "poster"
-      ? "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-4 p-4 mt-4"    // Grid for posters.
-      : "flex flex-col gap-4 p-2 md:p-4 mt-4";                                            // Vertical list.
+  const isPosterView = view === "poster";
+
+  const containerClasses = isPosterView
+    // For poster view, use a list on mobile and a grid on larger screens.
+    ? "flex flex-col md:grid md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-4 mt-4"
+    // Vertical list.
+    : "flex flex-col gap-4 md:p-2 mt-4";
 
   return (
     <section className="w-full">
@@ -120,18 +123,31 @@ export function BooksGrid( {
               <div
                 key={ book.id }
                 className={ cn(
-                  "h-full transition-all duration-300",
+                  "transition-all duration-300",
+                  isPosterView && "md:h-full",
                   isFaded ? "opacity-40 grayscale" : "opacity-100"
                 ) }
               >
-                { view === "poster" ? (
-                  <BookPosterCard
-                    book={ book }
-                    profileUserBook={ profileUserBook }
-                    connectedUserBook={ connectedUserBook }
-                    inFavoriteSection={ false }
-                    addFromOLButton={ addFromOLButton }
-                  />
+                { isPosterView ? (
+                  <>
+                    <div className="md:hidden">
+                      <BookCompactHorizontalCard
+                        book={ book }
+                        profileUserBook={ profileUserBook }
+                        connectedUserBook={ connectedUserBook }
+                        addFromOLButton={ addFromOLButton }
+                      />
+                    </div>
+                    <div className="hidden md:block h-full">
+                      <BookPosterCard
+                        book={ book }
+                        profileUserBook={ profileUserBook }
+                        connectedUserBook={ connectedUserBook }
+                        inFavoriteSection={ false }
+                        addFromOLButton={ addFromOLButton }
+                      />
+                    </div>
+                  </>
                 ) : (
                   <BookHorizontalCard
                     book={ book }

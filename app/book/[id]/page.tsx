@@ -16,7 +16,7 @@ import { ROUTES } from "@/app/utils/routes";
 import BookCover from "@/components/books/book-cover";
 
 const BASE_URL = "https://bookhive.maximebodin.com";
-const REFS = ["fav", "std", "horiz", "session"] as const;
+const REFS = ["fav", "std", "horiz", "session", "mobc"] as const;
 type RefType = typeof REFS[number];
 
 interface BookDetailsPageProps {

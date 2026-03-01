@@ -160,7 +160,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
           { ...props }
           variant="outline"
           size="sm"
-          className="w-full h-auto min-h-8 py-1.5 text-sm whitespace-normal leading-tight flex items-center justify-between"
+          className="w-fit h-auto min-h-8 py-1.5 text-sm whitespace-normal leading-tight flex items-center justify-between"
           disabled={ isPending }
         >
           <Icon className="w-3.5 h-3.5 shrink-0"/>
@@ -175,7 +175,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         { ...props }
         variant="secondary"
         size="sm"
-        className="w-full h-auto min-h-8 py-1.5 text-sm whitespace-normal leading-tight flex items-center justify-evenly"
+        className="w-fit h-auto min-h-8 py-1.5 text-sm whitespace-normal leading-tight flex items-center justify-evenly"
         disabled={ isPending }
       >
         <BookPlus className="w-3.5 h-3.5 shrink-0"/>

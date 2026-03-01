@@ -121,6 +121,58 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
 }
 
 /**
+ * Renders a compact, horizontal card view for books, optimized for mobile displays.
+ * It provides essential book details and a primary action button in a space-efficient layout.
+ *
+ * @param book The book data to display.
+ * @param connectedUserBook The logged-in user's data for this book, for state and actions.
+ * @param addFromOLButton Flag to show 'Add from Open Library' button instead of state dropdown.
+ */
+export function BookCompactHorizontalCard( { book, connectedUserBook, addFromOLButton }: BookCardSharedProps ) {
+  return (
+    <div className="flex gap-3 border rounded-lg shadow-sm overflow-hidden p-2">
+      <div className="w-16 flex-shrink-0">
+        <OptionalLink
+          isLink={ !addFromOLButton }
+          href={ `/${ ROUTES.BOOK }/${ book.id }?ref=mobc` }
+          className="block rounded-md"
+        >
+          <BookCover book={ book } className="rounded-md" transitionSuffix="mobc"/>
+        </OptionalLink>
+      </div>
+      <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div>
+          <OptionalLink
+            isLink={ !addFromOLButton }
+            href={ `/${ ROUTES.BOOK }/${ book.id }?ref=mobc` }
+            className="rounded-md inline-block w-full"
+          >
+            <h3
+              className={ `text-md font-bold break-words whitespace-normal ${ !addFromOLButton ? "hover:underline" : "" }` }
+              title={ book.title ?? "Untitled" }
+            >
+              { book.title ?? "Untitled" }
+            </h3>
+          </OptionalLink>
+          { book.authors && (
+            <p className="text-sm text-muted-foreground truncate">
+              { book.authors.join( ", " ) }
+            </p>
+          ) }
+        </div>
+        <div className="flex justify-end">
+          { addFromOLButton && book.open_library_key ? (
+            <AddBookButton openLibraryKey={ book.open_library_key }/>
+          ) : (
+            <BookStateDropdown bookId={ book.id } currentStateRecord={ connectedUserBook }/>
+          ) }
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Main component that decides whether to render a standard card or a favorite cover.
  */
 export function BookPosterCard( props: BookCardProps ) {
