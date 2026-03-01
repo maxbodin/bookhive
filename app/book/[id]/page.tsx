@@ -137,8 +137,7 @@ export default async function BookDetailsPage( { params, searchParams }: BookDet
                 <BookCover book={ book } className="rounded-lg shadow-xl"
                            transitionSuffix={ viewTransitionSuffix }
                            fetchPriority="high"
-                           loading="eager"
-                           decoding="sync"/>
+                           loading="eager"/>
 
                 { canToggleFavorite && (
                   <FavoriteToggleButton bookId={ book.id } isFavorite={ isConnectedUserFavorite }/>

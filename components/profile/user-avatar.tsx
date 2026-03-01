@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ import { Profile } from "@/app/types/profile";
 import { updateProfilePicture } from "@/app/actions/profiles/updateProfilePicture";
 import { useTranslations } from "next-intl";
 import { getSafeTransitionNameFromEmail } from "@/app/utils/profiles/getSafeTransitionName";
+import Image from "next/image";
 
 interface UserAvatarProps {
   profile: Profile;
@@ -50,14 +51,20 @@ export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
 
   const avatar = (
     <ViewTransition name={ `avatar-${ getSafeTransitionNameFromEmail( profile.email ) }` }>
-      <Avatar className="h-24 w-24 md:h-32 md:w-32 text-4xl">
-        <AvatarImage
-          src={ profile.picture ?? undefined }
-          alt={ profile.email }
-          fetchPriority="high"
-          loading="eager"
-        />
-        <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
+      <Avatar className="relative h-24 w-24 md:h-32 md:w-32 text-4xl overflow-hidden">
+        { profile.picture ? (
+          <Image
+            src={ profile.picture }
+            alt={ profile.email }
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 768px) 96px, 128px"
+            quality={ 60 }
+          />
+        ) : (
+          <AvatarFallback>{ getInitial( profile.email ) }</AvatarFallback>
+        ) }
       </Avatar>
     </ViewTransition>
   );

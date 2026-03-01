@@ -2,7 +2,7 @@
 import { Book } from "@/app/types/book";
 import { OpenLibraryEditionEntry, OpenLibrarySearchDoc, OpenLibraryWorkDetails } from "@/app/types/open-library";
 
-const SEARCH_LIMIT: number = 10;
+const SEARCH_LIMIT: number = 20;
 
 /**
  * Searches the Open Library API for books.
