@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [60],
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       { protocol: "https", hostname: "covers.openlibrary.org" },
       { protocol: "https", hostname: "books.google.com" },

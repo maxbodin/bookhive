@@ -2,10 +2,10 @@
 
 import { Book } from "@/app/types/book";
 import { useTranslations } from "next-intl";
-import React, { useState, ViewTransition } from "react";
-import Image from "next/image";
+import React, { ViewTransition } from "react";
 import { cn } from "@/lib/utils";
 import { ImageOff } from "lucide-react";
+import ImageWithFallback from "@/components/image-with-fallback";
 
 interface BookCoverProps {
   book: Book | Partial<Book>;
@@ -37,27 +37,23 @@ export default function BookCover( {
                                      sizes = "(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 15vw",
                                    }: BookCoverProps ) {
   const t = useTranslations( "BookCard" );
-  const [imgError, setImgError] = useState<boolean>( false );
 
   // Defining limits matching aspect ratio (2:3).
   const BASE_WIDTH = 400;
   const BASE_HEIGHT = 600;
 
-  const hasValidCover = book.cover_url && !imgError;
-
   return (
     <ViewTransition name={ `book-cover-${ book.id }-${ transitionSuffix }` }>
-      { hasValidCover ? (
-        <Image
+      { book.cover_url ? (
+        <ImageWithFallback
           src={ book.cover_url! }
           alt={ t( "coverAlt", { title: book.title ?? "Untitled" } ) }
           width={ BASE_WIDTH }
           height={ BASE_HEIGHT }
           className={ cn( "w-full h-auto object-cover aspect-[2/3]", className ) }
           loading={ loading }
-          priority={ fetchPriority === "high" }
+          preload={ fetchPriority === "high" }
           sizes={ sizes }
-          onError={ () => setImgError( true ) }
           quality={ 60 }
         />
       ) : (

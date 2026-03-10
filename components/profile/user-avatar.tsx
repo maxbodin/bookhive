@@ -20,7 +20,7 @@ import { Profile } from "@/app/types/profile";
 import { updateProfilePicture } from "@/app/actions/profiles/updateProfilePicture";
 import { useTranslations } from "next-intl";
 import { getSafeTransitionNameFromEmail } from "@/app/utils/profiles/getSafeTransitionName";
-import Image from "next/image";
+import ImageWithFallback from "@/components/image-with-fallback";
 
 interface UserAvatarProps {
   profile: Profile;
@@ -53,12 +53,12 @@ export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
     <ViewTransition name={ `avatar-${ getSafeTransitionNameFromEmail( profile.email ) }` }>
       <Avatar className="relative h-24 w-24 md:h-32 md:w-32 text-4xl overflow-hidden">
         { profile.picture ? (
-          <Image
+          <ImageWithFallback
             src={ profile.picture }
             alt={ profile.email }
             fill
             className="object-cover"
-            priority
+            preload
             sizes="(max-width: 768px) 96px, 128px"
             quality={ 60 }
           />
