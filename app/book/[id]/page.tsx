@@ -114,8 +114,6 @@ export default async function BookDetailsPage( { params, searchParams }: BookDet
     isAdmin = profile?.is_admin ?? false;
   }
 
-  const t = await getTranslations( "BookDetails" );
-
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
   const canToggleFavorite = connectedUserBook?.state === "read";
 

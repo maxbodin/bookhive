@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { BookOpen, BookOpenCheck, Github, Lock } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "About BookHive | Personal Library Manager",

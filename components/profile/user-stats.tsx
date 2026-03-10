@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { UserBook } from "@/app/types/user-book";
 import { BooksByStatusCard } from "./stats/books-by-status-card";
 import { AverageCompletionCard } from "@/components/profile/stats/average-completion-card";
 import { BooksByTypesCard } from "@/components/profile/stats/books-by-types-card";
 import { MonthlyCountByStateCard } from "@/components/profile/stats/monthly-count-by-state-card";
 import { ReadingSpeedCard } from "@/components/profile/stats/reading-speed-card";
+import { useYearSelection } from "@/app/contexts/year-selection-context";
 
 interface UserStatsProps {
   userBooks: UserBook[];
@@ -18,7 +19,7 @@ interface UserStatsProps {
  * @constructor
  */
 export function UserStats( { userBooks }: UserStatsProps ) {
-  const [selectedYear, setSelectedYear] = useState( new Date().getFullYear() );
+  const { selectedYear } = useYearSelection();
 
   const stats = useMemo( () => {
     // Filter books that have a valid end_reading_date and match the selected year.

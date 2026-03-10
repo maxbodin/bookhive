@@ -26,7 +26,7 @@ async function fetchJson<T>( url: string ): Promise<T> {
 }
 
 /**
- * Normalizes Open Library date strings into valid PostgreSQL date format (YYYY-MM-DD).
+ * Normalizes Open Library date strings into valid PostgresSQL date format (YYYY-MM-DD).
  *
  * Open Library formats can be: "1990", "1990-05", "May 5, 1990", "c1990", "[1990?]"
  */
