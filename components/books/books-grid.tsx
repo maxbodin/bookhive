@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
+import dynamic from "next/dynamic";
 import { Book } from "@/app/types/book";
-import { NoResults } from "@/components/books/no-results";
 import { BookCompactHorizontalCard, BookPosterCard } from "./book-poster-card";
 import { BookHorizontalCard } from "./book-horizontal-card";
 import { UserBook } from "@/app/types/user-book";
@@ -25,6 +25,10 @@ interface BooksGridProps {
 }
 
 type BookStateFilterValue = BookState | "none";
+
+const NoResults = dynamic( () => import( "@/components/books/no-results" ).then( ( module ) => module.NoResults ), {
+  ssr: false,
+} );
 
 /**
  * Flexible component that renders a collection of books, handling multiple user contexts

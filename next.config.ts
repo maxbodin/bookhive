@@ -37,6 +37,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "www.flammarion-jeunesse.fr" },
       { protocol: "https", hostname: "editions.flammarion.com" },
       { protocol: "https", hostname: "cdn.cultura.com" },
+      { protocol: "https", hostname: "librairieturenne.com" },
     ],
   },
 };
