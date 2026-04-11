@@ -7,6 +7,8 @@ import { AverageCompletionCard } from "@/components/profile/stats/average-comple
 import { BooksByTypesCard } from "@/components/profile/stats/books-by-types-card";
 import { MonthlyCountByStateCard } from "@/components/profile/stats/monthly-count-by-state-card";
 import { ReadingSpeedCard } from "@/components/profile/stats/reading-speed-card";
+import { MonthlyPagesReadCard } from "@/components/profile/stats/monthly-pages-read-card";
+import { ReadCompletionTrendCard } from "@/components/profile/stats/read-completion-trend-card";
 import { useYearSelection } from "@/app/contexts/year-selection-context";
 import { useLocale } from "next-intl";
 
@@ -29,6 +31,12 @@ export function UserStats( { userBooks }: UserStatsProps ) {
   };
 
   const stats = useMemo( () => {
+    const monthFormatter = new Intl.DateTimeFormat( locale, { month: "short" } );
+
+    const allMonths = Array.from( { length: 12 }, ( _, i ) => {
+      return monthFormatter.format( new Date( Date.UTC( 2020, i, 1 ) ) );
+    } );
+
     // Filter books that are read and match the selected year based on completion date.
     const readBooksByYear = userBooks.filter( b => {
       const completionDate = getReadCompletionDate( b );
@@ -45,6 +53,34 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       later: userBooks.filter( b => b.state === "later" ).length,
       wishlist: userBooks.filter( b => b.state === "wishlist" ).length,
     };
+
+    const monthlyCompletedCount = Array<number>( 12 ).fill( 0 );
+    const monthlyPagesRead = Array<number>( 12 ).fill( 0 );
+
+    readBooksByYear.forEach( ( book ) => {
+      const completionDate = getReadCompletionDate( book );
+      if (!completionDate) return;
+
+      const monthIndex = new Date( completionDate ).getMonth();
+      monthlyCompletedCount[monthIndex] += 1;
+      monthlyPagesRead[monthIndex] += book.pages || 0;
+    } );
+
+    const monthlyPagesReadData = allMonths.map( ( month, index ) => ( {
+      month,
+      pages: monthlyPagesRead[index],
+    } ) );
+
+    let cumulative = 0;
+    const readCompletionTrendData = allMonths.map( ( month, index ) => {
+      cumulative += monthlyCompletedCount[index];
+
+      return {
+        month,
+        completed: monthlyCompletedCount[index],
+        cumulative,
+      };
+    } );
 
     const totalPagesRead = readBooksByYear.reduce( ( acc, book ) => acc + ( book.pages || 0 ), 0 );
     const firstReadDate = readBooksByYear.length > 0
@@ -94,10 +130,6 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       }
     };
 
-    const allMonths = Array.from( { length: 12 }, ( _, i ) => {
-      return new Intl.DateTimeFormat( locale, { month: "short" } ).format( new Date( Date.UTC( 2020, i, 1 ) ) );
-    } );
-
     // Initialize a data structure to hold counts for all states for each month
     const monthlyActivityData = allMonths.map( month => ( {
       month,
@@ -127,19 +159,21 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       booksByType,
       avgReadingDays,
       monthlyActivityData,
-      pagesPerDay
+      pagesPerDay,
+      monthlyPagesReadData,
+      readCompletionTrendData,
     };
   }, [userBooks, selectedYear, locale] );
 
   return (
-    <div className="flex flex-col space-y-2">
-      <BooksByStatusCard data={ stats.booksByState }/>
-      <BooksByTypesCard data={ stats.booksByType }/>
-      <AverageCompletionCard avgDays={ stats.avgReadingDays }/>
-      <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay }/>
-      <MonthlyCountByStateCard
-        data={ stats.monthlyActivityData }
-      />
+    <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+      <BooksByStatusCard data={ stats.booksByState } className="xl:col-span-4"/>
+      <BooksByTypesCard data={ stats.booksByType } className="xl:col-span-4"/>
+      <AverageCompletionCard avgDays={ stats.avgReadingDays } className="xl:col-span-4"/>
+      <ReadingSpeedCard pagesPerDay={ stats.pagesPerDay } className="xl:col-span-6"/>
+      <MonthlyPagesReadCard data={ stats.monthlyPagesReadData } className="xl:col-span-6"/>
+      <MonthlyCountByStateCard data={ stats.monthlyActivityData } className="xl:col-span-6"/>
+      <ReadCompletionTrendCard data={ stats.readCompletionTrendData } className="xl:col-span-6"/>
     </div>
   );
 }

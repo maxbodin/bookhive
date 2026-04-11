@@ -5,13 +5,14 @@ import { useTranslations } from "next-intl";
 
 interface ReadingSpeedCardProps {
   pagesPerDay: number;
+  className?: string;
 }
 
-export function ReadingSpeedCard( { pagesPerDay }: ReadingSpeedCardProps ) {
+export function ReadingSpeedCard( { pagesPerDay, className }: ReadingSpeedCardProps ) {
   const t = useTranslations( "Stats.ReadingSpeed" );
 
   return (
-    <StatCard title={ t( "title" ) } headerChildren={
+    <StatCard title={ t( "title" ) } className={ className } headerChildren={
       <YearSelection/>
     }>
       <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">

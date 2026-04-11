@@ -5,13 +5,14 @@ import { useTranslations } from "next-intl";
 
 interface AverageCompletionCardProps {
   avgDays: number;
+  className?: string;
 }
 
-export function AverageCompletionCard( { avgDays }: AverageCompletionCardProps ) {
+export function AverageCompletionCard( { avgDays, className }: AverageCompletionCardProps ) {
   const t = useTranslations( "Stats.AverageCompletion" );
 
   return (
-    <StatCard title={ t( "title" ) } headerChildren={
+    <StatCard title={ t( "title" ) } className={ className } headerChildren={
       <YearSelection
       />
     }>

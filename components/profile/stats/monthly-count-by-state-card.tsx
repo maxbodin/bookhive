@@ -22,9 +22,10 @@ interface MonthlyReadsCardProps {
     later: number;
     wishlist: number;
   }[];
+  className?: string;
 }
 
-export function MonthlyCountByStateCard( { data }: MonthlyReadsCardProps ) {
+export function MonthlyCountByStateCard( { data, className }: MonthlyReadsCardProps ) {
   const t = useTranslations( "Stats.MonthlyActivity" );
   const { selectedYear } = useYearSelection();
 
@@ -38,7 +39,7 @@ export function MonthlyCountByStateCard( { data }: MonthlyReadsCardProps ) {
   const hasData = data.some( d => d.read > 0 || d.reading > 0 || d.later > 0 || d.wishlist > 0 );
 
   return (
-    <StatCard title={ t( "title" ) } headerChildren={
+    <StatCard title={ t( "title" ) } className={ className } headerChildren={
       <YearSelection/>
     }>
       { hasData ? (

@@ -245,6 +245,17 @@
       "addedToWishlist": "Ajoutés à la liste d'envies",
       "noActivity": "Aucune activité de lecture enregistrée en {year}."
     },
+    "MonthlyPagesRead": {
+      "title": "Pages lues par mois",
+      "pages": "Pages lues",
+      "noPages": "Aucune page lue en {year}."
+    },
+    "ReadCompletionTrend": {
+      "title": "Tendance des lectures terminées",
+      "completed": "Livres terminés",
+      "cumulative": "Cumul terminé",
+      "noData": "Aucun livre terminé en {year}."
+    },
     "ReadingSpeed": {
       "title": "Vitesse de lecture moyenne",
       "pagesPerDay": "Pages/Jour",

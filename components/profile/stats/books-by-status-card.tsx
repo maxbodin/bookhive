@@ -18,9 +18,10 @@ interface BooksByStatusCardProps {
     later: number;
     wishlist: number;
   };
+  className?: string;
 }
 
-export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
+export function BooksByStatusCard( { data, className }: BooksByStatusCardProps ) {
   const t = useTranslations( "Stats.BooksByStatus" );
 
   const chartConfig = {
@@ -42,7 +43,7 @@ export function BooksByStatusCard( { data }: BooksByStatusCardProps ) {
   }, [chartData] );
 
   return (
-    <StatCard title={ t( "title" ) }>
+    <StatCard title={ t( "title" ) } className={ className }>
       { totalBooks > 0 ? (
         <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">
           <PieChart>

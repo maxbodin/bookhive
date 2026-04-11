@@ -15,9 +15,10 @@ import React from "react";
 
 interface BookTypesCardProps {
   data: Record<string, number>;
+  className?: string;
 }
 
-export function BooksByTypesCard( { data }: BookTypesCardProps ) {
+export function BooksByTypesCard( { data, className }: BookTypesCardProps ) {
   const t = useTranslations( "Stats.BooksByTypes" );
 
   const chartConfig = {
@@ -39,7 +40,7 @@ export function BooksByTypesCard( { data }: BookTypesCardProps ) {
   }, [chartData] );
 
   return (
-    <StatCard title={ t( "title" ) }>
+    <StatCard title={ t( "title" ) } className={ className }>
       { totalBooks > 0 ? (
         <ChartContainer config={ chartConfig } className="min-h-[250px] w-full">
           <PieChart>

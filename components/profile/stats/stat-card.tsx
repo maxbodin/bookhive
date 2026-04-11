@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface StatCardProps {
   title: string;
@@ -10,14 +11,17 @@ interface StatCardProps {
 
 export function StatCard( { title, children, headerChildren, className }: StatCardProps ) {
   return (
-    <Card className={ `flex flex-col rounded-lg min-w-md ${ className || "" }` }>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-lg">
+    <Card className={ cn(
+      "flex h-full flex-col rounded-xl border bg-card/80 shadow-sm",
+      className
+    ) }>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="text-base md:text-lg">
           { title }
         </CardTitle>
         { headerChildren }
       </CardHeader>
-      <CardContent>{ children }</CardContent>
+      <CardContent className="flex-1">{ children }</CardContent>
     </Card>
   );
 }

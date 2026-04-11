@@ -245,6 +245,17 @@
       "addedToWishlist": "Added to Wishlist",
       "noActivity": "No book activity recorded in {year}."
     },
+    "MonthlyPagesRead": {
+      "title": "Pages read by month",
+      "pages": "Pages read",
+      "noPages": "No pages read in {year}."
+    },
+    "ReadCompletionTrend": {
+      "title": "Read completion trend",
+      "completed": "Completed books",
+      "cumulative": "Cumulative completed",
+      "noData": "No completed books in {year}."
+    },
     "ReadingSpeed": {
       "title": "Average reading speed",
       "pagesPerDay": "Pages/Day",
