@@ -134,7 +134,6 @@ export async function forgotPassword(
   } );
 
   if (error) {
-    // TODO: Return a generic error instead of real error message.
     return { success: false, errors: { form: error.message } };
   }
 

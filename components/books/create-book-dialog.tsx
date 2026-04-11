@@ -26,7 +26,7 @@ interface CreateBookDialogProps {
 }
 
 export function CreateBookDialog( { initialTitle = "" }: CreateBookDialogProps ) {
-  const t = useTranslations( "BookDetails" ); // TODO : Add dedicated translations.
+  const t = useTranslations( "BookDetails" );
   const tTypes = useTranslations( "BookTypes" );
   const [isOpen, setIsOpen] = useState<boolean>( false );
   const [isPending, startTransition] = useTransition();

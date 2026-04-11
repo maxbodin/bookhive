@@ -51,7 +51,6 @@ export async function createBook( formData: FormData ) {
 
   const data = validated.data;
 
-  // TODO : Refactor implementations in a dedicated file.
   // Helper to process arrays.
   const toArray = ( str?: string ) => str ? str.split( "," ).map( s => s.trim() ).filter( Boolean ) : null;
 
@@ -78,7 +77,6 @@ export async function createBook( formData: FormData ) {
     return { success: false, message: t( "errors.createFailed" ) };
   }
 
-  // TODO : revalidate path with the search. or revalidate and redirect to book details page.
   revalidatePath( "/" );
   return { success: true, message: t( "success.created" ) };
 }

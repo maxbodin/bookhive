@@ -74,7 +74,6 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
                   <SelectValue placeholder={ t( "edit.selectType" ) }/>
                 </SelectTrigger>
                 <SelectContent>
-                  {/* TODO : Use book type. */ }
                   <SelectItem value="bd">{ tBookTypes( "bd" ) }</SelectItem>
                   <SelectItem value="manga">{ tBookTypes( "manga" ) }</SelectItem>
                   <SelectItem value="roman">{ tBookTypes( "roman" ) }</SelectItem>
