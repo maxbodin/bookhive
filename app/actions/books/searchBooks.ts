@@ -30,8 +30,12 @@ export async function searchBooks(
   // Pass `null` for foreignTable because `books` is the top-level table here.
   request = applySharedBookFilters( request, null, query, types );
 
-  // Apply pagination and ordering.
-  request = request.order( "authors", { ascending: false } ).range( from, to );
+  // Apply deterministic ordering before pagination to guarantee stable, non-overlapping pages.
+  // `id` is a unique tie-breaker that prevents duplicated items across adjacent pages.
+  request = request
+    .order( "authors", { ascending: false, nullsFirst: true } )
+    .order( "id", { ascending: true } )
+    .range( from, to );
 
   const { data: books, error, count } = await request;
 
