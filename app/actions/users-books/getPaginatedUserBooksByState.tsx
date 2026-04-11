@@ -40,7 +40,9 @@ export async function getPaginatedUserBooksByState(
     .eq( "state", state );
 
   queryBuilder = applySharedBookFilters( queryBuilder, "books", query, types );
-  queryBuilder = queryBuilder.range( from, to );
+  queryBuilder = queryBuilder
+    .order( "book_id", { ascending: true } )
+    .range( from, to );
 
   const { data, error, count } = await queryBuilder;
 

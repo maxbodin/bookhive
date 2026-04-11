@@ -12,9 +12,10 @@ export interface ReadingStats {
  * Calculates total reading hours and finds the last session date from a list of sessions.
  *
  * @param sessions - An array of reading sessions for a single book.
+ * @param locale - BCP 47 locale used for deterministic date formatting across SSR and hydration.
  * @returns An object containing the calculated reading statistics.
  */
-export function calculateReadingStats( sessions: ReadingSession[] ): ReadingStats {
+export function calculateReadingStats( sessions: ReadingSession[], locale: string ): ReadingStats {
   if (!sessions || sessions.length === 0) {
     return {
       totalHours: 0,
@@ -47,7 +48,7 @@ export function calculateReadingStats( sessions: ReadingSession[] ): ReadingStat
   if (latestEndDate) {
     const finalDate = latestEndDate as Date;
 
-    const formattedLastSessionDate = finalDate.toLocaleDateString( undefined, {
+    const formattedLastSessionDate = finalDate.toLocaleDateString( locale, {
       year: "numeric", month: "long", day: "numeric",
     } );
 

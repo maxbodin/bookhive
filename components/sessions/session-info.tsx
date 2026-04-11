@@ -2,6 +2,7 @@ import { calculateReadingStats } from "@/app/utils/reading-sessions/calculateRea
 import { UserBook } from "@/app/types/user-book";
 import { ReadingSession } from "@/app/types/reading-session";
 import ReadingProgress from "@/components/sessions/reading-progress";
+import { useLocale } from "next-intl";
 
 interface SessionInfoProps {
   userBook?: UserBook;
@@ -9,13 +10,15 @@ interface SessionInfoProps {
 }
 
 export function SessionInfo( { userBook, sessions }: SessionInfoProps ) {
+  const locale = useLocale();
+
   // Only show progress if the book is being read and has total pages defined.
   if (!userBook || userBook.state !== "reading" || !userBook.pages) {
     return null;
   }
 
   // Calculate the statistics from the provided sessions.
-  const { totalHours, daysSinceLastSession, formattedLastSessionDate } = calculateReadingStats( sessions );
+  const { totalHours, daysSinceLastSession, formattedLastSessionDate } = calculateReadingStats( sessions, locale );
 
   return (
     <ReadingProgress

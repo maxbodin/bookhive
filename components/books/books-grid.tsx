@@ -11,6 +11,7 @@ import { useBookFilter } from "@/hooks/use-book-filter";
 import { BookState } from "@/app/types/book-state";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { getBookRelationKey } from "@/app/utils/books/getBookIdentity";
 
 interface BooksGridProps {
   books: Book[];
@@ -78,11 +79,11 @@ export function BooksGrid( {
 
   // Find the specific user-book record for the profile owner and the connected user.
   const { profileBooksMap, connectedBooksMap } = useMemo( () => {
-    const pMap = new Map<number, UserBook>();
-    profileUserBooks.forEach( ( ub ) => pMap.set( ub.book_id, ub ) );
+    const pMap = new Map<string, UserBook>();
+    profileUserBooks.forEach( ( ub ) => pMap.set( getBookRelationKey( ub ), ub ) );
 
-    const cMap = new Map<number, UserBookStateRecord>();
-    connectedUserBooks.forEach( ( ub ) => cMap.set( ub.book_id, ub ) );
+    const cMap = new Map<string, UserBookStateRecord>();
+    connectedUserBooks.forEach( ( ub ) => cMap.set( getBookRelationKey( ub ), ub ) );
 
     return { profileBooksMap: pMap, connectedBooksMap: cMap };
   }, [profileUserBooks, connectedUserBooks] );
@@ -118,8 +119,9 @@ export function BooksGrid( {
 
         <div className={ containerClasses }>
           { books.map( ( book, index ) => {
-            const profileUserBook = profileBooksMap.get( book.id );
-            const connectedUserBook = connectedBooksMap.get( book.id );
+            const bookRelationKey = getBookRelationKey( book );
+            const profileUserBook = profileBooksMap.get( bookRelationKey );
+            const connectedUserBook = connectedBooksMap.get( bookRelationKey );
             const shouldPrioritizeCover = prioritizeFirstImage && index === 0;
 
             // Treat missing state natively as "none".

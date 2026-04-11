@@ -5,6 +5,7 @@ import { getPaginatedUserBooksByState } from "@/app/actions/users-books/getPagin
 import {
   getConnectedUserBooksForDisplayedBooks
 } from "@/app/actions/users-books/getConnectedUserBooksForDisplayedBooks";
+import { getBookRelationId } from "@/app/utils/books/getBookIdentity";
 
 interface UseShelfPaginationProps {
   userId: string;
@@ -41,31 +42,42 @@ export function useShelfPagination( {
     if (newPage === currentPage || isPending) return;
 
     startTransition( async () => {
-      // Fetch the profile's books for the new page using the current query and types filter.
-      const { data: newProfileBooks } = await getPaginatedUserBooksByState(
-        userId,
-        shelfState,
-        newPage,
-        query,
-        types
-      );
-
-      setBooks( newProfileBooks );
-      setCurrentPage( newPage );
-
-      // If a user is connected, fetch their specific data for these new books.
-      if (connectedUserId && newProfileBooks.length > 0) {
-        const newBookIds = newProfileBooks.map( ( b ) => b.book_id );
-        const newConnectedData = await getConnectedUserBooksForDisplayedBooks(
-          connectedUserId,
-          newBookIds
+      try {
+        // Fetch the profile's books for the new page using the current query and types filter.
+        const { data: newProfileBooks } = await getPaginatedUserBooksByState(
+          userId,
+          shelfState,
+          newPage,
+          query,
+          types
         );
 
-        setConnectedBooks( ( prev ) => {
-          const bookMap = new Map( prev.map( ( b ) => [b.book_id, b] ) );
-          newConnectedData.forEach( ( b ) => bookMap.set( b.book_id, b ) );
-          return Array.from( bookMap.values() );
-        } );
+        let nextConnectedBooks: UserBookStateRecord[] = [];
+
+        // Keep connected-user state in sync with the currently visible page.
+        if (connectedUserId && newProfileBooks.length > 0) {
+          const newBookIds = Array.from(
+            new Set(
+              newProfileBooks
+                .map( getBookRelationId )
+                .filter( ( id ) => Number.isFinite( id ) )
+            )
+          );
+
+          if (newBookIds.length > 0) {
+            nextConnectedBooks = await getConnectedUserBooksForDisplayedBooks(
+              connectedUserId,
+              newBookIds
+            );
+          }
+        }
+
+        // Commit all state together to avoid rendering books with stale relation data.
+        setBooks( newProfileBooks );
+        setConnectedBooks( nextConnectedBooks );
+        setCurrentPage( newPage );
+      } catch (error) {
+        console.error( "Error while paginating shelf:", error );
       }
     } );
   };
