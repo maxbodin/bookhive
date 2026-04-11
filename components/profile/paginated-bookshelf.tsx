@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { BookState } from "@/app/types/book-state";
 import { BooksGrid } from "@/components/books/books-grid";
-import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PaginationBar } from "@/components/pagination/pagination-bar";
@@ -73,22 +72,25 @@ export function PaginatedBookshelf( {
   }
 
   const totalPages = Math.ceil( totalCount / BOOKS_PER_PAGE );
+  const handleToggleFold = () => setIsFolded( ( prev ) => !prev );
 
   return (
     <section>
       <div ref={ sectionRef } className="scroll-mt-[96px] flex justify-between items-center mb-4 border-b pb-2">
-        <h2 className="text-2xl font-bold">
-          { shelfTitle } ({ totalCount })
-        </h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={ () => setIsFolded( !isFolded ) }
+        <button
+          type="button"
+          onClick={ handleToggleFold }
           aria-expanded={ !isFolded }
+          className="w-full flex items-center justify-between text-left rounded-md px-3 py-3 hover:bg-muted/40"
         >
-          { isFolded ? <ChevronDown className="h-5 w-5"/> : <ChevronUp className="h-5 w-5"/> }
+          <h2 className="text-2xl font-bold">
+            { shelfTitle } ({ totalCount })
+          </h2>
+          <span aria-hidden="true">
+            { isFolded ? <ChevronDown className="h-5 w-5"/> : <ChevronUp className="h-5 w-5"/> }
+          </span>
           <span className="sr-only">{ isFolded ? "expand" : "collapse" }</span>
-        </Button>
+        </button>
       </div>
 
       { !isFolded && (
