@@ -1,14 +1,18 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Terms of Service | BookHive",
-  description: "Read the Terms of Service for BookHive. Understand your rights and responsibilities when using our book tracking platform.",
-  robots: {
-    index: false,
-    follow: true,
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations( "TermsPage" );
+
+  return {
+    title: t( "metadata_title" ),
+    description: t( "metadata_description" ),
+    robots: {
+      index: false,
+      follow: true,
+    }
+  };
+}
 
 export default async function TermsPage() {
   const t = await getTranslations( "TermsPage" );

@@ -6,8 +6,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/app/utils/supabase/server";
 import passwordStrength from "@/lib/passwordStrength";
 import { ActionState } from "@/app/types/action-state";
-
-// TODO : Add translations in the following methods.
+import { getTranslations } from "next-intl/server";
 
 /**
  * Logs in a user with email and password.
@@ -19,16 +18,17 @@ export async function login(
   formData: FormData,
 ): Promise<ActionState> {
   const supabase = await createClient();
+  const t = await getTranslations( "AuthForm" );
 
   const email = formData.get( "email" ) as string;
   const password = formData.get( "password" ) as string;
   const errors: ActionState["errors"] = {};
 
   if (!email) {
-    errors.email = "Email is required.";
+    errors.email = t( "error_email_required" );
   }
   if (!password) {
-    errors.password = "Password is required.";
+    errors.password = t( "error_password_required" );
   }
 
   if (Object.keys( errors ).length > 0) {
@@ -43,7 +43,7 @@ export async function login(
   if (error) {
     return {
       success: false,
-      errors: { form: "Invalid email or password. Please try again." },
+      errors: { form: t( "error_invalid_credentials" ) },
     };
   }
 
@@ -61,6 +61,7 @@ export async function signup(
   formData: FormData,
 ): Promise<ActionState> {
   const supabase = await createClient();
+  const t = await getTranslations( "AuthForm" );
   const origin = ( await headers() ).get( "origin" );
 
   const email = formData.get( "email" ) as string;
@@ -68,13 +69,13 @@ export async function signup(
   const errors: ActionState["errors"] = {};
 
   if (!email) {
-    errors.email = "Email is required.";
+    errors.email = t( "error_email_required" );
   }
   if (!password) {
-    errors.password = "Password is required.";
+    errors.password = t( "error_password_required" );
   } else
     if (passwordStrength( password ) < 4) {
-      errors.password = "Password is not strong enough.";
+      errors.password = t( "error_password_weak" );
     }
 
   if (Object.keys( errors ).length > 0) {
@@ -96,7 +97,7 @@ export async function signup(
     };
   }
 
-  return { success: true, message: "Check your email to verify your account." };
+  return { success: true, message: t( "success_verify_email" ) };
 }
 
 /**
@@ -119,12 +120,13 @@ export async function forgotPassword(
   formData: FormData,
 ): Promise<ActionState> {
   const supabase = await createClient();
+  const t = await getTranslations( "AuthForm" );
   const origin = ( await headers() ).get( "origin" );
 
   const email = formData.get( "email" ) as string;
 
   if (!email) {
-    return { success: false, errors: { email: "Email is required." } };
+    return { success: false, errors: { email: t( "error_email_required" ) } };
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail( email, {
@@ -136,7 +138,7 @@ export async function forgotPassword(
     return { success: false, errors: { form: error.message } };
   }
 
-  return { success: true, message: "Check your email for the password reset link." };
+  return { success: true, message: t( "success_reset_password_email" ) };
 }
 
 /**
@@ -149,14 +151,15 @@ export async function updatePassword(
   formData: FormData,
 ): Promise<ActionState> {
   const supabase = await createClient();
+  const t = await getTranslations( "AuthForm" );
   const password = formData.get( "password" ) as string;
   const errors: ActionState["errors"] = {};
 
   if (!password) {
-    errors.password = "Password is required.";
+    errors.password = t( "error_password_required" );
   } else
     if (passwordStrength( password ) < 4) {
-      errors.password = "Password is not strong enough.";
+      errors.password = t( "error_password_weak" );
     }
 
   if (Object.keys( errors ).length > 0) {

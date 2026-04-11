@@ -6,37 +6,39 @@ import { getCurrentUser } from "@/app/actions/getCurrentUser";
 import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { BookType } from "@/app/types/book";
 import { z } from "zod";
+import { getTranslations } from "next-intl/server";
 
-const createBookSchema = z.object( {
-  title: z.string().min( 1, "Title is required" ),
-  authors: z.string().optional(), // Comma separated.
-  description: z.string().optional(),
-  publisher: z.string().optional(),
-  publication_date: z.string().optional(),
-  isbn_10: z.string().max( 10 ).optional(),
-  isbn_13: z.string().max( 13 ).optional(),
-  pages: z.coerce.number().int().nonnegative().optional(),
-  type: z.enum( ["bd", "manga", "roman"] ).optional(),
-  categories: z.string().optional(), // Comma separated.
-  height: z.coerce.number().nonnegative().optional(),
-  length: z.coerce.number().nonnegative().optional(),
-  width: z.coerce.number().nonnegative().optional(),
-  weight: z.coerce.number().nonnegative().optional(),
-  cover_url: z.string().url().optional().or( z.literal( "" ) ),
-} );
-
-// TODO : Add translations.
 export async function createBook( formData: FormData ) {
+  const t = await getTranslations( "CreateBookAction" );
+
+  const createBookSchema = z.object( {
+    title: z.string().min( 1, t( "errors.titleRequired" ) ),
+    authors: z.string().optional(), // Comma separated.
+    description: z.string().optional(),
+    publisher: z.string().optional(),
+    publication_date: z.string().optional(),
+    isbn_10: z.string().max( 10 ).optional(),
+    isbn_13: z.string().max( 13 ).optional(),
+    pages: z.coerce.number().int().nonnegative().optional(),
+    type: z.enum( ["bd", "manga", "roman"] ).optional(),
+    categories: z.string().optional(), // Comma separated.
+    height: z.coerce.number().nonnegative().optional(),
+    length: z.coerce.number().nonnegative().optional(),
+    width: z.coerce.number().nonnegative().optional(),
+    weight: z.coerce.number().nonnegative().optional(),
+    cover_url: z.string().url().optional().or( z.literal( "" ) ),
+  } );
+
   const supabase = await createClient();
   const currentUser = await getCurrentUser();
 
   if (!currentUser?.email) {
-    return { success: false, message: "Unauthorized." };
+    return { success: false, message: t( "errors.authRequired" ) };
   }
 
   const profile = await getUserProfile( currentUser.email );
   if (!profile?.is_admin) {
-    return { success: false, message: "Only administrators can create books." };
+    return { success: false, message: t( "errors.adminOnly" ) };
   }
 
   // Parse form data.
@@ -44,7 +46,7 @@ export async function createBook( formData: FormData ) {
   const validated = createBookSchema.safeParse( rawData );
 
   if (!validated.success) {
-    return { success: false, message: "Invalid input data." };
+    return { success: false, message: t( "errors.invalidInput" ) };
   }
 
   const data = validated.data;
@@ -73,10 +75,10 @@ export async function createBook( formData: FormData ) {
 
   if (error) {
     console.error( "Create book error:", error.message );
-    return { success: false, message: "Failed to create book." };
+    return { success: false, message: t( "errors.createFailed" ) };
   }
 
   // TODO : revalidate path with the search. or revalidate and redirect to book details page.
   revalidatePath( "/" );
-  return { success: true, message: "Book created successfully!" };
+  return { success: true, message: t( "success.created" ) };
 }

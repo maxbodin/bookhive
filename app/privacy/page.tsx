@@ -1,10 +1,14 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | BookHive",
-  description: "BookHive is committed to your privacy. Learn how we handle your data, our use of Supabase, and your rights.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations( "PrivacyPage" );
+
+  return {
+    title: t( "metadata_title" ),
+    description: t( "metadata_description" ),
+  };
+}
 
 export default async function PrivacyPage() {
   const t = await getTranslations( "PrivacyPage" );

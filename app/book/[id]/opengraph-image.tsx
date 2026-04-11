@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getBookById } from "@/app/actions/books/getBookById";
+import { getTranslations } from "next-intl/server";
 
 export const runtime = "edge";
 export const size = { width: 1200, height: 630 };
@@ -15,6 +16,7 @@ async function getFontData( url: string | URL ) {
 }
 
 export default async function Image( { params }: { params: Promise<{ id: string }> } ) {
+  const t = await getTranslations( "BookOpengraphImage" );
   const resolvedParams = await params;
   const book = await getBookById( Number( resolvedParams.id ) );
 
@@ -24,8 +26,8 @@ export default async function Image( { params }: { params: Promise<{ id: string 
     getFontData( new URL( "../../../public/fonts/Geist-Bold.otf", import.meta.url ) ),
   ] );
 
-  const title = book?.title || "Discover a Book on BookHive";
-  const author = book?.authors?.join( ", " ) || "an esteemed author";
+  const title = book?.title || t( "fallbackTitle" );
+  const author = book?.authors?.join( ", " ) || t( "fallbackAuthor" );
 
   return new ImageResponse(
     (
@@ -88,7 +90,7 @@ export default async function Image( { params }: { params: Promise<{ id: string 
                 marginTop: 24,
               } }
             >
-              By { author }
+              { t( "by", { author } ) }
             </div>
           </div>
           <div
@@ -118,7 +120,7 @@ export default async function Image( { params }: { params: Promise<{ id: string 
           { book?.cover_url ? (
             <img
               src={ book.cover_url }
-              alt="Book Cover"
+              alt={ t( "coverAlt" ) }
               style={ { width: "100%", height: "100%", objectFit: "cover" } }
             />
           ) : (

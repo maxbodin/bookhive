@@ -115,6 +115,7 @@
       "notesTooLong": "Les notes ne doivent pas dépasser 1000 caractères.",
       "startTimeBeforeEndTime": "L'heure de début doit être avant l'heure de fin.",
       "authRequired": "Authentification requise. Veuillez vous connecter.",
+      "invalidInput": "Entrée invalide. Veuillez vérifier le formulaire.",
       "logFailed": "Échec de l'enregistrement de la session. Veuillez réessayer plus tard."
     }
   },
@@ -134,7 +135,31 @@
     "databaseError": "Erreur de base de données : Impossible d'ajouter le livre.",
     "apiFetchError": "Échec de la récupération des détails complets du livre depuis l'API.",
     "unknownError": "Une erreur inconnue est survenue.",
+    "unknownTitle": "Titre inconnu",
     "success": "''{title}'' a été ajouté avec succès."
+  },
+  "CreateBookAction": {
+    "errors": {
+      "titleRequired": "Le titre est requis.",
+      "authRequired": "Non autorisé.",
+      "adminOnly": "Seuls les administrateurs peuvent créer des livres.",
+      "invalidInput": "Données saisies invalides.",
+      "createFailed": "Échec de la création du livre."
+    },
+    "success": {
+      "created": "Livre créé avec succès !"
+    }
+  },
+  "DeleteReadingSessionAction": {
+    "errors": {
+      "authRequired": "Authentification requise.",
+      "sessionNotFound": "Session introuvable.",
+      "permissionDenied": "Permission refusée.",
+      "deleteFailed": "Erreur de base de données : impossible de supprimer la session."
+    },
+    "success": {
+      "deleted": "Session supprimée avec succès."
+    }
   },
   "ToggleFavoriteBookAction": {
     "authRequired": "Authentification requise.",
@@ -158,6 +183,7 @@
     "shelvesTab": "Étagères",
     "sessionsTab": "Sessions de lecture",
     "statsTab": "Stats",
+    "adminBadge": "Admin",
     "errorLabel": "Erreur",
     "unexpectedError": "Une erreur inattendue est survenue."
   },
@@ -360,6 +386,19 @@
     "coverAlt": "Couverture de {title}",
     "untitled": "Sans titre"
   },
+  "BookDetailsPageMetadata": {
+    "notFoundTitle": "Livre introuvable | BookHive",
+    "pageTitle": "{title} par {author} | BookHive",
+    "unknownAuthor": "Inconnu",
+    "fallbackDescription": "Suivez votre progression de lecture pour {title} sur BookHive.",
+    "untitled": "Sans titre"
+  },
+  "BookOpengraphImage": {
+    "fallbackTitle": "Découvrez un livre sur BookHive",
+    "fallbackAuthor": "un auteur de renom",
+    "by": "Par {author}",
+    "coverAlt": "Couverture du livre"
+  },
   "BookTypes": {
     "bd": "BD",
     "manga": "Manga",
@@ -381,7 +420,12 @@
     "submit_recovery": "Envoyer le lien de réinitialisation",
     "separator": "ou continuer avec",
     "forgot_password_link": "Mot de passe oublié ?",
+    "error_email_required": "L'e-mail est requis.",
+    "error_password_required": "Le mot de passe est requis.",
     "error_password_weak": "Le mot de passe n'est pas assez fort. Veuillez en choisir un plus robuste.",
+    "error_invalid_credentials": "E-mail ou mot de passe invalide. Veuillez réessayer.",
+    "success_verify_email": "Vérifiez votre e-mail pour confirmer votre compte.",
+    "success_reset_password_email": "Vérifiez votre e-mail pour le lien de réinitialisation du mot de passe.",
     "success_password_updated": "Mot de passe mis à jour avec succès.",
     "back_to_signin": "Retour à la connexion",
     "title_reset_password": "Réinitialisation du mot de passe",
@@ -440,6 +484,9 @@
     "invalidUsername": "Nom d'utilisateur non valide."
   },
   "AboutPage": {
+    "metadata_title": "À propos de BookHive | Gestionnaire de bibliothèque personnelle",
+    "metadata_description": "BookHive vous permet de suivre votre parcours de lecture, d'organiser et de gérer vos étagères, et de découvrir de nouveaux livres adaptés à vos intérêts.",
+    "jsonld_description": "Application moderne de suivi de lecture.",
     "hero_title": "Votre bibliothèque, réinventée.",
     "hero_subtitle": "BookHive est la solution moderne pour suivre vos lectures, organiser vos étagères, analyser vos habitudes de lecture en toute simplicité, suivre ce que vos amis lisent et découvrir de nouveaux livres.",
     "cta_start": "Commencer le suivi",
@@ -454,6 +501,8 @@
     "mission_text_2": "BookHive permet à la communauté de vérifier le code et de contribuer aux fonctionnalités sur le projet Github."
   },
   "ContactPage": {
+    "metadata_title": "Contactez-nous | Support BookHive",
+    "metadata_description": "Contactez l'équipe BookHive. Signalez des bugs, suggérez des fonctionnalités via GitHub ou envoyez-nous vos demandes.",
     "title": "Contactez-nous",
     "subtitle": "Nous adorons avoir des nouvelles de nos utilisateurs. Choisissez le meilleur canal pour vos besoins.",
     "btn_report_bug": "Signaler un problème",
@@ -461,9 +510,14 @@
     "community_title": "Rejoignez la conversation",
     "community_text": "Des idées de nouvelles fonctionnalités ? Envie de discuter de livres ?",
     "link_discussions": "Rejoindre les discussions GitHub",
-    "team_section_title": "Notre équipe"
+    "team_section_title": "Notre équipe",
+    "roles": {
+      "leadDeveloper": "Développeur principal"
+    }
   },
   "TermsPage": {
+    "metadata_title": "Conditions d'utilisation | BookHive",
+    "metadata_description": "Consultez les conditions d'utilisation de BookHive. Comprenez vos droits et responsabilités lors de l'utilisation de notre plateforme de suivi de lecture.",
     "title": "Conditions d'utilisation",
     "section_acceptance_title": "Acceptation des conditions",
     "section_acceptance_text": "En accédant ou en utilisant BookHive, vous acceptez d'être lié par ces conditions. Si vous n'êtes pas d'accord avec une partie des conditions, vous ne pouvez pas accéder au service.",
@@ -479,6 +533,8 @@
     "section_disclaimer_text": "Le service est fourni « TEL QUEL » et « SELON DISPONIBILITÉ ». BookHive n'offre aucune garantie, expresse ou implicite, concernant la fiabilité ou la disponibilité du service."
   },
   "PrivacyPage": {
+    "metadata_title": "Politique de confidentialité | BookHive",
+    "metadata_description": "BookHive s'engage pour votre confidentialité. Découvrez comment nous traitons vos données, notre usage de Supabase et vos droits.",
     "title": "Politique de confidentialité",
     "overview_title": "Vue d'ensemble",
     "overview_text": "BookHive respecte votre vie privée. Nous ne vendons pas vos données personnelles à des tiers. Cette politique décrit les données que nous collectons et la manière dont elles sont utilisées.",

@@ -6,17 +6,21 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const metadata: Metadata = {
-  title: "Contact Us | BookHive Support",
-  description: "Get in touch with the BookHive team. Report bugs, suggest features via GitHub, or contact us for inquiries.",
-  alternates: {
-    canonical: "https://bookhive.maxbodin.com/contact",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations( "ContactPage" );
+
+  return {
+    title: t( "metadata_title" ),
+    description: t( "metadata_description" ),
+    alternates: {
+      canonical: "https://bookhive.maxbodin.com/contact",
+    },
+  };
+}
 
 interface TeamMember {
   name: string;
-  role: string;
+  roleKey: "roles.leadDeveloper";
   githubUrl: string;
   bookhiveUrl: string;
   avatarUrl: string;
@@ -26,7 +30,7 @@ interface TeamMember {
 const TEAM_MEMBERS: TeamMember[] = [
   {
     name: "Maxime",
-    role: "Lead Developer",
+    roleKey: "roles.leadDeveloper",
     githubUrl: "https://github.com/maxbodin",
     bookhiveUrl: "https://bookhive.maximebodin.com/maxime.bodin%40mailo.com",
     avatarUrl: "https://github.com/maxbodin.png",
@@ -65,7 +69,7 @@ export default async function ContactPage() {
 
         <div className="space-y-4 flex flex-col items-center justify-center my-12">
           <h2
-            className="text-2xl font-bold tracking-tight">{ t( "team_section_title", { defaultValue: "Meet the Team" } ) }</h2>
+            className="text-2xl font-bold tracking-tight">{ t( "team_section_title" ) }</h2>
           <div className="flex flex-row items-center justify-center">
             { TEAM_MEMBERS.map( ( member ) => (
               <Card key={ member.name }
@@ -78,7 +82,7 @@ export default async function ContactPage() {
                   <div className="flex flex-col">
                     <CardTitle className="text-lg">{ member.name }</CardTitle>
                     <CardDescription className="font-medium text-primary">
-                      { member.role }
+                      { t( member.roleKey ) }
                     </CardDescription>
                   </div>
                 </CardHeader>

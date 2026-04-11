@@ -159,7 +159,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                     />
 
                     { visitedProfile.is_admin && (
-                      <Badge variant="outline">Admin</Badge>
+                      <Badge variant="outline">{ t( "adminBadge" ) }</Badge>
                     ) }
                   </div>
                 </ViewTransition>

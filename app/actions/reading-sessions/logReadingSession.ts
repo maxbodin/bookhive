@@ -46,7 +46,7 @@ export async function logReadingSession( formData: FormData ): Promise<ActionSta
     const firstError = validatedFields.error;
     return {
       success: false,
-      message: firstError.message || "Invalid input. Please check the form.",
+      message: firstError.message || t( "errors.invalidInput" ),
     };
   }
 

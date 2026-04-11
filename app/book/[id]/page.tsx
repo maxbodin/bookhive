@@ -28,21 +28,25 @@ export async function generateMetadata(
   { params }: BookDetailsPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const t = await getTranslations( "BookDetailsPageMetadata" );
   const resolvedParams = params ? await params : undefined;
   const decodedBookId: number = Number( decodeURIComponent( resolvedParams?.id ?? "" ) );
   const book = await getBookById( decodedBookId );
 
-  if (!book) return { title: "Book Not Found | BookHive" };
+  if (!book) return { title: t( "notFoundTitle" ) };
 
   const previousImages = ( await parent ).openGraph?.images || [];
   const ogImage = book.cover_url ? [book.cover_url, ...previousImages] : previousImages;
+  const safeTitle = book.title || t( "untitled" );
+  const author = book.authors?.join( ", " ) || t( "unknownAuthor" );
+  const shortDescription = book.description?.slice( 0, 160 ) || t( "fallbackDescription", { title: safeTitle } );
 
   return {
-    title: `${ book.title } by ${ book.authors?.join( ", " ) || "Unknown" } | BookHive`,
-    description: book.description?.slice( 0, 160 ) || `Track your reading progress for ${ book.title } on BookHive.`,
+    title: t( "pageTitle", { title: safeTitle, author } ),
+    description: shortDescription,
     openGraph: {
-      title: book.title || "Untitled",
-      description: book.description?.slice( 0, 160 ),
+      title: safeTitle,
+      description: shortDescription,
       images: ogImage,
       type: "book",
       authors: book.authors || [],
@@ -50,8 +54,8 @@ export async function generateMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: book.title || "Untitled",
-      description: book.description?.slice( 0, 160 ),
+      title: safeTitle,
+      description: shortDescription,
       images: book.cover_url ? [book.cover_url] : [],
     },
     alternates: {

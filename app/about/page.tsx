@@ -5,13 +5,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
-export const metadata: Metadata = {
-  title: "About BookHive | Personal Library Manager",
-  description: "BookHive allows you to track your reading journey, organize and manage your bookshelves, and discover new books tailored to your interests.",
-  alternates: {
-    canonical: "https://bookhive.maximebodin.com/about",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations( "AboutPage" );
+
+  return {
+    title: t( "metadata_title" ),
+    description: t( "metadata_description" ),
+    alternates: {
+      canonical: "https://bookhive.maximebodin.com/about",
+    },
+  };
+}
 
 export default async function AboutPage() {
   const t = await getTranslations( "AboutPage" );
@@ -27,7 +31,7 @@ export default async function AboutPage() {
       "price": "0",
       "priceCurrency": "USD"
     },
-    "description": "Modern book tracking application.",
+    "description": t( "jsonld_description" ),
     "author": {
       "@type": "Person",
       "name": "Maxime Bodin",

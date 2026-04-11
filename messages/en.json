@@ -115,6 +115,7 @@
       "notesTooLong": "Notes must be 1000 characters or less.",
       "startTimeBeforeEndTime": "Start time must be before end time.",
       "authRequired": "Authentication required. Please log in.",
+      "invalidInput": "Invalid input. Please check the form.",
       "logFailed": "Failed to log session. Please try again later."
     }
   },
@@ -134,7 +135,31 @@
     "databaseError": "Database error: Could not add the book.",
     "apiFetchError": "Failed to fetch full book details from the API.",
     "unknownError": "An unknown error occurred.",
+    "unknownTitle": "Unknown Title",
     "success": "''{title}'' was added successfully."
+  },
+  "CreateBookAction": {
+    "errors": {
+      "titleRequired": "Title is required.",
+      "authRequired": "Unauthorized.",
+      "adminOnly": "Only administrators can create books.",
+      "invalidInput": "Invalid input data.",
+      "createFailed": "Failed to create book."
+    },
+    "success": {
+      "created": "Book created successfully!"
+    }
+  },
+  "DeleteReadingSessionAction": {
+    "errors": {
+      "authRequired": "Authentication required.",
+      "sessionNotFound": "Session not found.",
+      "permissionDenied": "Permission denied.",
+      "deleteFailed": "Database error: Could not delete session."
+    },
+    "success": {
+      "deleted": "Session deleted successfully."
+    }
   },
   "ToggleFavoriteBookAction": {
     "authRequired": "Authentication required.",
@@ -158,6 +183,7 @@
     "shelvesTab": "Shelves",
     "sessionsTab": "Reading Sessions",
     "statsTab": "Stats",
+    "adminBadge": "Admin",
     "errorLabel": "Error",
     "unexpectedError": "An unexpected error occurred."
   },
@@ -364,6 +390,19 @@
     "coverAlt": "Cover of {title}",
     "untitled": "Untitled"
   },
+  "BookDetailsPageMetadata": {
+    "notFoundTitle": "Book Not Found | BookHive",
+    "pageTitle": "{title} by {author} | BookHive",
+    "unknownAuthor": "Unknown",
+    "fallbackDescription": "Track your reading progress for {title} on BookHive.",
+    "untitled": "Untitled"
+  },
+  "BookOpengraphImage": {
+    "fallbackTitle": "Discover a Book on BookHive",
+    "fallbackAuthor": "an esteemed author",
+    "by": "By {author}",
+    "coverAlt": "Book cover"
+  },
   "BookTypes": {
     "bd": "Comic",
     "manga": "Manga",
@@ -385,7 +424,12 @@
     "submit_recovery": "Send Reset Link",
     "separator": "or continue with",
     "forgot_password_link": "Forgot password?",
+    "error_email_required": "Email is required.",
+    "error_password_required": "Password is required.",
     "error_password_weak": "Password is not strong enough. Please choose a stronger one.",
+    "error_invalid_credentials": "Invalid email or password. Please try again.",
+    "success_verify_email": "Check your email to verify your account.",
+    "success_reset_password_email": "Check your email for the password reset link.",
     "success_password_updated": "Password updated successfully.",
     "back_to_signin": "Back to Sign In",
     "title_reset_password": "Reset Password",
@@ -444,6 +488,9 @@
     "invalidUsername": "Invalid username."
   },
   "AboutPage": {
+    "metadata_title": "About BookHive | Personal Library Manager",
+    "metadata_description": "BookHive allows you to track your reading journey, organize and manage your bookshelves, and discover new books tailored to your interests.",
+    "jsonld_description": "Modern book tracking application.",
     "hero_title": "Your library, reinvented.",
     "hero_subtitle": "BookHive is the modern solution to track your reading, organize your shelves, analyze your reading habits with ease, follow what your friends are reading, and discover new books.",
     "cta_start": "Start tracking",
@@ -458,6 +505,8 @@
     "mission_text_2": "BookHive allows the community to review the code and contribute features through the GitHub project."
   },
   "ContactPage": {
+    "metadata_title": "Contact Us | BookHive Support",
+    "metadata_description": "Get in touch with the BookHive team. Report bugs, suggest features via GitHub, or contact us for inquiries.",
     "title": "Contact Us",
     "subtitle": "We love hearing from our users. Choose the best channel for your needs.",
     "btn_report_bug": "Report an Issue",
@@ -465,9 +514,14 @@
     "community_title": "Join the Conversation",
     "community_text": "Have ideas for new features? Want to discuss books?",
     "link_discussions": "Join GitHub Discussions",
-    "team_section_title": "Our Team"
+    "team_section_title": "Our Team",
+    "roles": {
+      "leadDeveloper": "Lead Developer"
+    }
   },
   "TermsPage": {
+    "metadata_title": "Terms of Service | BookHive",
+    "metadata_description": "Read the Terms of Service for BookHive. Understand your rights and responsibilities when using our book tracking platform.",
     "title": "Terms of Service",
     "section_acceptance_title": "Acceptance of Terms",
     "section_acceptance_text": "By accessing or using BookHive, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the service.",
@@ -483,6 +537,8 @@
     "section_disclaimer_text": "The service is provided on an 'AS IS' and 'AS AVAILABLE' basis. BookHive makes no warranties, expressed or implied, regarding the reliability or availability of the service."
   },
   "PrivacyPage": {
+    "metadata_title": "Privacy Policy | BookHive",
+    "metadata_description": "BookHive is committed to your privacy. Learn how we handle your data, our use of Supabase, and your rights.",
     "title": "Privacy Policy",
     "overview_title": "Overview",
     "overview_text": "BookHive respects your privacy. We do not sell your personal data to third parties. This policy outlines what data we collect and how it is used.",
