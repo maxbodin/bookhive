@@ -59,6 +59,8 @@ export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
             fill
             className="object-cover"
             preload
+            fetchPriority="high"
+            loading="eager"
             sizes="(max-width: 768px) 96px, 128px"
             quality={ 60 }
           />

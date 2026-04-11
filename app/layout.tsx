@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 import ReadingLoggerLoader from "@/components/sessions/reading-logger-loader";
-import { NextIntlClientProvider, useMessages } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Footer } from "@/components/footer";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -23,15 +23,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
-export default function RootLayout( { children }: Readonly<{ children: React.ReactNode }> ) {
-  const messages = useMessages();
+export default async function RootLayout( { children }: Readonly<{ children: React.ReactNode }> ) {
+  const [messages, locale] = await Promise.all( [getMessages(), getLocale()] );
 
   return (
-    <html suppressHydrationWarning>
-    <body className={ `${ geistSans.variable } ${ geistMono.variable } antialiased` }>
+    <html lang={ locale } suppressHydrationWarning>
+    <body className={ `${ geistSans.variable } ${ geistMono.variable } antialiased min-h-screen flex flex-col` }>
+    <a
+      href="#main-content"
+      className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-foreground focus:shadow"
+    >
+      Skip to main content
+    </a>
     <NextIntlClientProvider messages={ messages }>
       <Toaster/>
       <ThemeProvider
@@ -44,9 +49,11 @@ export default function RootLayout( { children }: Readonly<{ children: React.Rea
           <Navbar/>
         </ViewTransition>
 
-        <ViewTransition>
-          { children }
-        </ViewTransition>
+        <main id="main-content" className="flex-1">
+          <ViewTransition>
+            { children }
+          </ViewTransition>
+        </main>
 
         <ReadingLoggerLoader/>
 

@@ -11,10 +11,10 @@ import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { getUsername } from "@/lib/getUsername";
 import { getUserReadingSessions } from "@/app/actions/reading-sessions/getUserReadingSessions";
 import { BookState } from "@/app/types/book-state";
-import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord, UserBookStatsRecord } from "@/app/types/user-book";
 import { Profile } from "@/app/types/profile";
 import { User } from "@supabase/supabase-js";
-import { ReadingSessionWithBook } from "@/app/types/reading-session";
+import { ReadingSession, ReadingSessionWithBook } from "@/app/types/reading-session";
 import { UserStats } from "@/components/profile/user-stats";
 import { getUserFavoriteUsersBooks } from "@/app/actions/users-books/getUserFavoriteUsersBooks";
 import { getUserBooksByState } from "@/app/actions/users-books/getUserBooksByState";
@@ -26,7 +26,6 @@ import { getUserBooksForStats } from "@/app/actions/users-books/getUserBooksForS
 import { ReadingSessionsTab } from "@/components/sessions/reading-sessions-tab";
 import { ProfileTabs } from "@/components/profile/profile-tabs";
 import { ProfileTab } from "@/app/types/profile-tab";
-import { getReadingSessionYears } from "@/app/actions/reading-sessions/getReadingSessionYears";
 import { getPaginatedUserReadingSessions } from "@/app/actions/reading-sessions/getPaginatedUserReadingSessions";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
@@ -49,14 +48,19 @@ export default async function UserProfile( { params, searchParams }: UserProfile
   const resolvedParams = params ? await params : undefined;
   const decodedEmail = decodeURIComponent( resolvedParams?.email ?? "" );
 
-  const visitedProfile: Profile | null = await getUserProfile( decodedEmail );
+  const [visitedProfile, currentUser] = await Promise.all( [
+    getUserProfile( decodedEmail ),
+    getCurrentUser(),
+  ] ) as [Profile | null, User | null];
 
   if (!visitedProfile) {
     notFound();
   }
 
-  const t = await getTranslations( "UserProfilePage" );
-  const tShelf = await getTranslations( "UserBookshelf" );
+  const [t, tShelf] = await Promise.all( [
+    getTranslations( "UserProfilePage" ),
+    getTranslations( "UserBookshelf" ),
+  ] );
 
   try {
     const resolvedSearchParams = searchParams ? await searchParams : undefined;
@@ -68,55 +72,88 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const validTabs: ProfileTab[] = ["shelves", "sessions", "stats"];
     const activeTab: ProfileTab = ( tabParam && validTabs.includes( tabParam as ProfileTab ) ? tabParam : "shelves" ) as ProfileTab;
 
-    const currentUser: User | null = await getCurrentUser();
     const isOwner: boolean = currentUser?.id === visitedProfile.id;
     const visitedProfileUsername: string = getUsername( visitedProfile.email, visitedProfile.username );
 
-    // Fetch favorite books.
-    const visitedProfileFavoriteBooks: UserBook[] = await getUserFavoriteUsersBooks( visitedProfile.id, query, types );
+    const shouldLoadShelves = activeTab === "shelves";
+    const shouldLoadSessionsTab = activeTab === "sessions";
+    const shouldLoadStatsTab = activeTab === "stats";
+    const shouldLoadReadingSessions = true;
 
-    // Fetch all books on the 'reading' shelf (not paginated).
-    const visitedProfileReadingBooks: UserBook[] = await getUserBooksByState( visitedProfile.id, "reading", query, types );
+    type PaginatedShelfResult = Awaited<ReturnType<typeof getPaginatedUserBooksByState>>;
+    const emptyPaginatedResult: PaginatedShelfResult = { data: [], count: 0 };
 
-    // Fetch the first page and total count for each paginated shelf.
     const [
+      readingSessions,
+      visitedProfileFavoriteBooks,
+      visitedProfileReadingBooks,
       readData,
       laterData,
       wishlistData,
       statsUserBooks,
+    ]: [
+      ReadingSession[],
+      UserBook[],
+      UserBook[],
+      PaginatedShelfResult,
+      PaginatedShelfResult,
+      PaginatedShelfResult,
+      UserBookStatsRecord[]
     ] = await Promise.all( [
-      getPaginatedUserBooksByState( visitedProfile.id, "read", 1, query, types ),
-      getPaginatedUserBooksByState( visitedProfile.id, "later", 1, query, types ),
-      getPaginatedUserBooksByState( visitedProfile.id, "wishlist", 1, query, types ),
-      getUserBooksForStats( visitedProfile.id ),
+      shouldLoadReadingSessions
+        ? getUserReadingSessions( visitedProfile.id )
+        : Promise.resolve( [] ),
+      shouldLoadShelves
+        ? getUserFavoriteUsersBooks( visitedProfile.id, query, types )
+        : Promise.resolve( [] ),
+      shouldLoadShelves
+        ? getUserBooksByState( visitedProfile.id, "reading", query, types )
+        : Promise.resolve( [] ),
+      shouldLoadShelves
+        ? getPaginatedUserBooksByState( visitedProfile.id, "read", 1, query, types )
+        : Promise.resolve( emptyPaginatedResult ),
+      shouldLoadShelves
+        ? getPaginatedUserBooksByState( visitedProfile.id, "later", 1, query, types )
+        : Promise.resolve( emptyPaginatedResult ),
+      shouldLoadShelves
+        ? getPaginatedUserBooksByState( visitedProfile.id, "wishlist", 1, query, types )
+        : Promise.resolve( emptyPaginatedResult ),
+      shouldLoadStatsTab
+        ? getUserBooksForStats( visitedProfile.id )
+        : Promise.resolve( [] ),
     ] );
-
-    // Fetch all reading sessions for the visited profile.
-    const readingSessions: ReadingSessionWithBook[] = await getUserReadingSessions( visitedProfile.id );
-
-    const readingSessionYears = await getReadingSessionYears( visitedProfile.id );
 
     const extractValidYear = ( dateValue?: string | null ): number | null => {
       if (!dateValue) return null;
 
-      const year = new Date( dateValue ).getFullYear();
+      const year = new Date( dateValue ).getUTCFullYear();
       return Number.isFinite( year ) ? year : null;
     };
 
-    const statsYears = Array.from(
+    const readingSessionYears = Array.from(
       new Set(
-        statsUserBooks
-          .flatMap( ( book ) => [
-            book.end_reading_date,
-            book.read_date,
-            book.start_reading_date,
-            book.start_later_date,
-            book.start_wishlist_date,
-          ] )
-          .map( extractValidYear )
+        readingSessions
+          .map( ( session ) => extractValidYear( session.start_time ) )
           .filter( ( year ): year is number => year !== null )
       )
     ).sort( ( a, b ) => b - a );
+
+    const statsYears = shouldLoadStatsTab
+      ? Array.from(
+        new Set(
+          statsUserBooks
+            .flatMap( ( book ) => [
+              book.end_reading_date,
+              book.read_date,
+              book.start_reading_date,
+              book.start_later_date,
+              book.start_wishlist_date,
+            ] )
+            .map( extractValidYear )
+            .filter( ( year ): year is number => year !== null )
+        )
+      ).sort( ( a, b ) => b - a )
+      : [];
 
     const allAvailableYears = Array.from( new Set( [...readingSessionYears, ...statsYears] ) )
       .sort( ( a, b ) => b - a );
@@ -128,11 +165,16 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       ]
       : allAvailableYears;
 
-    const selectedYear = availableYears[0] || new Date().getFullYear();
+    const yearParam = Number.parseInt( resolvedSearchParams?.year ?? "", 10 );
+    const selectedYear = Number.isFinite( yearParam ) && availableYears.includes( yearParam )
+      ? yearParam
+      : ( availableYears[0] || new Date().getUTCFullYear() );
 
-    // Fetch the first page of sessions for the selected year/query to avoid a client-side loading flash.
-    const { sessions: initialSessions, totalCount: initialTotalCount } =
-      await getPaginatedUserReadingSessions( {
+    let initialSessions: ReadingSessionWithBook[] = [];
+    let initialTotalCount = 0;
+
+    if (shouldLoadSessionsTab && availableYears.length > 0) {
+      const paginatedSessions = await getPaginatedUserReadingSessions( {
         userId: visitedProfile.id,
         page: 1,
         year: selectedYear,
@@ -140,17 +182,23 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         types
       } );
 
+      initialSessions = paginatedSessions.sessions;
+      initialTotalCount = paginatedSessions.totalCount;
+    }
+
     let connectedUserDataWithBooks: UserBookStateRecord[] = [];
 
-    const allDisplayedBooks = [
-      ...visitedProfileFavoriteBooks,
-      ...visitedProfileReadingBooks,
-      ...readData.data,
-      ...laterData.data,
-      ...wishlistData.data,
-    ];
+    const allDisplayedBooks = shouldLoadShelves
+      ? [
+        ...visitedProfileFavoriteBooks,
+        ...visitedProfileReadingBooks,
+        ...readData.data,
+        ...laterData.data,
+        ...wishlistData.data,
+      ]
+      : [];
 
-    if (currentUser && !isOwner) {
+    if (shouldLoadShelves && currentUser && !isOwner) {
       // If the viewer is the owner, their data is the same as the profile's data.
       // Otherwise, fetch their data separately.
 
@@ -162,20 +210,21 @@ export default async function UserProfile( { params, searchParams }: UserProfile
           uniqueBookIds
         );
       }
-    } else
-      if (currentUser) {
-        connectedUserDataWithBooks = allDisplayedBooks;
-      }
+    } else if (shouldLoadShelves && currentUser) {
+      connectedUserDataWithBooks = allDisplayedBooks;
+    }
 
     const hasAnyBooks = allDisplayedBooks.length > 0;
 
 
     // Configuration for shelves to map over
-    const paginatedShelvesConfig: { state: BookState; title: string; data: UserBook[]; count: number }[] = [
-      { state: "read", title: tShelf( "read" ), data: readData.data, count: readData.count },
-      { state: "later", title: tShelf( "later" ), data: laterData.data, count: laterData.count },
-      { state: "wishlist", title: tShelf( "wishlist" ), data: wishlistData.data, count: wishlistData.count },
-    ];
+    const paginatedShelvesConfig: { state: BookState; title: string; data: UserBook[]; count: number }[] = shouldLoadShelves
+      ? [
+        { state: "read", title: tShelf( "read" ), data: readData.data, count: readData.count },
+        { state: "later", title: tShelf( "later" ), data: laterData.data, count: laterData.count },
+        { state: "wishlist", title: tShelf( "wishlist" ), data: wishlistData.data, count: wishlistData.count },
+      ]
+      : [];
 
     return (
       <ViewTransition>
@@ -199,7 +248,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                 </ViewTransition>
 
                 { visitedProfile.created_at && (
-                  <p className="text-md text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     { t( "joined" ) }: { new Date( visitedProfile.created_at ).toLocaleDateString() }
                   </p>
                 ) }
@@ -210,15 +259,15 @@ export default async function UserProfile( { params, searchParams }: UserProfile
               </div>
             </div>
 
-            <ReadingActivityCalendar readingSessions={ readingSessions }/>
+            { shouldLoadReadingSessions && <ReadingActivityCalendar readingSessions={ readingSessions }/> }
 
             <ProfileTabs
-              defaultTab={ activeTab as ProfileTab }
+              activeTab={ activeTab }
               shelvesLabel={ t( "shelvesTab" ) }
               sessionsLabel={ t( "sessionsTab" ) }
               statsLabel={ t( "statsTab" ) }
               shelvesTab={
-                ( <div className="space-y-12">
+                shouldLoadShelves ? ( <div className="space-y-12">
                   { visitedProfileFavoriteBooks.length > 0 && (
                     <FavoriteBookshelf
                       favoriteUserBooks={ visitedProfileFavoriteBooks }
@@ -254,18 +303,18 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
                   { !hasAnyBooks &&
                     <EmptyShelves username={ visitedProfileUsername } query={ query } types={ types }/> }
-                </div> )
+                </div> ) : null
               }
               sessionsTab={
-                <ReadingSessionsTab
+                shouldLoadSessionsTab ? <ReadingSessionsTab
                   userId={ visitedProfile.id }
                   isOwner={ isOwner }
                   initialSessions={ initialSessions }
                   initialTotalCount={ initialTotalCount }
                   query={ query }
                   types={ types }
-                /> }
-              statsTab={ <UserStats userBooks={ statsUserBooks }/> }
+                /> : null }
+              statsTab={ shouldLoadStatsTab ? <UserStats userBooks={ statsUserBooks }/> : null }
             />
           </div>
         </YearSelectionProvider>

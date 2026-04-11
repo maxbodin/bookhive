@@ -12,7 +12,7 @@ interface ProfileTabsProps {
   shelvesLabel: string;
   sessionsLabel: string;
   statsLabel: string;
-  defaultTab: ProfileTab;
+  activeTab: ProfileTab;
 }
 
 export function ProfileTabs( {
@@ -22,7 +22,7 @@ export function ProfileTabs( {
                                shelvesLabel,
                                sessionsLabel,
                                statsLabel,
-                               defaultTab,
+                               activeTab,
                              }: ProfileTabsProps ) {
   const router = useRouter();
   const pathname = usePathname();
@@ -38,7 +38,7 @@ export function ProfileTabs( {
 
   return (
     <Tabs
-      defaultValue={ defaultTab }
+      value={ activeTab }
       className="w-full"
       onValueChange={ onTabChange }
     >
@@ -50,9 +50,9 @@ export function ProfileTabs( {
         </TabsList>
       </div>
 
-      <TabsContent value="shelves">{ shelvesTab }</TabsContent>
-      <TabsContent value="sessions">{ sessionsTab }</TabsContent>
-      <TabsContent value="stats">{ statsTab }</TabsContent>
+      { activeTab === "shelves" && <TabsContent value="shelves">{ shelvesTab }</TabsContent> }
+      { activeTab === "sessions" && <TabsContent value="sessions">{ sessionsTab }</TabsContent> }
+      { activeTab === "stats" && <TabsContent value="stats">{ statsTab }</TabsContent> }
     </Tabs>
   );
 }
