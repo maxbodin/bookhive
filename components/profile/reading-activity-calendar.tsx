@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ReadingSession } from "@/app/types/reading-session";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { processSessionsForCalendar } from "@/app/utils/profiles/processSessionsForCalendar";
-import { format, getDay } from "date-fns";
+import { getDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { YearSelection } from "@/components/profile/stats/year-selection";
 import { useYearSelection } from "@/app/contexts/year-selection-context";
@@ -14,27 +14,44 @@ interface ReadingActivityCalendarProps {
   readingSessions: ReadingSession[];
 }
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCalendarProps ) {
   const t = useTranslations( "ReadingActivityCalendar" );
+  const locale = useLocale();
   const { selectedYear } = useYearSelection();
 
   const activityByDate = useMemo( () => processSessionsForCalendar( readingSessions ), [readingSessions] );
+
+  const weekdayLabels = useMemo( () => {
+    const weekdayFormatter = new Intl.DateTimeFormat( locale, { weekday: "short" } );
+    const sundayReferenceUtc = Date.UTC( 2020, 7, 2 );
+
+    return Array.from( { length: 7 }, ( _, index ) => {
+      return weekdayFormatter.format( new Date( sundayReferenceUtc + ( index * 24 * 60 * 60 * 1000 ) ) );
+    } );
+  }, [locale] );
+
+  const monthFormatter = useMemo( () => new Intl.DateTimeFormat( locale, { month: "long" } ), [locale] );
+  const dayFormatter = useMemo(
+    () => new Intl.DateTimeFormat( locale, { month: "short", day: "numeric", year: "numeric" } ),
+    [locale]
+  );
 
 
   const { months } = useMemo( () => {
     const year = selectedYear;
     const months = Array.from( { length: 12 }, ( _, monthIndex ) => {
       const firstDayOfMonth = new Date( Number( year ), monthIndex, 1 );
-      const monthName = format( firstDayOfMonth, "MMMM" );
+      const monthName = monthFormatter.format( firstDayOfMonth );
       const weeks = [];
       let currentWeek = new Array( 7 ).fill( null );
-      let currentDate = new Date( firstDayOfMonth );
+      const currentDate = new Date( firstDayOfMonth );
 
       while (currentDate.getMonth() === monthIndex) {
         const dayOfWeek = getDay( currentDate );
-        const dateKey = format( currentDate, "yyyy-MM-dd" );
+        const yearPart = currentDate.getFullYear();
+        const monthPart = String( currentDate.getMonth() + 1 ).padStart( 2, "0" );
+        const dayPart = String( currentDate.getDate() ).padStart( 2, "0" );
+        const dateKey = `${ yearPart }-${ monthPart }-${ dayPart }`;
 
         currentWeek[dayOfWeek] = {
           key: dateKey,
@@ -56,7 +73,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
       return { month: monthName, weeks };
     } );
     return { months };
-  }, [selectedYear, activityByDate] );
+  }, [selectedYear, activityByDate, monthFormatter] );
 
   const getBackgroundColorStyle = ( level: 0 | 1 | 2 | 3 | 4 ) => {
     if (level === 0) return {};
@@ -76,7 +93,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
         <div className="text-xs text-muted-foreground pr-2 mt-1">
           <div className="h-6"></div>
           <div className="flex flex-col gap-1">
-            { WEEKDAYS.map( ( day, index ) => (
+            { weekdayLabels.map( ( day, index ) => (
               <span key={ index } className="h-4 w-8 flex items-center">
                 { day }
               </span>
@@ -118,7 +135,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
                                   { day.activity.count > 0
                                     ? t( "tooltip.activity", { count: day.activity.count } )
                                     : t( "tooltip.noActivity" ) }{ " " }
-                                  { format( day.date, "MMM d, yyyy" ) }
+                                  { dayFormatter.format( day.date ) }
                                 </p>
                               </TooltipContent>
                             </Tooltip>
