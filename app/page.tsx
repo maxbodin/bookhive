@@ -20,14 +20,10 @@ import { BOOKS_PER_PAGE, SearchParams } from "@/app/utils/searchParams";
 import { CreateBookDialog } from "@/components/books/create-book-dialog";
 import { BooksGridSkeleton } from "@/components/skeletons/books-grid-skeleton";
 
+type HomeSearchParams = Partial<Record<SearchParams, string>>;
+
 interface HomePageProps {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-    user?: string;  // TODO : usage ??
-    displayShown?: string; // TODO : usage ??
-    types?: string;
-  }>;
+  searchParams?: Promise<HomeSearchParams>;
 }
 
 export default async function Home( { searchParams }: HomePageProps ) {
