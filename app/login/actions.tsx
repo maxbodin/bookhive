@@ -24,14 +24,14 @@ export async function login(
   const password = formData.get( "password" ) as string;
   const errors: ActionState["errors"] = {};
 
-  if (!email) {
+  if ( !email ) {
     errors.email = t( "error_email_required" );
   }
-  if (!password) {
+  if ( !password ) {
     errors.password = t( "error_password_required" );
   }
 
-  if (Object.keys( errors ).length > 0) {
+  if ( Object.keys( errors ).length > 0 ) {
     return { success: false, errors };
   }
 
@@ -40,7 +40,7 @@ export async function login(
     password: password,
   } );
 
-  if (error) {
+  if ( error ) {
     return {
       success: false,
       errors: { form: t( "error_invalid_credentials" ) },
@@ -68,17 +68,16 @@ export async function signup(
   const password = formData.get( "password" ) as string;
   const errors: ActionState["errors"] = {};
 
-  if (!email) {
+  if ( !email ) {
     errors.email = t( "error_email_required" );
   }
-  if (!password) {
+  if ( !password ) {
     errors.password = t( "error_password_required" );
-  } else
-    if (passwordStrength( password ) < 4) {
-      errors.password = t( "error_password_weak" );
-    }
+  } else if ( passwordStrength( password ) < 4 ) {
+    errors.password = t( "error_password_weak" );
+  }
 
-  if (Object.keys( errors ).length > 0) {
+  if ( Object.keys( errors ).length > 0 ) {
     return { success: false, errors };
   }
 
@@ -90,7 +89,7 @@ export async function signup(
     },
   } );
 
-  if (error) {
+  if ( error ) {
     return {
       success: false,
       errors: { form: error.message },
@@ -125,7 +124,7 @@ export async function forgotPassword(
 
   const email = formData.get( "email" ) as string;
 
-  if (!email) {
+  if ( !email ) {
     return { success: false, errors: { email: t( "error_email_required" ) } };
   }
 
@@ -133,7 +132,7 @@ export async function forgotPassword(
     redirectTo: `${ origin }/auth/confirm?next=/reset-password`,
   } );
 
-  if (error) {
+  if ( error ) {
     return { success: false, errors: { form: error.message } };
   }
 
@@ -154,20 +153,19 @@ export async function updatePassword(
   const password = formData.get( "password" ) as string;
   const errors: ActionState["errors"] = {};
 
-  if (!password) {
+  if ( !password ) {
     errors.password = t( "error_password_required" );
-  } else
-    if (passwordStrength( password ) < 4) {
-      errors.password = t( "error_password_weak" );
-    }
+  } else if ( passwordStrength( password ) < 4 ) {
+    errors.password = t( "error_password_weak" );
+  }
 
-  if (Object.keys( errors ).length > 0) {
+  if ( Object.keys( errors ).length > 0 ) {
     return { success: false, errors };
   }
 
   const { error } = await supabase.auth.updateUser( { password } );
 
-  if (error) {
+  if ( error ) {
     return { success: false, errors: { form: error.message } };
   }
 

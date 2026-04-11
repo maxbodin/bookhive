@@ -26,7 +26,7 @@ export function BooksByTypesCard( { userBooks, className }: BookTypesCardProps )
   const data = React.useMemo( () => {
     return userBooks.reduce( ( acc, book ) => {
       const type = toBookTypeBucket( book.type );
-      acc[type] += 1;
+      acc[ type ] += 1;
       return acc;
     }, {
       bd: 0,
@@ -43,12 +43,12 @@ export function BooksByTypesCard( { userBooks, className }: BookTypesCardProps )
     unknown: { label: t( "unknown" ), color: "var(--chart-4)" },
   } satisfies ChartConfig;
 
-  const chartData = Object.entries( data ).map( ( [type, count] ) => ( {
+  const chartData = Object.entries( data ).map( ( [type, count] ) => ({
     typeKey: type,
-    type: chartConfig[type as keyof typeof chartConfig]?.label || "Unknown",
+    type: chartConfig[ type as keyof typeof chartConfig ]?.label || "Unknown",
     count,
     fill: `var(--color-${ type })`,
-  } ) ).filter( item => item.count > 0 );
+  }) ).filter( item => item.count > 0 );
 
   const totalBooks = React.useMemo( () => {
     return chartData.reduce( ( acc, curr ) => acc + curr.count, 0 );
@@ -92,7 +92,7 @@ export function BooksByTypesCard( { userBooks, className }: BookTypesCardProps )
                         </tspan>
                         <tspan
                           x={ viewBox.cx }
-                          y={ ( viewBox.cy || 0 ) + 20 }
+                          y={ (viewBox.cy || 0) + 20 }
                           className="text-muted-foreground"
                           fill="currentColor"
                         >

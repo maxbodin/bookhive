@@ -32,7 +32,7 @@ async function getAllProfiles() {
 export async function UserBanner() {
   const profiles = await getAllProfiles();
 
-  if (!profiles || profiles.length === 0) {
+  if ( !profiles || profiles.length === 0) {
     return null;
   }
 

@@ -27,7 +27,7 @@ const ChartContext = React.createContext<ChartContextProps | null>( null );
 function useChart() {
   const context = React.useContext( ChartContext );
 
-  if (!context) {
+  if ( !context) {
     throw new Error( "useChart must be used within a <ChartContainer />" );
   }
 
@@ -72,7 +72,7 @@ const ChartStyle = ( { id, config }: { id: string; config: ChartConfig } ) => {
     ( [, config] ) => config.theme || config.color
   );
 
-  if (!colorConfig.length) {
+  if ( !colorConfig.length) {
     return null;
   }
 
@@ -86,7 +86,7 @@ ${ prefix } [data-chart=${ id }] {
 ${ colorConfig
               .map( ( [key, itemConfig] ) => {
                 const color =
-                  itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                  itemConfig.theme?.[ theme as keyof typeof itemConfig.theme ] ||
                   itemConfig.color;
                 return color ? `  --color-${ key }: ${ color };` : null;
               } )
@@ -143,7 +143,7 @@ const ChartTooltipContent = React.forwardRef<
       const itemConfig = getPayloadConfigFromPayload( config, item, key );
       const value =
         !labelKey && typeof label === "string"
-          ? config[label as keyof typeof config]?.label || label
+          ? config[ label as keyof typeof config ]?.label || label
           : itemConfig?.label;
 
       if (labelFormatter) {
@@ -154,7 +154,7 @@ const ChartTooltipContent = React.forwardRef<
         );
       }
 
-      if (!value) {
+      if ( !value) {
         return null;
       }
 
@@ -169,7 +169,7 @@ const ChartTooltipContent = React.forwardRef<
       labelKey,
     ] );
 
-    if (!active || !payload?.length) {
+    if ( !active || !payload?.length) {
       return null;
     }
 
@@ -274,7 +274,7 @@ const ChartLegendContent = React.forwardRef<
   ) => {
     const { config } = useChart();
 
-    if (!payload?.length) {
+    if ( !payload?.length) {
       return null;
     }
 
@@ -341,23 +341,22 @@ function getPayloadConfigFromPayload(
 
   if (
     key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
+    typeof payload[ key as keyof typeof payload ] === "string"
   ) {
-    configLabelKey = payload[key as keyof typeof payload] as string;
-  } else
-    if (
-      payloadPayload &&
-      key in payloadPayload &&
-      typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
-    ) {
-      configLabelKey = payloadPayload[
-        key as keyof typeof payloadPayload
-        ] as string;
-    }
+    configLabelKey = payload[ key as keyof typeof payload ] as string;
+  } else if (
+    payloadPayload &&
+    key in payloadPayload &&
+    typeof payloadPayload[ key as keyof typeof payloadPayload ] === "string"
+  ) {
+    configLabelKey = payloadPayload[
+      key as keyof typeof payloadPayload
+      ] as string;
+  }
 
   return configLabelKey in config
-    ? config[configLabelKey]
-    : config[key as keyof typeof config];
+    ? config[ configLabelKey ]
+    : config[ key as keyof typeof config ];
 }
 
 export {

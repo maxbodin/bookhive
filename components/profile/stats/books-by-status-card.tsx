@@ -22,7 +22,7 @@ export function BooksByStatusCard( { userBooks, className }: BooksByStatusCardPr
 
   const data = React.useMemo( () => {
     return userBooks.reduce( ( acc, book ) => {
-      acc[book.state] += 1;
+      acc[ book.state ] += 1;
       return acc;
     }, {
       read: 0,
@@ -39,12 +39,12 @@ export function BooksByStatusCard( { userBooks, className }: BooksByStatusCardPr
     wishlist: { label: t( "wishlist" ), color: "var(--chart-4)" },
   } satisfies ChartConfig;
 
-  const chartData = Object.entries( data ).map( ( [status, count] ) => ( {
+  const chartData = Object.entries( data ).map( ( [status, count] ) => ({
     statusKey: status,
-    status: chartConfig[status as keyof typeof chartConfig]?.label,
+    status: chartConfig[ status as keyof typeof chartConfig ]?.label,
     count,
-    fill: chartConfig[status as keyof typeof chartConfig]?.color,
-  } ) ).filter( item => item.count > 0 );
+    fill: chartConfig[ status as keyof typeof chartConfig ]?.color,
+  }) ).filter( item => item.count > 0 );
 
   const totalBooks = userBooks.length;
 
@@ -86,7 +86,7 @@ export function BooksByStatusCard( { userBooks, className }: BooksByStatusCardPr
                         </tspan>
                         <tspan
                           x={ viewBox.cx }
-                          y={ ( viewBox.cy || 0 ) + 20 }
+                          y={ (viewBox.cy || 0) + 20 }
                           className="text-muted-foreground"
                           fill="currentColor"
                         >

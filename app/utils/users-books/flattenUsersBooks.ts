@@ -11,7 +11,7 @@ export function flattenUsersBooksData( userBooksData: UserBookWithNestedBook[] )
   return userBooksData.map( item => {
     const { books, ...userBookData } = item;
 
-    const normalizedBookData = Array.isArray( books ) ? books[0] : books;
+    const normalizedBookData = Array.isArray( books ) ? books[ 0 ] : books;
 
     return {
       ...userBookData,

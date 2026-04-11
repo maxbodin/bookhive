@@ -16,7 +16,7 @@ export async function getBookById( id: number ): Promise<Book | null> {
     .eq( "id", id )
     .single();
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching book by ID:", error.message );
     return null;
   }

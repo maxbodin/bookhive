@@ -46,7 +46,7 @@ export async function getPaginatedUserBooksByState(
 
   const { data, error, count } = await queryBuilder;
 
-  if (error) {
+  if ( error ) {
     console.error( `Error fetching user books for state ${ state }:`, error );
     throw new Error( t( "fetchFailed" ) );
   }

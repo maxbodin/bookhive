@@ -196,12 +196,12 @@ function FieldError( {
       return children;
     }
 
-    if (!errors || errors.length === 0) {
+    if ( !errors || errors.length === 0) {
       return null;
     }
 
-    if (errors?.length === 1 && errors[0]?.message) {
-      return errors[0].message;
+    if (errors?.length === 1 && errors[ 0 ]?.message) {
+      return errors[ 0 ].message;
     }
 
     return (
@@ -214,7 +214,7 @@ function FieldError( {
     );
   }, [children, errors] );
 
-  if (!content) {
+  if ( !content) {
     return null;
   }
 

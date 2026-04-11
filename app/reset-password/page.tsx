@@ -17,28 +17,27 @@ const initialState: ActionState = { success: false };
 
 export default function ResetPasswordPage() {
   const t = useTranslations( "AuthForm" );
-  const [showPassword, setShowPassword] = useState<boolean>( false );
-  const [passwordInput, setPasswordInput] = useState<string>( "" );
-  const [errors, setErrors] = useState<ActionState["errors"]>( {} );
+  const [ showPassword, setShowPassword ] = useState<boolean>( false );
+  const [ passwordInput, setPasswordInput ] = useState<string>( "" );
+  const [ errors, setErrors ] = useState<ActionState["errors"]>( {} );
 
-  const [state, formAction] = useActionState( updatePassword, initialState );
+  const [ state, formAction ] = useActionState( updatePassword, initialState );
   const passwordScore = passwordStrength( passwordInput );
 
   useEffect( () => {
-    if (state.errors) setErrors( state.errors );
-  }, [state.errors] );
+    if ( state.errors ) setErrors( state.errors );
+  }, [ state.errors ] );
 
   useEffect( () => {
-    if (state.success) {
+    if ( state.success ) {
       toast.success( t( "success_password_updated" ) );
-    } else
-      if (state.errors?.form) {
-        toast.error( state.errors.form );
-      }
-  }, [state] );
+    } else if ( state.errors?.form ) {
+      toast.error( state.errors.form );
+    }
+  }, [ state ] );
 
   const handleSubmit = ( formData: FormData ) => {
-    if (passwordScore < 4) {
+    if ( passwordScore < 4 ) {
       toast.error( t( "error_password_weak" ) );
       return;
     }
@@ -80,7 +79,7 @@ export default function ResetPasswordPage() {
                   </button>
                 </InputGroupAddon>
               </InputGroup>
-              <FieldError errors={ errors?.password ? [{ message: errors.password }] : [] }/>
+              <FieldError errors={ errors?.password ? [ { message: errors.password } ] : [] }/>
             </Field>
 
             <PasswordStrengthMeter passwordScore={ passwordScore }/>

@@ -19,7 +19,7 @@ import { getTranslations } from "next-intl/server";
  */
 async function fetchJson<T>( url: string ): Promise<T> {
   const response = await fetch( url );
-  if (!response.ok) {
+  if ( !response.ok ) {
     throw new Error( `Failed to fetch ${ url } with status ${ response.status }` );
   }
   return await response.json() as Promise<T>;
@@ -31,28 +31,28 @@ async function fetchJson<T>( url: string ): Promise<T> {
  * Open Library formats can be: "1990", "1990-05", "May 5, 1990", "c1990", "[1990?]"
  */
 function normalizeDateForPostgres( dateStr: string | null | undefined ): string | null {
-  if (!dateStr) return null;
+  if ( !dateStr ) return null;
   const clean = dateStr.toString().replace( /[\[\]?c]/g, "" ).trim();
 
   // Handle YYYY-MM-DD (valid)
-  if (/^\d{4}-\d{2}-\d{2}$/.test( clean )) {
+  if ( /^\d{4}-\d{2}-\d{2}$/.test( clean ) ) {
     return clean;
   }
 
   // Handle YYYY-MM -> append -01
-  if (/^\d{4}-\d{2}$/.test( clean )) {
+  if ( /^\d{4}-\d{2}$/.test( clean ) ) {
     return `${ clean }-01`;
   }
 
   // Handle YYYY -> Append -01-01
-  if (/^\d{4}$/.test( clean )) {
+  if ( /^\d{4}$/.test( clean ) ) {
     return `${ clean }-01-01`;
   }
 
   // Fallback: try js date parser for formats like "May 5, 2023".
   const d = new Date( clean );
-  if (!isNaN( d.getTime() )) {
-    return d.toISOString().split( "T" )[0];
+  if ( !isNaN( d.getTime() ) ) {
+    return d.toISOString().split( "T" )[ 0 ];
   }
 
   // If all else fails, return null to avoid db error 22007.
@@ -75,7 +75,7 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
     .eq( "open_library_key", openLibraryKey )
     .single();
 
-  if (existingBook) {
+  if ( existingBook ) {
     return { success: false, message: t( "alreadyExists" ) };
   }
 
@@ -96,7 +96,7 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
     const editionsResponse: OpenLibraryEditionsResponse = await fetchJson<OpenLibraryEditionsResponse>(
       `https://openlibrary.org${ openLibraryKey }/editions.json?limit=1`
     );
-    const firstEdition: OpenLibraryEditionEntry | undefined = editionsResponse.entries?.[0];
+    const firstEdition: OpenLibraryEditionEntry | undefined = editionsResponse.entries?.[ 0 ];
 
     // Transform data into our schema.
     const bookDataToInsert = await transformOpenLibraryWorkDetails(
@@ -106,14 +106,14 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
     );
 
     // Sanitize the publication date before insertion.
-    if (bookDataToInsert.publication_date) {
+    if ( bookDataToInsert.publication_date ) {
       bookDataToInsert.publication_date = normalizeDateForPostgres( bookDataToInsert.publication_date as string );
     }
 
     // Insert the new book.
     const { error } = await supabase.from( "books" ).insert( bookDataToInsert );
 
-    if (error) {
+    if ( error ) {
       console.error( "Failed to add book from API:", error );
       return { success: false, message: t( "databaseError" ) };
     }
@@ -125,7 +125,7 @@ export async function addBookFromOpenLibrary( openLibraryKey: string ): Promise<
       message: t( "success", { title: bookDataToInsert.title ?? t( "unknownTitle" ) } ),
     };
 
-  } catch (error: unknown) {
+  } catch ( error: unknown ) {
     const errorMessage = error instanceof Error ? error.message : t( "unknownError" );
     console.error( "Error processing addBookFromApi:", errorMessage );
     return { success: false, message: t( "apiFetchError" ) };

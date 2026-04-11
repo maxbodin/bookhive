@@ -10,7 +10,7 @@ export const calculateSessionDuration = ( startTime: string, endTime: string ) =
   const start = new Date( startTime );
   const end = new Date( endTime );
 
-  if (isNaN( start.getTime() ) || isNaN( end.getTime() )) {
+  if ( isNaN( start.getTime() ) || isNaN( end.getTime() ) ) {
     return { hours: 0, minutes: 0 };
   }
 

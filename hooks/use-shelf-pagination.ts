@@ -76,7 +76,7 @@ export function useShelfPagination( {
         setBooks( newProfileBooks );
         setConnectedBooks( nextConnectedBooks );
         setCurrentPage( newPage );
-      } catch (error) {
+      } catch ( error ) {
         console.error( "Error while paginating shelf:", error );
       }
     } );

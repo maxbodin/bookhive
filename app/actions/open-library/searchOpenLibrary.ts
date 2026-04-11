@@ -12,8 +12,8 @@ const INITIAL_RETRY_DELAY_MS: number = 1000; // 1 second
  * @param attempt The current attempt number (0-based).
  * @returns Delay in milliseconds.
  */
-function getRetryDelay(attempt: number): number {
-  return INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt);
+function getRetryDelay( attempt: number ): number {
+  return INITIAL_RETRY_DELAY_MS * Math.pow( 2, attempt );
 }
 
 /**
@@ -23,41 +23,41 @@ function getRetryDelay(attempt: number): number {
  * @returns The fetch response.
  * @throws Error if all retries fail.
  */
-async function fetchWithRetry(url: string, retryCount: number = 0): Promise<Response> {
+async function fetchWithRetry( url: string, retryCount: number = 0 ): Promise<Response> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const timeoutId = setTimeout( () => controller.abort(), FETCH_TIMEOUT_MS );
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch( url, {
       signal: controller.signal,
       headers: {
         "User-Agent": "BookHive/1.0 (compatible; personal-project)",
       },
-    });
-    clearTimeout(timeoutId);
+    } );
+    clearTimeout( timeoutId );
     return response;
-  } catch (error: unknown) {
-    clearTimeout(timeoutId);
+  } catch ( error: unknown ) {
+    clearTimeout( timeoutId );
 
     // Check if error is transient and we have retries remaining.
-    const isTransientError = 
-      (error instanceof TypeError && 
-        (error.message.includes("ECONNREFUSED") || 
-         error.message.includes("ECONNRESET") || 
-         error.message.includes("ETIMEDOUT") ||
-         error.message.includes("fetch failed"))) ||
-      (error instanceof Error && error.name === "AbortError");
+    const isTransientError =
+      ( error instanceof TypeError &&
+        ( error.message.includes( "ECONNREFUSED" ) ||
+          error.message.includes( "ECONNRESET" ) ||
+          error.message.includes( "ETIMEDOUT" ) ||
+          error.message.includes( "fetch failed" ) ) ) ||
+      ( error instanceof Error && error.name === "AbortError" );
 
     const hasRetriesRemaining = retryCount < MAX_RETRIES;
 
-    if (isTransientError && hasRetriesRemaining) {
-      const delay = getRetryDelay(retryCount);
+    if ( isTransientError && hasRetriesRemaining ) {
+      const delay = getRetryDelay( retryCount );
       console.warn(
-        `Open Library API transient error (attempt ${retryCount + 1}/${MAX_RETRIES}). ` +
-        `Retrying in ${delay}ms. Error: ${error instanceof Error ? error.message : String(error)}`
+        `Open Library API transient error (attempt ${ retryCount + 1 }/${ MAX_RETRIES }). ` +
+        `Retrying in ${ delay }ms. Error: ${ error instanceof Error ? error.message : String( error ) }`
       );
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return fetchWithRetry(url, retryCount + 1);
+      await new Promise( resolve => setTimeout( resolve, delay ) );
+      return fetchWithRetry( url, retryCount + 1 );
     }
 
     throw error;
@@ -73,7 +73,7 @@ async function fetchWithRetry(url: string, retryCount: number = 0): Promise<Resp
 export async function searchOpenLibrary( query: string ): Promise<Book[]> {
   query = query.trim().toLowerCase();
 
-  if (!query || query === "") {
+  if ( !query || query === "" ) {
     return [];
   }
 
@@ -83,12 +83,12 @@ export async function searchOpenLibrary( query: string ): Promise<Book[]> {
   searchUrl.searchParams.set( "limit", SEARCH_LIMIT.toString() );
 
   try {
-    const response = await fetchWithRetry(searchUrl.toString());
+    const response = await fetchWithRetry( searchUrl.toString() );
 
-    if (!response.ok) {
-      console.error( 
-        `Open Library API failed with status: ${response.status} ${response.statusText}. ` +
-        `URL: ${searchUrl.toString()}`
+    if ( !response.ok ) {
+      console.error(
+        `Open Library API failed with status: ${ response.status } ${ response.statusText }. ` +
+        `URL: ${ searchUrl.toString() }`
       );
       // Gracefully return empty results instead of throwing.
       return [];
@@ -99,11 +99,11 @@ export async function searchOpenLibrary( query: string ): Promise<Book[]> {
     const bookPromises = data.docs.map( transformOpenLibrarySearchDoc );
     return await Promise.all( bookPromises );
 
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+  } catch ( error ) {
+    const errorMessage = error instanceof Error ? error.message : String( error );
     console.error(
-      `Failed to fetch from Open Library after ${MAX_RETRIES + 1} attempts. ` +
-      `Query: "${query}". Error: ${errorMessage}`,
+      `Failed to fetch from Open Library after ${ MAX_RETRIES + 1 } attempts. ` +
+      `Query: "${ query }". Error: ${ errorMessage }`,
       error
     );
     // Graceful degradation => return empty results so the app continues to function.
@@ -155,32 +155,30 @@ export async function transformOpenLibraryWorkDetails(
 ): Promise<Partial<Book>> {
 
   let descriptionText: string | null = null;
-  if (typeof workDetails.description === "string") {
+  if ( typeof workDetails.description === "string" ) {
     descriptionText = workDetails.description;
-  } else
-    if (workDetails.description?.value) {
-      descriptionText = workDetails.description.value;
-    }
+  } else if ( workDetails.description?.value ) {
+    descriptionText = workDetails.description.value;
+  }
 
   // Ensure hyphen in isbn_13.
-  let formattedIsbn13: string | null = editionDetails?.isbn_13?.[0] || null;
-  if (formattedIsbn13 && formattedIsbn13.length === 13 && /^\d+$/.test( formattedIsbn13 )) {
+  let formattedIsbn13: string | null = editionDetails?.isbn_13?.[ 0 ] || null;
+  if ( formattedIsbn13 && formattedIsbn13.length === 13 && /^\d+$/.test( formattedIsbn13 ) ) {
     formattedIsbn13 = `${ formattedIsbn13.slice( 0, 3 ) }-${ formattedIsbn13.slice( 3 ) }`;
-  } else
-    if (formattedIsbn13 && formattedIsbn13.length !== 14) {
-      // If it's not a 13-digit string we can fix, or already 14, nullify it to avoid DB errors.
-      formattedIsbn13 = null;
-    }
+  } else if ( formattedIsbn13 && formattedIsbn13.length !== 14 ) {
+    // If it's not a 13-digit string we can fix, or already 14, nullify it to avoid DB errors.
+    formattedIsbn13 = null;
+  }
 
   // Handles full dates (e.g., "25 May 2023") by converting to "YYYY-MM-DD".
   // Handles year-only strings (e.g., "1962") by returning the year.
   let dateString = editionDetails?.publish_date;
-  if (dateString) {
+  if ( dateString ) {
     const yearOnlyRegex = /^\d{4}$/;
-    if (yearOnlyRegex.test( dateString )) {
+    if ( yearOnlyRegex.test( dateString ) ) {
       const dateObj = new Date( dateString );
 
-      if (!isNaN( dateObj.getTime() )) {
+      if ( !isNaN( dateObj.getTime() ) ) {
         dateString = dateObj.toISOString().slice( 0, 10 );
       }
     }
@@ -189,16 +187,16 @@ export async function transformOpenLibraryWorkDetails(
   return {
     authors: authorNames.length > 0 ? authorNames : null,
     categories: workDetails.subjects?.slice( 0, 5 ) || null,
-    cover_url: editionDetails?.covers?.[0]
-      ? `https://covers.openlibrary.org/b/id/${ editionDetails.covers[0] }-L.jpg`
+    cover_url: editionDetails?.covers?.[ 0 ]
+      ? `https://covers.openlibrary.org/b/id/${ editionDetails.covers[ 0 ] }-L.jpg`
       : null,
     description: descriptionText,
-    isbn_10: editionDetails?.isbn_10?.[0] || null,
+    isbn_10: editionDetails?.isbn_10?.[ 0 ] || null,
     isbn_13: formattedIsbn13,
     open_library_key: workDetails.key.replace( "/works/", "" ),
     pages: editionDetails?.number_of_pages || null,
     publication_date: dateString || null,
-    publisher: editionDetails?.publishers?.[0] || null,
+    publisher: editionDetails?.publishers?.[ 0 ] || null,
     title: workDetails.title,
   };
 }

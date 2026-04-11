@@ -13,7 +13,7 @@ export function SessionInfo( { userBook, sessions }: SessionInfoProps ) {
   const locale = useLocale();
 
   // Only show progress if the book is being read and has total pages defined.
-  if (!userBook || userBook.state !== "reading" || !userBook.pages) {
+  if ( !userBook || userBook.state !== "reading" || !userBook.pages) {
     return null;
   }
 

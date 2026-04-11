@@ -56,7 +56,7 @@ export async function getPaginatedUserReadingSessions( {
 
   const { data: sessions, error, count } = await queryBuilder;
 
-  if (error) {
+  if ( error ) {
     console.error( "Failed to fetch paginated reading sessions:", error.message );
     return { sessions: [], totalCount: 0 };
   }

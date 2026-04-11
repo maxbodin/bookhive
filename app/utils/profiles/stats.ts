@@ -11,7 +11,7 @@ export interface StrictReadBook extends UserBookStatsRecord {
 }
 
 export const toValidDate = ( value?: string | null ): Date | null => {
-  if (!value) return null;
+  if ( !value ) return null;
 
   const parsedDate = new Date( value );
   return Number.isNaN( parsedDate.getTime() ) ? null : parsedDate;
@@ -19,21 +19,21 @@ export const toValidDate = ( value?: string | null ): Date | null => {
 
 export const toBookTypeBucket = ( value?: string | null ): BookTypeBucket => {
   const normalizedType = value?.toLowerCase();
-  if (normalizedType === "bd" || normalizedType === "manga" || normalizedType === "roman") return normalizedType;
+  if ( normalizedType === "bd" || normalizedType === "manga" || normalizedType === "roman" ) return normalizedType;
   return "unknown";
 };
 
 export const getDurationBucket = ( durationInDays: number ): ReadDurationBucket => {
-  if (durationInDays <= 7) return "upToWeek";
-  if (durationInDays <= 30) return "upToMonth";
-  if (durationInDays <= 90) return "upToThreeMonths";
+  if ( durationInDays <= 7 ) return "upToWeek";
+  if ( durationInDays <= 30 ) return "upToMonth";
+  if ( durationInDays <= 90 ) return "upToThreeMonths";
   return "overThreeMonths";
 };
 
 export const getReadLengthBucket = ( pages: number ): ReadLengthBucket => {
-  if (pages <= 150) return "upTo150";
-  if (pages <= 300) return "from151To300";
-  if (pages <= 500) return "from301To500";
+  if ( pages <= 150 ) return "upTo150";
+  if ( pages <= 300 ) return "from151To300";
+  if ( pages <= 500 ) return "from301To500";
   return "over500";
 };
 
@@ -54,12 +54,12 @@ export const getWeekdayLabels = ( locale: string ): string[] => {
 };
 
 export const toStrictReadBook = ( book: UserBookStatsRecord ): StrictReadBook | null => {
-  if (book.state !== "read") return null;
+  if ( book.state !== "read" ) return null;
 
   const startDate = toValidDate( book.start_reading_date );
   const endDate = toValidDate( book.end_reading_date );
 
-  if (!startDate || !endDate) return null;
+  if ( !startDate || !endDate ) return null;
 
   const completionDate = toValidDate( book.read_date ) ?? endDate;
 
@@ -82,7 +82,7 @@ export const getStrictReadBooksByYear = ( userBooks: UserBookStatsRecord[], year
 };
 
 export const getRelevantStateDate = ( book: UserBookStatsRecord ): Date | null => {
-  switch (book.state) {
+  switch ( book.state ) {
     case "read": {
       const strictReadBook = toStrictReadBook( book );
       return strictReadBook?.completionDate ?? null;

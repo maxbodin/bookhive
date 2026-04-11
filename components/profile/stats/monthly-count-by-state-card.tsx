@@ -29,23 +29,23 @@ export function MonthlyCountByStateCard( { userBooks, className }: MonthlyReadsC
 
   const data = useMemo( () => {
     const allMonths = getMonthLabels( locale );
-    const monthlyActivityData = allMonths.map( ( month ) => ( {
+    const monthlyActivityData = allMonths.map( ( month ) => ({
       month,
       read: 0,
       reading: 0,
       later: 0,
       wishlist: 0,
-    } ) );
+    }) );
 
     userBooks.forEach( ( book ) => {
       const relevantDate = getRelevantStateDate( book );
-      if (!relevantDate) return;
+      if ( !relevantDate) return;
 
       if (relevantDate.getUTCFullYear() === selectedYear) {
         const monthIndex = relevantDate.getUTCMonth();
 
-        if (monthlyActivityData[monthIndex]) {
-          monthlyActivityData[monthIndex][book.state] += 1;
+        if (monthlyActivityData[ monthIndex ]) {
+          monthlyActivityData[ monthIndex ][ book.state ] += 1;
         }
       }
     } );

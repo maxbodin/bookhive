@@ -39,7 +39,7 @@ export async function searchBooks(
 
   const { data: books, error, count } = await request;
 
-  if (error) {
+  if ( error ) {
     console.error( "Error searching books:", error );
     return { data: [], count: 0 };
   }

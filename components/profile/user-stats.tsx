@@ -31,7 +31,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       <AverageCompletionCard userBooks={ userBooks } className="xl:col-span-4"/>
       <ReadingSpeedCard userBooks={ userBooks } className="xl:col-span-4"/>
       <MonthlyPagesReadCard userBooks={ userBooks } className="xl:col-span-4"/>
-      <ReadingDurationDistributionCard userBooks={ userBooks } className="xl:col-span-4" />
+      <ReadingDurationDistributionCard userBooks={ userBooks } className="xl:col-span-4"/>
       <MonthlyCountByStateCard userBooks={ userBooks } className="xl:col-span-6"/>
       <ReadCompletionTrendCard userBooks={ userBooks } className="xl:col-span-6"/>
       <ReadingLifecycleCard userBooks={ userBooks } className="xl:col-span-6"/>

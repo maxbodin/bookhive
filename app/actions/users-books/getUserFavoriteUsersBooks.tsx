@@ -32,7 +32,7 @@ export async function getUserFavoriteUsersBooks(
 
   const { data: userBooksData, error } = await queryBuilder;
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching favorite user books:", error );
     throw new Error( error.message || t( "fetchFailed" ) );
   }

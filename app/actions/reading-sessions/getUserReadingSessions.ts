@@ -18,7 +18,7 @@ export async function getUserReadingSessions( userId: string ): Promise<ReadingS
     .eq( "uid", userId )
     .order( "start_time", { ascending: false } ); // Order by newest first.
 
-  if (error) {
+  if ( error ) {
     console.error( "Failed to fetch reading sessions:", error.message );
     return [];
   }

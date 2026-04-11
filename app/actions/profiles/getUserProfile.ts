@@ -10,7 +10,7 @@ import { PROFILE_BASIC_COLUMNS } from "@/app/utils/supabase/selectColumns";
  * @returns The user's profile data, or null if the user is not found.
  */
 export async function getUserProfile( email: string ): Promise<Profile | null> {
-  if (!email || !email.includes( "@" )) {
+  if ( !email || !email.includes( "@" ) ) {
     return null;
   }
 
@@ -22,7 +22,7 @@ export async function getUserProfile( email: string ): Promise<Profile | null> {
     .eq( "email", email )
     .single();
 
-  if (( error && error.code !== "PGRST116" ) || !profile) {
+  if ( ( error && error.code !== "PGRST116" ) || !profile ) {
     console.error( "Unexpected database error fetching profile:", error );
     return null;
   }

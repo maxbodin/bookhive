@@ -3,12 +3,7 @@
 import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, } from "@/components/ui/chart";
 import { StatCard } from "@/components/profile/stats/stat-card";
 import { YearSelection } from "@/components/profile/stats/year-selection";
 import { useYearSelection } from "@/app/contexts/year-selection-context";
@@ -32,13 +27,13 @@ export function MonthlyPagesReadCard( { userBooks, className }: MonthlyPagesRead
 
     readBooksByYear.forEach( ( book ) => {
       const monthIndex = book.completionDate.getUTCMonth();
-      monthlyPagesRead[monthIndex] += book.pages || 0;
+      monthlyPagesRead[ monthIndex ] += book.pages || 0;
     } );
 
-    return allMonths.map( ( month, index ) => ( {
+    return allMonths.map( ( month, index ) => ({
       month,
-      pages: monthlyPagesRead[index],
-    } ) );
+      pages: monthlyPagesRead[ index ],
+    }) );
   }, [userBooks, selectedYear, locale] );
 
   const hasData = data.some( ( item ) => item.pages > 0 );

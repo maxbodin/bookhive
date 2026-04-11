@@ -40,10 +40,10 @@ const REVEAL_WIDTH = 90; // The width of the revealed delete button in pixels.
 const DRAG_THRESHOLD = 60; // How far the user must drag to snap it open.
 
 export function ReadingSessionItem( {
-                                     session,
-                                     isOwner,
-                                     coverTransitionNamespace = "session",
-                                   }: ReadingSessionItemProps ) {
+                                      session,
+                                      isOwner,
+                                      coverTransitionNamespace = "session",
+                                    }: ReadingSessionItemProps ) {
   const t = useTranslations( "ReadingSessions" );
   const tDialog = useTranslations( "ReadingSessions.deleteDialog" );
 
@@ -80,7 +80,7 @@ export function ReadingSessionItem( {
 
   const handleDialogChange = ( open: boolean ) => {
     setIsDialogOpen( open );
-    if (!open) setIsRevealed( false );
+    if ( !open) setIsRevealed( false );
   };
 
   const startPage = session.start_page ?? 0;
@@ -93,7 +93,7 @@ export function ReadingSessionItem( {
 
   // Calculate completion percentage after this session, preventing division by zero.
   const completionPercentage = totalPages > 0
-    ? Math.round( ( endPage / totalPages ) * 100 )
+    ? Math.round( (endPage / totalPages) * 100 )
     : 0;
 
   // Contextual URL to pass the exact session identifier for unique transitioning.
@@ -185,7 +185,7 @@ export function ReadingSessionItem( {
   );
 
   // If the user is not the owner, render a simple, non-interactive item.
-  if (!isOwner) return sessionContent;
+  if ( !isOwner) return sessionContent;
 
   // If the user is the owner, wrap the content with sliding functionality for deletion.
   return (

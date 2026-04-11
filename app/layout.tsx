@@ -11,8 +11,8 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Footer } from "@/components/footer";
 import { Analytics } from "@vercel/analytics/next";
 
-const geistSans = Geist( { variable: "--font-geist-sans", subsets: ["latin"] } );
-const geistMono = Geist_Mono( { variable: "--font-geist-mono", subsets: ["latin"] } );
+const geistSans = Geist( { variable: "--font-geist-sans", subsets: [ "latin" ] } );
+const geistMono = Geist_Mono( { variable: "--font-geist-mono", subsets: [ "latin" ] } );
 
 // Generate dynamic, translated metadata.
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout( { children }: Readonly<{ children: React.ReactNode }> ) {
-  const [messages, locale] = await Promise.all( [getMessages(), getLocale()] );
+  const [ messages, locale ] = await Promise.all( [ getMessages(), getLocale() ] );
 
   return (
     <html lang={ locale } suppressHydrationWarning>

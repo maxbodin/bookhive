@@ -17,7 +17,7 @@ export async function updateUsername( formData: FormData ) {
   const newUsername = rawUsername.trim().normalize( "NFKC" );
 
   const USERNAME_REGEX = /^[a-zA-Z0-9._-]{3,30}$/;
-  if (!USERNAME_REGEX.test( newUsername )) {
+  if ( !USERNAME_REGEX.test( newUsername ) ) {
     return { success: false, message: t( "invalidUsername" ) };
   }
 
@@ -25,7 +25,7 @@ export async function updateUsername( formData: FormData ) {
   const currentUser = await getCurrentUser();
   const userEmail = currentUser?.email ?? ( formData.get( "userEmail" ) as string );
 
-  if (!currentUser || currentUser.email !== userEmail) {
+  if ( !currentUser || currentUser.email !== userEmail ) {
     return { success: false, message: t( "unauthorized" ) };
   }
 
@@ -34,7 +34,7 @@ export async function updateUsername( formData: FormData ) {
     .update( { username: newUsername } )
     .eq( "id", currentUser.id );
 
-  if (error) {
+  if ( error ) {
     return { success: false, message: error.message };
   }
 

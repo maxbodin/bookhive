@@ -18,7 +18,7 @@ export async function getBooksInReadingState(): Promise<ActionResponse> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
+  if ( !user ) {
     return { data: [] };
   }
 
@@ -39,7 +39,7 @@ export async function getBooksInReadingState(): Promise<ActionResponse> {
     .eq( "uid", user.id )
     .eq( "state", "reading" );
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching reading state books:", error.message );
     return { error: t( "loadFailed" ) };
   }

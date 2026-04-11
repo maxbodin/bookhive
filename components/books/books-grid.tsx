@@ -88,7 +88,7 @@ export function BooksGrid( {
     return { profileBooksMap: pMap, connectedBooksMap: cMap };
   }, [profileUserBooks, connectedUserBooks] );
 
-  if (!books || books.length === 0) {
+  if ( !books || books.length === 0) {
     return <NoResults/>;
   }
 

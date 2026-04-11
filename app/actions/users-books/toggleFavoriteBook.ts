@@ -16,18 +16,18 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
+  if ( !user ) {
     return { success: false, message: t( "authRequired" ) };
   }
 
   // Si l'utilisateur retire un favori.
-  if (currentIsFavorite) {
+  if ( currentIsFavorite ) {
     const { error } = await supabase
       .from( "users_books" )
       .update( { is_favorite: false } )
       .match( { uid: user.id, book_id: bookId } );
 
-    if (error) return { success: false, message: t( "removeFavoriteFailed" ) };
+    if ( error ) return { success: false, message: t( "removeFavoriteFailed" ) };
 
   } else {
     // Si l'utilisateur ajoute un favori.
@@ -39,7 +39,7 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
       .match( { uid: user.id, book_id: bookId } )
       .single();
 
-    if (fetchError || bookRecord?.state !== "read") {
+    if ( fetchError || bookRecord?.state !== "read" ) {
       return { success: false, message: t( "onlyReadCanBeFavorite" ) };
     }
 
@@ -49,8 +49,8 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
       .select( "*", { count: "exact", head: true } )
       .match( { uid: user.id, is_favorite: true } );
 
-    if (countError) return { success: false, message: t( "checkFavoritesError" ) };
-    if (count !== null && count >= MAX_FAVORITES) {
+    if ( countError ) return { success: false, message: t( "checkFavoritesError" ) };
+    if ( count !== null && count >= MAX_FAVORITES ) {
       return { success: false, message: t( "limitReached", { max: MAX_FAVORITES } ) };
     }
 
@@ -60,11 +60,11 @@ export async function toggleFavoriteBook( bookId: number, currentIsFavorite: boo
       .update( { is_favorite: true } )
       .match( { uid: user.id, book_id: bookId } );
 
-    if (updateError) return { success: false, message: t( "addFavoriteFailed" ) };
+    if ( updateError ) return { success: false, message: t( "addFavoriteFailed" ) };
   }
 
   // Revalider la page de profil pour afficher instantanément le changement.
-  if (user.email) {
+  if ( user.email ) {
     revalidatePath( `/${ encodeURIComponent( user.email ) }` );
   }
 

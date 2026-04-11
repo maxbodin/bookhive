@@ -15,7 +15,7 @@ export async function getUserTotalPagesRead( userId: string ): Promise<number> {
     p_user_id: userId,
   } );
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching total pages read via RPC:", error );
     throw new Error( t( "fetchStatsFailed" ) );
   }

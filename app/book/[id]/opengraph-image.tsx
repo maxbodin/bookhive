@@ -21,7 +21,7 @@ export default async function Image( { params }: { params: Promise<{ id: string 
   const book = await getBookById( Number( resolvedParams.id ) );
 
   // Fetch fonts in parallel for performance.
-  const [geistRegular, geistBold] = await Promise.all( [
+  const [ geistRegular, geistBold ] = await Promise.all( [
     getFontData( new URL( "../../../public/fonts/Geist-Regular.otf", import.meta.url ) ),
     getFontData( new URL( "../../../public/fonts/Geist-Bold.otf", import.meta.url ) ),
   ] );

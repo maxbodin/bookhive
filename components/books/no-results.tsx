@@ -7,7 +7,7 @@ export function NoResults() {
   // Get the array of quote objects from translations.
   const bookQuotes = t.raw( "quotes" ) as { quote: string; author: string }[];
   const randomQuote = bookQuotes.length > 0
-    ? bookQuotes[Math.floor( Math.random() * bookQuotes.length )]
+    ? bookQuotes[ Math.floor( Math.random() * bookQuotes.length ) ]
     : { quote: "", author: "" };
 
   return (

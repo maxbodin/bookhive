@@ -26,7 +26,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
     const sundayReferenceUtc = Date.UTC( 2020, 7, 2 );
 
     return Array.from( { length: 7 }, ( _, index ) => {
-      return weekdayFormatter.format( new Date( sundayReferenceUtc + ( index * 24 * 60 * 60 * 1000 ) ) );
+      return weekdayFormatter.format( new Date( sundayReferenceUtc + (index * 24 * 60 * 60 * 1000) ) );
     } );
   }, [locale] );
 
@@ -46,14 +46,14 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
       let currentWeek = new Array( 7 ).fill( null );
       const currentDate = new Date( firstDayOfMonth );
 
-      while (currentDate.getMonth() === monthIndex) {
+      while ( currentDate.getMonth() === monthIndex ) {
         const dayOfWeek = getDay( currentDate );
         const yearPart = currentDate.getFullYear();
         const monthPart = String( currentDate.getMonth() + 1 ).padStart( 2, "0" );
         const dayPart = String( currentDate.getDate() ).padStart( 2, "0" );
         const dateKey = `${ yearPart }-${ monthPart }-${ dayPart }`;
 
-        currentWeek[dayOfWeek] = {
+        currentWeek[ dayOfWeek ] = {
           key: dateKey,
           date: new Date( currentDate ),
           activity: activityByDate.get( dateKey ) || { count: 0, level: 0 },
@@ -77,7 +77,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
 
   const getBackgroundColorStyle = ( level: 0 | 1 | 2 | 3 | 4 ) => {
     if (level === 0) return {};
-    const lightness = ( level * 15 );
+    const lightness = (level * 15);
     return { backgroundColor: `hsl(47.9 95.8% ${ lightness }%)` };
   };
 
@@ -115,7 +115,7 @@ export function ReadingActivityCalendar( { readingSessions }: ReadingActivityCal
                     { weeks.map( ( week, weekIndex ) => (
                       <div key={ weekIndex } className="flex flex-col gap-1">
                         { week.map( ( day, dayIndex ) => {
-                          if (!day) {
+                          if ( !day) {
                             return <div key={ `pad-${ monthIndex }-${ weekIndex }-${ dayIndex }` }
                                         className="h-4 w-4"/>;
                           }

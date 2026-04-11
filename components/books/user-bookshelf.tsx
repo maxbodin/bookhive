@@ -35,18 +35,18 @@ export async function UserBookshelf( {
   // Group books by their state.
   const userBooksByState = userBooks.reduce( ( acc, userbook ) => {
     const state: BookState = userbook.state;
-    if (!acc[state]) {
-      acc[state] = [];
+    if ( !acc[ state ]) {
+      acc[ state ] = [];
     }
-    acc[state].push( userbook );
+    acc[ state ].push( userbook );
     return acc;
   }, {} as Record<string, UserBook[]> );
 
   return (
     <div className="space-y-12">
       { SHELVES_ORDER.map( ( shelf ) => {
-        const userBooksOnShelf = userBooksByState[shelf];
-        if (!userBooksOnShelf || userBooksOnShelf.length === 0) {
+        const userBooksOnShelf = userBooksByState[ shelf ];
+        if ( !userBooksOnShelf || userBooksOnShelf.length === 0) {
           return null;
         }
 
@@ -55,7 +55,7 @@ export async function UserBookshelf( {
         return (
           <section key={ shelf }>
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">
-              { SHELF_TITLES[shelf] } ({ userBooksOnShelf.length })
+              { SHELF_TITLES[ shelf ] } ({ userBooksOnShelf.length })
             </h2>
             <Suspense key={ `${ shelf }` } fallback={ <BooksGridSkeleton/> }>
               <BooksGrid

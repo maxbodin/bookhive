@@ -11,7 +11,7 @@ export async function GET( request: NextRequest ) {
   const type = searchParams.get( "type" ) as EmailOtpType | null;
   const next = searchParams.get( "next" ) ?? "/";
 
-  if (token_hash && type) {
+  if ( token_hash && type ) {
     const supabase = await createClient();
 
     const { error } = await supabase.auth.verifyOtp( {
@@ -21,7 +21,7 @@ export async function GET( request: NextRequest ) {
 
     console.error( error );
 
-    if (!error) {
+    if ( !error ) {
       // redirect user to specified redirect URL or root of app
       redirect( next );
     }

@@ -55,7 +55,7 @@ export function EditableUsername( { profile, isOwner, displayUsername }: Editabl
 
   const UsernameElement = <h1 className="text-3xl font-bold">{ displayUsername }</h1>;
 
-  if (!isOwner) {
+  if ( !isOwner) {
     return UsernameElement;
   }
 

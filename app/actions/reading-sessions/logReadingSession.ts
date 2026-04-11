@@ -23,13 +23,13 @@ export async function logReadingSession( formData: FormData ): Promise<ActionSta
     notes: z.string().max( 1000, t( "errors.notesTooLong" ) ).optional(),
   } ).refine( data => new Date( data.startTime ) < new Date( data.endTime ), {
     message: t( "errors.startTimeBeforeEndTime" ),
-    path: ["startTime"],
+    path: [ "startTime" ],
   } );
 
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
+  if ( !user ) {
     return { success: false, message: t( "errors.authRequired" ) };
   }
 
@@ -42,7 +42,7 @@ export async function logReadingSession( formData: FormData ): Promise<ActionSta
     notes: formData.get( "notes" ),
   } );
 
-  if (!validatedFields.success) {
+  if ( !validatedFields.success ) {
     const firstError = validatedFields.error;
     return {
       success: false,
@@ -63,7 +63,7 @@ export async function logReadingSession( formData: FormData ): Promise<ActionSta
 
   const { error } = await supabase.from( "reading_sessions" ).insert( dataToInsert );
 
-  if (error) {
+  if ( error ) {
     console.error( "Supabase insert error:", error.message );
     return { success: false, message: t( "errors.logFailed" ) };
   }

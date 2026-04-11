@@ -20,7 +20,7 @@ export default function ReadingProgress( {
   const t = useTranslations( "ReadingProgress" );
 
   // Avoid division by zero and ensure pages are valid.
-  const progressPercentage = totalPages > 0 ? Math.round( ( currentPage / totalPages ) * 100 ) : 0;
+  const progressPercentage = totalPages > 0 ? Math.round( (currentPage / totalPages) * 100 ) : 0;
 
   return (
     <div className="flex flex-col gap-3 my-2 text-xs">

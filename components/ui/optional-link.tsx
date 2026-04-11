@@ -18,7 +18,7 @@ export default function OptionalLink( {
   children: React.ReactNode;
 } ) {
   const classNames = cn( className, "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" );
-  if (!isLink) {
+  if ( !isLink) {
     return <div className={ classNames }>{ children }</div>;
   }
   return (

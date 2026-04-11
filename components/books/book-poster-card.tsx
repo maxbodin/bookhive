@@ -61,7 +61,12 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
  * @param prioritizeCover
  * @constructor
  */
-function StandardBookCard( { book, connectedUserBook, addFromOLButton, prioritizeCover = false }: BookCardSharedProps ) {
+function StandardBookCard( {
+                             book,
+                             connectedUserBook,
+                             addFromOLButton,
+                             prioritizeCover = false
+                           }: BookCardSharedProps ) {
   const tBookTypes = useTranslations( "BookTypes" );
 
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;

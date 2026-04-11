@@ -12,12 +12,12 @@ export async function updateBook( bookId: number, formData: FormData ) {
   const supabase = await createClient();
   const currentUser = await getCurrentUser();
 
-  if (!currentUser?.email) {
+  if ( !currentUser?.email ) {
     return { success: false, message: t( "unauthorized" ) };
   }
 
   const profile = await getUserProfile( currentUser.email );
-  if (!profile?.is_admin) {
+  if ( !profile?.is_admin ) {
     return { success: false, message: t( "adminOnly" ) };
   }
 
@@ -53,7 +53,7 @@ export async function updateBook( bookId: number, formData: FormData ) {
     .update( dataToUpdate )
     .eq( "id", bookId );
 
-  if (error) {
+  if ( error ) {
     console.error( "Update book error:", error.message );
     return { success: false, message: t( "error" ) };
   }

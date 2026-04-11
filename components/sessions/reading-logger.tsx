@@ -70,10 +70,10 @@ export default function ReadingLogger( { customTrigger, onSessionLogged }: Readi
 
   // Memoize session stats for performance
   const sessionStats = useMemo( () => {
-    if (!selectedBook) return { pagesRead: 0, progress: 0 };
+    if ( !selectedBook) return { pagesRead: 0, progress: 0 };
     const pagesRead = formState.endPage - selectedBook.current_page;
     const progress = selectedBook.pages ?? 0 > 0
-      ? Math.min( 100, Math.round( ( formState.endPage / ( selectedBook.pages ?? 0 ) ) * 100 ) )
+      ? Math.min( 100, Math.round( (formState.endPage / (selectedBook.pages ?? 0)) * 100 ) )
       : 0;
     return { pagesRead, progress };
   }, [selectedBook, formState.endPage] );
@@ -119,11 +119,11 @@ export default function ReadingLogger( { customTrigger, onSessionLogged }: Readi
    */
   const handleBookSelect = ( bookId: string ) => {
     const book = books.find( ( b ) => b.book_id.toString() === bookId );
-    setFormState( prev => ( {
+    setFormState( prev => ({
       ...prev,
       selectedBookId: bookId,
       endPage: book?.current_page ?? 0,
-    } ) );
+    }) );
   };
 
   /**
@@ -136,7 +136,7 @@ export default function ReadingLogger( { customTrigger, onSessionLogged }: Readi
       startPage: selectedBook?.current_page ?? 0,
     } );
 
-    if (!validation.success) {
+    if ( !validation.success) {
       toast.error( validation.error.message || "Invalid input." );
       return;
     }
@@ -201,13 +201,13 @@ export default function ReadingLogger( { customTrigger, onSessionLogged }: Readi
 
           <FormRow label={ t( "label_start_time" ) }>
             <DateTimePicker date={ formState.startDate }
-                            setDateAction={ ( date ) => setFormState( p => ( { ...p, startDate: date! } ) ) }
+                            setDateAction={ ( date ) => setFormState( p => ({ ...p, startDate: date! }) ) }
                             disabled={ isSubmitting }/>
           </FormRow>
 
           <FormRow label={ t( "label_end_time" ) }>
             <DateTimePicker date={ formState.endDate }
-                            setDateAction={ ( date ) => setFormState( p => ( { ...p, endDate: date! } ) ) }
+                            setDateAction={ ( date ) => setFormState( p => ({ ...p, endDate: date! }) ) }
                             disabled={ isSubmitting }/>
           </FormRow>
 
@@ -216,7 +216,7 @@ export default function ReadingLogger( { customTrigger, onSessionLogged }: Readi
               <Input
                 type="number"
                 value={ formState.endPage }
-                onChange={ ( e ) => setFormState( p => ( { ...p, endPage: Number( e.target.value ) } ) ) }
+                onChange={ ( e ) => setFormState( p => ({ ...p, endPage: Number( e.target.value ) }) ) }
                 className="w-24"
                 min={ selectedBook?.current_page ?? 0 }
                 max={ selectedBook?.pages ?? 0 }
@@ -246,7 +246,7 @@ export default function ReadingLogger( { customTrigger, onSessionLogged }: Readi
               className="col-span-3 resize-none"
               placeholder={ t( "placeholder_notes" ) }
               value={ formState.notes }
-              onChange={ ( e ) => setFormState( p => ( { ...p, notes: e.target.value } ) ) }
+              onChange={ ( e ) => setFormState( p => ({ ...p, notes: e.target.value }) ) }
               disabled={ isSubmitting }
             />
           </FormRow>

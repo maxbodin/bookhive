@@ -14,12 +14,12 @@ export async function getReadingSessionYears( userId: string ): Promise<number[]
     p_uid: userId
   } );
 
-  if (error) {
+  if ( error ) {
     console.error( "Failed to fetch reading session years:", error.message );
     return [];
   }
 
-  if (!data) {
+  if ( !data ) {
     return [];
   }
 

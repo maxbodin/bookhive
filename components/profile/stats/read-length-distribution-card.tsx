@@ -3,20 +3,11 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, } from "@/components/ui/chart";
 import { StatCard } from "@/components/profile/stats/stat-card";
 import { YearSelection } from "@/components/profile/stats/year-selection";
 import { useYearSelection } from "@/app/contexts/year-selection-context";
-import {
-  getReadLengthBucket,
-  getStrictReadBooksByYear,
-  ReadLengthBucket,
-} from "@/app/utils/profiles/stats";
+import { getReadLengthBucket, getStrictReadBooksByYear, ReadLengthBucket, } from "@/app/utils/profiles/stats";
 import { UserBookStatsRecord } from "@/app/types/user-book";
 
 interface ReadLengthDistributionCardProps {
@@ -42,7 +33,7 @@ export function ReadLengthDistributionCard( { userBooks, className }: ReadLength
       const pages = book.pages || 0;
 
       if (pages > 0) {
-        readLengthBuckets[getReadLengthBucket( pages )] += 1;
+        readLengthBuckets[ getReadLengthBucket( pages ) ] += 1;
       }
     } );
 
@@ -58,10 +49,10 @@ export function ReadLengthDistributionCard( { userBooks, className }: ReadLength
     count: { label: t( "books" ), color: "var(--chart-5)" },
   } satisfies ChartConfig;
 
-  const chartData = data.map( ( item ) => ( {
+  const chartData = data.map( ( item ) => ({
     ...item,
     label: t( `buckets.${ item.bucket }` ),
-  } ) );
+  }) );
 
   const hasData = chartData.some( ( item ) => item.count > 0 );
 

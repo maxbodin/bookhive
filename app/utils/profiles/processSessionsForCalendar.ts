@@ -20,12 +20,12 @@ export function processSessionsForCalendar( sessions: ReadingSession[] ): Map<st
     const start = new Date( session.start_time );
     const end = new Date( session.end_time );
 
-    if (isValid( start ) && isValid( end )) {
+    if ( isValid( start ) && isValid( end ) ) {
       const day = format( start, "yyyy-MM-dd" );
       const duration = differenceInMinutes( end, start );
 
-      if (duration > 0) {
-        dailyMinutes[day] = ( dailyMinutes[day] || 0 ) + duration;
+      if ( duration > 0 ) {
+        dailyMinutes[ day ] = ( dailyMinutes[ day ] || 0 ) + duration;
       }
     } else {
       console.error( "Invalid session date:", session );
@@ -35,16 +35,13 @@ export function processSessionsForCalendar( sessions: ReadingSession[] ): Map<st
   const activityMap = new Map<string, Activity>();
 
   // Convert daily totals into Activity objects with levels.
-  for (const [date, totalMinutes] of Object.entries( dailyMinutes )) {
+  for ( const [ date, totalMinutes ] of Object.entries( dailyMinutes ) ) {
     let level: Activity["level"];
-    if (totalMinutes === 0) level = 0;
-    else
-      if (totalMinutes < 15) level = 1;
-      else
-        if (totalMinutes < 60) level = 2;
-        else
-          if (totalMinutes < 120) level = 3;
-          else level = 4;
+    if ( totalMinutes === 0 ) level = 0;
+    else if ( totalMinutes < 15 ) level = 1;
+    else if ( totalMinutes < 60 ) level = 2;
+    else if ( totalMinutes < 120 ) level = 3;
+    else level = 4;
 
     activityMap.set( date, { count: totalMinutes, level } );
   }

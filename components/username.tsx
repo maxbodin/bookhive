@@ -10,7 +10,7 @@ interface UsernameProps {
 export async function Username( { email, customUsername }: UsernameProps ) {
   const t = await getTranslations( "Username" );
 
-  if (!email) {
+  if ( !email) {
     return null;
   }
 

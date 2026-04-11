@@ -28,7 +28,7 @@ export async function getReadingSessionsForBook(
     .eq( "book_id", bookId )
     .order( "start_time", { ascending: false } ); // Order by newest first.
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching reading sessions for book:", error.message );
     return [];
   }

@@ -32,16 +32,15 @@ export default function AuthFormContent( {
   const passwordScore: number = passwordStrength( passwordInput );
 
   useEffect( () => {
-    if (state.errors) setErrors( ( prev ) => ( { ...prev, ...state.errors } ) );
+    if (state.errors) setErrors( ( prev ) => ({ ...prev, ...state.errors }) );
   }, [state.errors] );
 
   useEffect( () => {
     if (state.success && state.message) {
       toast.success( state.message );
-    } else
-      if (!state.success && state.errors?.form) {
-        toast.error( state.errors.form );
-      }
+    } else if ( !state.success && state.errors?.form) {
+      toast.error( state.errors.form );
+    }
   }, [state] );
 
   const handleSignupSubmit = ( formData: FormData ) => {
@@ -60,8 +59,8 @@ export default function AuthFormContent( {
    */
   const clearFieldError = ( field: keyof NonNullable<ActionState["errors"]> ) => {
     setErrors( ( prev ) => {
-      if (!prev || !prev[field]) return prev;
-      const { [field]: _, ...rest } = prev;
+      if ( !prev || !prev[ field ]) return prev;
+      const { [ field ]: _, ...rest } = prev;
       return rest;
     } );
   };

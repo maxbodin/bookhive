@@ -1,6 +1,6 @@
 import { BookType } from "@/app/types/book";
 
-const VALID_BOOK_TYPES: BookType[] = ["bd", "manga", "roman"];
+const VALID_BOOK_TYPES: BookType[] = [ "bd", "manga", "roman" ];
 
 /**
  * Converts a standard search string into a case-insensitive, accent-insensitive
@@ -39,7 +39,7 @@ export function applySharedBookFilters(
   const options = foreignTable ? { foreignTable } : undefined;
 
   // Apply text search filter.
-  if (query) {
+  if ( query ) {
     const sanitizedQuery = query.trim().toLowerCase();
     const regexPattern = buildAccentInsensitiveRegex( sanitizedQuery );
 
@@ -52,23 +52,21 @@ export function applySharedBookFilters(
   }
 
   // Apply type filter.
-  if (types) {
+  if ( types ) {
     const typeArray = types.split( "," );
     const includesNull = typeArray.includes( "null" );
     const validTypes = typeArray.filter( ( t ) => VALID_BOOK_TYPES.includes( t as BookType ) );
 
-    if (validTypes.length > 0 && includesNull) {
+    if ( validTypes.length > 0 && includesNull ) {
       // User selected both specific valid types AND "null" (No type).
       queryBuilder = queryBuilder.or( `type.in.(${ validTypes.join( "," ) }),type.is.null`, options );
-    } else
-      if (validTypes.length > 0) {
-        // User selected ONLY specific valid types.
-        queryBuilder = queryBuilder.or( `type.in.(${ validTypes.join( "," ) })`, options );
-      } else
-        if (includesNull) {
-          // User selected ONLY "null" (No type).
-          queryBuilder = queryBuilder.or( `type.is.null`, options );
-        }
+    } else if ( validTypes.length > 0 ) {
+      // User selected ONLY specific valid types.
+      queryBuilder = queryBuilder.or( `type.in.(${ validTypes.join( "," ) })`, options );
+    } else if ( includesNull ) {
+      // User selected ONLY "null" (No type).
+      queryBuilder = queryBuilder.or( `type.is.null`, options );
+    }
   }
 
   return queryBuilder;

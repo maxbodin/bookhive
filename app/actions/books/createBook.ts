@@ -20,7 +20,7 @@ export async function createBook( formData: FormData ) {
     isbn_10: z.string().max( 10 ).optional(),
     isbn_13: z.string().max( 13 ).optional(),
     pages: z.coerce.number().int().nonnegative().optional(),
-    type: z.enum( ["bd", "manga", "roman"] ).optional(),
+    type: z.enum( [ "bd", "manga", "roman" ] ).optional(),
     categories: z.string().optional(), // Comma separated.
     height: z.coerce.number().nonnegative().optional(),
     length: z.coerce.number().nonnegative().optional(),
@@ -32,12 +32,12 @@ export async function createBook( formData: FormData ) {
   const supabase = await createClient();
   const currentUser = await getCurrentUser();
 
-  if (!currentUser?.email) {
+  if ( !currentUser?.email ) {
     return { success: false, message: t( "errors.authRequired" ) };
   }
 
   const profile = await getUserProfile( currentUser.email );
-  if (!profile?.is_admin) {
+  if ( !profile?.is_admin ) {
     return { success: false, message: t( "errors.adminOnly" ) };
   }
 
@@ -45,7 +45,7 @@ export async function createBook( formData: FormData ) {
   const rawData = Object.fromEntries( formData.entries() );
   const validated = createBookSchema.safeParse( rawData );
 
-  if (!validated.success) {
+  if ( !validated.success ) {
     return { success: false, message: t( "errors.invalidInput" ) };
   }
 
@@ -72,7 +72,7 @@ export async function createBook( formData: FormData ) {
     cover_url: data.cover_url || null,
   } );
 
-  if (error) {
+  if ( error ) {
     console.error( "Create book error:", error.message );
     return { success: false, message: t( "errors.createFailed" ) };
   }

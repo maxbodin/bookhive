@@ -21,9 +21,9 @@ export async function getConnectedUserBookForBook(
     .eq( "book_id", bookId )
     .single();
 
-  if (error) {
+  if ( error ) {
     // A "single" query error is expected if the user has no record for this book.
-    if (error.code !== "PGRST116") { // PGRST116: "exact one row expected"
+    if ( error.code !== "PGRST116" ) { // PGRST116: "exact one row expected"
       console.error( "Error fetching user book data:", error.message );
     }
     return undefined;

@@ -35,7 +35,7 @@ export async function getUserBooksByState(
 
   const { data: userBooksData, error } = await queryBuilder;
 
-  if (error) {
+  if ( error ) {
     console.error( `Error fetching user books for state ${ state }:` );
     throw new Error( error.message || t( "fetchFailed" ) );
   }

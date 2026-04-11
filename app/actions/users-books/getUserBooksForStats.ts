@@ -23,7 +23,7 @@ export async function getUserBooksForStats( userId: string ): Promise<UserBookSt
     .select( USER_BOOK_STATS_COLUMNS )
     .eq( "uid", userId );
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching user books for stats:", error.message );
     throw new Error( t( "fetchStatsFailed" ) );
   }
@@ -31,7 +31,7 @@ export async function getUserBooksForStats( userId: string ): Promise<UserBookSt
   const rows = ( data || [] ) as UserBookStatsRow[];
 
   return rows.map( ( row ) => {
-    const bookData = Array.isArray( row.books ) ? row.books[0] : row.books;
+    const bookData = Array.isArray( row.books ) ? row.books[ 0 ] : row.books;
 
     return {
       state: row.state,

@@ -96,7 +96,7 @@ export function ReadingSessionsList( {
     const groups = new Map<string, ReadingSessionWithBook[]>();
     sessions.forEach( ( session ) => {
       const monthKey = format( new Date( session.start_time ), "MMMM yyyy" );
-      if (!groups.has( monthKey )) {
+      if ( !groups.has( monthKey )) {
         groups.set( monthKey, [] );
       }
       groups.get( monthKey )!.push( session );

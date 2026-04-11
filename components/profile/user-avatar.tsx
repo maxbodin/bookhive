@@ -71,7 +71,7 @@ export function UserAvatar( { profile, isOwner }: UserAvatarProps ) {
     </ViewTransition>
   );
 
-  if (!isOwner) {
+  if ( !isOwner) {
     return avatar;
   }
 

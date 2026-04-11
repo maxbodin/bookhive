@@ -15,7 +15,7 @@ export async function deleteReadingSession( sessionId: number ): Promise<ActionS
   const supabase = await createClient();
   const user = await getCurrentUser();
 
-  if (!user) {
+  if ( !user ) {
     return { success: false, message: t( "errors.authRequired" ) };
   }
 
@@ -26,11 +26,11 @@ export async function deleteReadingSession( sessionId: number ): Promise<ActionS
     .eq( "id", sessionId )
     .single();
 
-  if (fetchError || !session) {
+  if ( fetchError || !session ) {
     return { success: false, message: t( "errors.sessionNotFound" ) };
   }
 
-  if (session.uid !== user.id) {
+  if ( session.uid !== user.id ) {
     return { success: false, message: t( "errors.permissionDenied" ) };
   }
 
@@ -40,7 +40,7 @@ export async function deleteReadingSession( sessionId: number ): Promise<ActionS
     .delete()
     .eq( "id", sessionId );
 
-  if (deleteError) {
+  if ( deleteError ) {
     console.error( "Failed to delete session:", deleteError );
     return { success: false, message: t( "errors.deleteFailed" ) };
   }

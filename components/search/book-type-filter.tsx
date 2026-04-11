@@ -7,7 +7,7 @@ import { SearchParams } from "@/app/utils/searchParams";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { BookType } from "@/app/types/book";
 
-const VALID_TYPES: ( BookType | "null" )[] = ["bd", "manga", "roman", "null"];
+const VALID_TYPES: (BookType | "null")[] = ["bd", "manga", "roman", "null"];
 
 export function BookTypeFilter() {
   const searchParams = useSearchParams();
@@ -22,7 +22,7 @@ export function BookTypeFilter() {
 
   // Sanitize the selected types derived from the URL.
   const validSelectedTypes = useMemo( () => {
-    if (!currentTypesParam) return [];
+    if ( !currentTypesParam) return [];
 
     return currentTypesParam
       .split( "," )
@@ -31,7 +31,7 @@ export function BookTypeFilter() {
 
   // Silently correct the URL if invalid types were present.
   useEffect( () => {
-    if (!currentTypesParam) return;
+    if ( !currentTypesParam) return;
 
     const validString = validSelectedTypes.join( "," );
 

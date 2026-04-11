@@ -31,18 +31,18 @@ export async function upsertBookState(
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
+  if ( !user ) {
     return { error: t( "authRequired" ) };
   }
 
   // If the new state is null, we are removing the book entry.
-  if (newState === null) {
+  if ( newState === null ) {
     const { error } = await supabase
       .from( "users_books" )
       .delete()
       .match( { uid: user.id, book_id: bookId } );
 
-    if (error) return { error: t( "removeFailed" ) };
+    if ( error ) return { error: t( "removeFailed" ) };
   } else {
     // Combine base data with additional updates (dates).
     const dataToUpsert = {
@@ -55,7 +55,7 @@ export async function upsertBookState(
     const { error } = await supabase.from( "users_books" )
       .upsert( dataToUpsert, { onConflict: "uid, book_id" } );
 
-    if (error) {
+    if ( error ) {
       console.error( "Supabase upsert error:", error );
       return { error: t( "updateFailed" ) };
     }
@@ -64,7 +64,7 @@ export async function upsertBookState(
   // Revalidate the pages where the book grids are displayed.
   revalidatePath( "/" );
 
-  if (user.email) {
+  if ( user.email ) {
     revalidatePath( `/${ encodeURIComponent( user.email ) }` ); // Revalidate user's profile.
   }
 

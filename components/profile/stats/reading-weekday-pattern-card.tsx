@@ -3,20 +3,12 @@
 import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from "recharts";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, } from "@/components/ui/chart";
 import { StatCard } from "@/components/profile/stats/stat-card";
 import { YearSelection } from "@/components/profile/stats/year-selection";
 import { useYearSelection } from "@/app/contexts/year-selection-context";
 import { UserBookStatsRecord } from "@/app/types/user-book";
-import {
-  getStrictReadBooksByYear,
-  getWeekdayLabels,
-} from "@/app/utils/profiles/stats";
+import { getStrictReadBooksByYear, getWeekdayLabels, } from "@/app/utils/profiles/stats";
 
 interface ReadingWeekdayPatternCardProps {
   userBooks: UserBookStatsRecord[];
@@ -34,14 +26,14 @@ export function ReadingWeekdayPatternCard( { userBooks, className }: ReadingWeek
     const readBooksByYear = getStrictReadBooksByYear( userBooks, selectedYear );
 
     readBooksByYear.forEach( ( book ) => {
-      const weekdayIndex = ( book.completionDate.getUTCDay() + 6 ) % 7;
-      weekdayReadCount[weekdayIndex] += 1;
+      const weekdayIndex = (book.completionDate.getUTCDay() + 6) % 7;
+      weekdayReadCount[ weekdayIndex ] += 1;
     } );
 
-    return allWeekdays.map( ( weekday, index ) => ( {
+    return allWeekdays.map( ( weekday, index ) => ({
       weekday,
-      read: weekdayReadCount[index],
-    } ) );
+      read: weekdayReadCount[ index ],
+    }) );
   }, [userBooks, selectedYear, locale] );
 
   const chartConfig = {

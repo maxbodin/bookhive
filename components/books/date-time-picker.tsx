@@ -27,7 +27,7 @@ export function DateTimePicker( { date, setDateAction, disabled }: DateTimePicke
   const [isPopoverOpen, setIsPopoverOpen] = useState( false );
 
   const handleDateSelect = ( selectedDay: Date | undefined ) => {
-    if (!selectedDay) {
+    if ( !selectedDay) {
       setDateAction( undefined );
       return;
     }
@@ -43,7 +43,7 @@ export function DateTimePicker( { date, setDateAction, disabled }: DateTimePicke
 
   const handleTimeChange = ( event: React.ChangeEvent<HTMLInputElement> ) => {
     const timeValue = event.target.value;
-    if (!date || !timeValue) return;
+    if ( !date || !timeValue) return;
 
     const [hours, minutes] = timeValue.split( ":" ).map( Number );
 

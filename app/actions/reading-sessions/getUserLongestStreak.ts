@@ -23,12 +23,12 @@ export async function getUserLongestStreak( userId: string ): Promise<number> {
     .eq( "uid", userId )
     .order( "start_time", { ascending: true } );
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching sessions for streak:", error );
     return 0;
   }
 
-  if (!data || data.length === 0) {
+  if ( !data || data.length === 0 ) {
     return 0;
   }
 
@@ -37,29 +37,29 @@ export async function getUserLongestStreak( userId: string ): Promise<number> {
   const uniqueDates = new Set<string>();
   data.forEach( ( session ) => {
     // We split by "T" to get the date part quickly without heavy Date object parsing overhead.
-    const dateStr = session.start_time.split( "T" )[0];
+    const dateStr = session.start_time.split( "T" )[ 0 ];
     uniqueDates.add( dateStr );
   } );
 
   const sortedUniqueDates = Array.from( uniqueDates );
 
-  if (sortedUniqueDates.length === 0) return 0;
+  if ( sortedUniqueDates.length === 0 ) return 0;
 
   // Linear scan for longest streak.
   let maxStreak = 1;
   let currentStreak = 1;
 
   // We start from the second element.
-  for (let i = 1; i < sortedUniqueDates.length; i++) {
-    const prevDate = new Date( sortedUniqueDates[i - 1] );
-    const currDate = new Date( sortedUniqueDates[i] );
+  for ( let i = 1; i < sortedUniqueDates.length; i++ ) {
+    const prevDate = new Date( sortedUniqueDates[ i - 1 ] );
+    const currDate = new Date( sortedUniqueDates[ i ] );
 
     // Calculate difference in milliseconds.
     const diffTime = currDate.getTime() - prevDate.getTime();
     // Convert to days (1000ms * 60s * 60m * 24h).
     const diffDays = Math.round( diffTime / ( 1000 * 3600 * 24 ) );
 
-    if (diffDays === 1) {
+    if ( diffDays === 1 ) {
       // Consecutive day.
       currentStreak++;
     } else {

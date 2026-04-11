@@ -27,7 +27,7 @@ export default function LocaleSwitcher() {
     } );
   };
 
-  const currentLocaleConfig = LOCALES.find( ( l ) => l.code === locale ) || LOCALES[0];
+  const currentLocaleConfig = LOCALES.find( ( l ) => l.code === locale ) || LOCALES[ 0 ];
 
   return (
     <Select

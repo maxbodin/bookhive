@@ -16,7 +16,7 @@ export interface ReadingStats {
  * @returns An object containing the calculated reading statistics.
  */
 export function calculateReadingStats( sessions: ReadingSession[], locale: string ): ReadingStats {
-  if (!sessions || sessions.length === 0) {
+  if ( !sessions || sessions.length === 0 ) {
     return {
       totalHours: 0,
       lastSessionDate: null,
@@ -33,11 +33,11 @@ export function calculateReadingStats( sessions: ReadingSession[], locale: strin
     const endTime = parseISO( session.end_time );
 
     // Ensure dates are valid before performing calculations.
-    if (!isNaN( startTime.getTime() ) && !isNaN( endTime.getTime() )) {
+    if ( !isNaN( startTime.getTime() ) && !isNaN( endTime.getTime() ) ) {
       totalMilliseconds += endTime.getTime() - startTime.getTime();
 
       // Find the most recent session end time.
-      if (!latestEndDate || endTime > latestEndDate) {
+      if ( !latestEndDate || endTime > latestEndDate ) {
         latestEndDate = endTime;
       }
     }
@@ -45,7 +45,7 @@ export function calculateReadingStats( sessions: ReadingSession[], locale: strin
 
   const totalHours = totalMilliseconds / ( 1000 * 60 * 60 );
 
-  if (latestEndDate) {
+  if ( latestEndDate ) {
     const finalDate = latestEndDate as Date;
 
     const formattedLastSessionDate = finalDate.toLocaleDateString( locale, {

@@ -34,24 +34,24 @@ export function ReadingLifecycleCard( { userBooks, className }: ReadingLifecycle
 
     userBooks.forEach( ( book ) => {
       const startDate = toValidDate( book.start_reading_date );
-      if (!startDate) return;
+      if ( !startDate) return;
 
       if (startDate.getUTCFullYear() === selectedYear) {
-        monthlyStartedCount[startDate.getUTCMonth()] += 1;
+        monthlyStartedCount[ startDate.getUTCMonth() ] += 1;
       }
     } );
 
     const readBooksByYear = getStrictReadBooksByYear( userBooks, selectedYear );
 
     readBooksByYear.forEach( ( book ) => {
-      monthlyReadCount[book.completionDate.getUTCMonth()] += 1;
+      monthlyReadCount[ book.completionDate.getUTCMonth() ] += 1;
     } );
 
-    return allMonths.map( ( month, index ) => ( {
+    return allMonths.map( ( month, index ) => ({
       month,
-      started: monthlyStartedCount[index],
-      read: monthlyReadCount[index],
-    } ) );
+      started: monthlyStartedCount[ index ],
+      read: monthlyReadCount[ index ],
+    }) );
   }, [userBooks, selectedYear, locale] );
 
   const chartConfig = {

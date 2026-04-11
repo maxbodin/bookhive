@@ -34,17 +34,17 @@ export function ReadCompletionTrendCard( { userBooks, className }: ReadCompletio
 
     readBooksByYear.forEach( ( book ) => {
       const monthIndex = book.completionDate.getUTCMonth();
-      monthlyReadCount[monthIndex] += 1;
+      monthlyReadCount[ monthIndex ] += 1;
     } );
 
     let cumulative = 0;
 
     return allMonths.map( ( month, index ) => {
-      cumulative += monthlyReadCount[index];
+      cumulative += monthlyReadCount[ index ];
 
       return {
         month,
-        read: monthlyReadCount[index],
+        read: monthlyReadCount[ index ],
         cumulative,
       };
     } );

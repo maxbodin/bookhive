@@ -23,7 +23,7 @@ export function AverageCompletionCard( { userBooks, className }: AverageCompleti
       .map( ( book ) => {
         const start = book.startDate.getTime();
         const end = book.endDate.getTime();
-        return ( end - start ) / ( 1000 * 3600 * 24 );
+        return (end - start) / (1000 * 3600 * 24);
       } )
       .filter( ( duration ): duration is number => duration >= 0 );
 

@@ -16,12 +16,12 @@ import { ROUTES } from "@/app/utils/routes";
 import BookCover from "@/components/books/book-cover";
 
 const BASE_URL = "https://bookhive.maximebodin.com";
-const REFS = ["fav", "std", "horiz", "session", "mobc"] as const;
+const REFS = [ "fav", "std", "horiz", "session", "mobc" ] as const;
 type RefType = typeof REFS[number];
 
 interface BookDetailsPageProps {
   params?: Promise<{ id: string }>;
-  searchParams?: Promise<{ [key: string]: string | undefined }>;
+  searchParams?: Promise<{ [ key: string ]: string | undefined }>;
 }
 
 export async function generateMetadata(
@@ -33,10 +33,10 @@ export async function generateMetadata(
   const decodedBookId: number = Number( decodeURIComponent( resolvedParams?.id ?? "" ) );
   const book = await getBookById( decodedBookId );
 
-  if (!book) return { title: t( "notFoundTitle" ) };
+  if ( !book ) return { title: t( "notFoundTitle" ) };
 
   const previousImages = ( await parent ).openGraph?.images || [];
-  const ogImage = book.cover_url ? [book.cover_url, ...previousImages] : previousImages;
+  const ogImage = book.cover_url ? [ book.cover_url, ...previousImages ] : previousImages;
   const safeTitle = book.title || t( "untitled" );
   const author = book.authors?.join( ", " ) || t( "unknownAuthor" );
   const shortDescription = book.description?.slice( 0, 160 ) || t( "fallbackDescription", { title: safeTitle } );
@@ -56,7 +56,7 @@ export async function generateMetadata(
       card: "summary_large_image",
       title: safeTitle,
       description: shortDescription,
-      images: book.cover_url ? [book.cover_url] : [],
+      images: book.cover_url ? [ book.cover_url ] : [],
     },
     alternates: {
       canonical: `${ BASE_URL }/${ ROUTES.BOOK }/${ book.id }`,
@@ -68,10 +68,10 @@ export default async function BookDetailsPage( { params, searchParams }: BookDet
   const resolvedParams = params ? await params : undefined;
   const decodedBookId: number = Number( decodeURIComponent( resolvedParams?.id ?? "" ) );
 
-  if (isNaN( decodedBookId )) notFound();
+  if ( isNaN( decodedBookId ) ) notFound();
 
   const book = await getBookById( decodedBookId );
-  if (!book) notFound();
+  if ( !book ) notFound();
 
   // Structured Data for Google Rich Snippets.
   const jsonLd = {
@@ -103,7 +103,7 @@ export default async function BookDetailsPage( { params, searchParams }: BookDet
 
   // Construct the exact unique transition suffix based on the origin source.
   let viewTransitionSuffix = `${ transitionRef }`;
-  if (transitionRef === "session" && sessionIdParam) {
+  if ( transitionRef === "session" && sessionIdParam ) {
     viewTransitionSuffix = `session-${ sessionIdParam }`;
   }
 
@@ -113,7 +113,7 @@ export default async function BookDetailsPage( { params, searchParams }: BookDet
     : undefined;
 
   let isAdmin = false;
-  if (currentUser?.email) {
+  if ( currentUser?.email ) {
     const profile = await getUserProfile( currentUser.email );
     isAdmin = profile?.is_admin ?? false;
   }

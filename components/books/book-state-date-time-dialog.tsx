@@ -49,7 +49,7 @@ export function BookStateDateTimeDialog( {
 
   const handleSubmit = ( event: FormEvent<HTMLFormElement> ) => {
     event.preventDefault();
-    if (!selectedDateTime) {
+    if ( !selectedDateTime) {
       toast.error( t( "toastError" ) );
       return;
     }

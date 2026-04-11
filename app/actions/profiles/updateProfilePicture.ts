@@ -20,7 +20,7 @@ export async function updateProfilePicture( formData: FormData ) {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
+  if ( !user ) {
     return { success: false, message: t( "errors.authRequired" ) };
   }
 
@@ -29,10 +29,10 @@ export async function updateProfilePicture( formData: FormData ) {
     userEmail: formData.get( "userEmail" ),
   } );
 
-  if (!validatedFields.success) {
+  if ( !validatedFields.success ) {
     return {
       success: false,
-      message: validatedFields.error.flatten().fieldErrors.pictureUrl?.[0] || t( "errors.invalidInput" ),
+      message: validatedFields.error.flatten().fieldErrors.pictureUrl?.[ 0 ] || t( "errors.invalidInput" ),
     };
   }
 
@@ -43,7 +43,7 @@ export async function updateProfilePicture( formData: FormData ) {
     .update( { picture: pictureUrl } )
     .eq( "id", user.id );
 
-  if (error) {
+  if ( error ) {
     return { success: false, message: t( "errors.updateFailed" ) };
   }
 

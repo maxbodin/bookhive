@@ -21,10 +21,10 @@ export function ReadingSpeedCard( { userBooks, className }: ReadingSpeedCardProp
 
     if (readBooksByYear.length === 0) return 0;
 
-    const totalPagesRead = readBooksByYear.reduce( ( acc, book ) => acc + ( book.pages || 0 ), 0 );
+    const totalPagesRead = readBooksByYear.reduce( ( acc, book ) => acc + (book.pages || 0), 0 );
 
     const firstReadDate = new Date( Math.min( ...readBooksByYear.map( ( book ) => book.completionDate.getTime() ) ) );
-    const daysSinceFirstRead = Math.max( 1, ( new Date().getTime() - firstReadDate.getTime() ) / ( 1000 * 3600 * 24 ) );
+    const daysSinceFirstRead = Math.max( 1, (new Date().getTime() - firstReadDate.getTime()) / (1000 * 3600 * 24) );
 
     return totalPagesRead > 0 ? totalPagesRead / daysSinceFirstRead : 0;
   }, [userBooks, selectedYear] );
@@ -40,11 +40,11 @@ export function ReadingSpeedCard( { userBooks, className }: ReadingSpeedCardProp
             <p className="text-sm text-muted-foreground">{ t( "pagesPerDay" ) }</p>
           </div>
           <div>
-            <p className="text-2xl font-bold">{ ( pagesPerDay * 7 ).toFixed( 0 ) }</p>
+            <p className="text-2xl font-bold">{ (pagesPerDay * 7).toFixed( 0 ) }</p>
             <p className="text-sm text-muted-foreground">{ t( "pagesPerWeek" ) }</p>
           </div>
           <div>
-            <p className="text-2xl font-bold">{ ( pagesPerDay * 30.44 ).toFixed( 0 ) }</p>
+            <p className="text-2xl font-bold">{ (pagesPerDay * 30.44).toFixed( 0 ) }</p>
             <p className="text-sm text-muted-foreground">{ t( "pagesPerMonth" ) }</p>
           </div>
         </div>

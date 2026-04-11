@@ -15,7 +15,7 @@ export async function getConnectedUserBooksForDisplayedBooks(
   connectedUserId: string,
   bookIds: number[]
 ): Promise<UserBookStateRecord[]> {
-  if (!bookIds || bookIds.length === 0) {
+  if ( !bookIds || bookIds.length === 0 ) {
     return [];
   }
 
@@ -30,7 +30,7 @@ export async function getConnectedUserBooksForDisplayedBooks(
     .eq( "uid", connectedUserId )
     .in( "book_id", uniqueBookIds );
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching connected user's specific book data:", error );
     throw new Error( t( "fetchFailed" ) );
   }

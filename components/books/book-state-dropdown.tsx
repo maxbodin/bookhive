@@ -98,8 +98,8 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
       later: "later",
     };
 
-    const dialogKey = dialogMap[newState];
-    setDialog( { config: DIALOG_CONFIG[dialogKey], newState } );
+    const dialogKey = dialogMap[ newState ];
+    setDialog( { config: DIALOG_CONFIG[ dialogKey ], newState } );
   };
 
   /**
@@ -118,7 +118,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         toast.error( result.error );
         setOptimisticState( originalState ); // Revert on error.
       } else {
-        const message = newState ? t( "toast.successMove", { state: stateLabels[newState] } ) : t( "toast.successRemove" );
+        const message = newState ? t( "toast.successMove", { state: stateLabels[ newState ] } ) : t( "toast.successRemove" );
         toast.success( message );
       }
       setDialog( null ); // Close dialog on success.
@@ -130,11 +130,11 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
    * @param date
    */
   const handleDialogSubmit = ( date: string ) => {
-    if (!dialog) return;
+    if ( !dialog) return;
     const { config, newState } = dialog;
 
     const updates: BookStateDateUpdates = {
-      [config.column]: date,
+      [ config.column ]: date,
       // When moving state, automatically close out the previous state's timeline.
       end_wishlist_date: optimisticState === "wishlist" ? new Date().toISOString() : currentStateRecord?.end_wishlist_date,
       end_later_date: optimisticState === "later" ? new Date().toISOString() : currentStateRecord?.end_later_date,
@@ -145,7 +145,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
 
   const TriggerButton = forwardRef<HTMLButtonElement>( ( props, ref ) => {
     if (optimisticState) {
-      const Icon = stateIcons[optimisticState];
+      const Icon = stateIcons[ optimisticState ];
       return (
         <Button
           ref={ ref }
@@ -156,7 +156,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
           disabled={ isPending }
         >
           <Icon className="w-3.5 h-3.5 shrink-0"/>
-          <span className="flex-1 text-center">{ stateLabels[optimisticState] }</span>
+          <span className="flex-1 text-center">{ stateLabels[ optimisticState ] }</span>
           <ChevronDown className="w-3.5 h-3.5 shrink-0"/>
         </Button>
       );
@@ -186,7 +186,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
           { states.map( ( state ) => {
-            const Icon = stateIcons[state];
+            const Icon = stateIcons[ state ];
             return (
               <DropdownMenuItem
                 key={ state }
@@ -194,7 +194,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
                 disabled={ isPending }
               >
                 <Icon className="w-4 h-4 mr-2"/>
-                { stateLabels[state] }
+                { stateLabels[ state ] }
                 { optimisticState === state && <Check className="w-4 h-4 ml-auto"/> }
               </DropdownMenuItem>
             );

@@ -46,16 +46,16 @@ export function PagesByTypeOverTimeCard( { userBooks, className }: PagesByTypeOv
     readBooksByYear.forEach( ( book ) => {
       const monthIndex = book.completionDate.getUTCMonth();
       const bookType = toBookTypeBucket( book.type );
-      monthlyPagesByType[bookType][monthIndex] += book.pages || 0;
+      monthlyPagesByType[ bookType ][ monthIndex ] += book.pages || 0;
     } );
 
-    return allMonths.map( ( month, index ) => ( {
+    return allMonths.map( ( month, index ) => ({
       month,
-      bd: monthlyPagesByType.bd[index],
-      manga: monthlyPagesByType.manga[index],
-      roman: monthlyPagesByType.roman[index],
-      unknown: monthlyPagesByType.unknown[index],
-    } ) );
+      bd: monthlyPagesByType.bd[ index ],
+      manga: monthlyPagesByType.manga[ index ],
+      roman: monthlyPagesByType.roman[ index ],
+      unknown: monthlyPagesByType.unknown[ index ],
+    }) );
   }, [userBooks, selectedYear, locale] );
 
   const chartConfig = {

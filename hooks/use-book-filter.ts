@@ -24,10 +24,10 @@ class BookFilterStore {
 
 // Prevent Next.js HMR (Hot Reload) from resetting listeners by keeping the singleton strictly alive in the global scope.
 const store: BookFilterStore =
-  ( globalThis as any ).__BOOK_FILTER_STORE__ || new BookFilterStore();
+  (globalThis as any).__BOOK_FILTER_STORE__ || new BookFilterStore();
 
 if (process.env.NODE_ENV !== "production") {
-  ( globalThis as any ).__BOOK_FILTER_STORE__ = store;
+  (globalThis as any).__BOOK_FILTER_STORE__ = store;
 }
 
 /**

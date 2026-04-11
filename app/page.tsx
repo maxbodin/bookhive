@@ -43,7 +43,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
 
   const totalPages = Math.ceil( totalBooks / BOOKS_PER_PAGE ) || 1;
 
-  if (currentPage < 1 || Number.isNaN( currentPage ) || currentPage > totalPages) {
+  if ( currentPage < 1 || Number.isNaN( currentPage ) || currentPage > totalPages ) {
     const params = new URLSearchParams( resolvedSearchParams );
     params.set( SearchParams.PAGE, "1" );
     redirect( `/?${ params.toString() }` );
@@ -58,7 +58,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
     ? getUserProfile( currentUserEmail )
     : Promise.resolve( null );
 
-  const [connectedUserDataWithBooks, currentUserProfile] = await Promise.all( [
+  const [ connectedUserDataWithBooks, currentUserProfile ] = await Promise.all( [
     connectedUserDataPromise,
     currentUserProfilePromise,
   ] );
@@ -68,7 +68,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
   // Fetch books from Open Library if admin.
   let OpenLibraryBooks: Book[] = [];
 
-  if (hasQuery && currentUserProfile?.is_admin) {
+  if ( hasQuery && currentUserProfile?.is_admin ) {
     OpenLibraryBooks = await searchOpenLibrary( query );
 
     // Filter out books that are already in our sovereign DB results.

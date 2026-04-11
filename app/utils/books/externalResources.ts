@@ -19,10 +19,10 @@ export interface BookExternalResources {
 }
 
 const normalizeIsbn = ( rawIsbn?: string | null ): string | null => {
-  if (!rawIsbn) return null;
+  if ( !rawIsbn ) return null;
 
   const normalized = rawIsbn.replace( /[^0-9xX]/g, "" ).toUpperCase();
-  if (!normalized) return null;
+  if ( !normalized ) return null;
 
   const isValidIsbn10 = /^[0-9]{9}[0-9X]$/.test( normalized );
   const isValidIsbn13 = /^[0-9]{13}$/.test( normalized );
@@ -31,13 +31,13 @@ const normalizeIsbn = ( rawIsbn?: string | null ): string | null => {
 };
 
 const extractOpenLibraryId = ( rawValue?: string | null ): string | null => {
-  if (!rawValue) return null;
+  if ( !rawValue ) return null;
 
   const trimmed = rawValue.trim();
-  if (!trimmed) return null;
+  if ( !trimmed ) return null;
 
   const match = trimmed.match( OPEN_LIBRARY_ID_PATTERN );
-  return match ? match[1].toUpperCase() : null;
+  return match ? match[ 1 ].toUpperCase() : null;
 };
 
 /**
@@ -49,7 +49,7 @@ export function getBookExternalResources( book: ExternalBookFields ): BookExtern
 
   const annasArchiveLinks: AnnasArchiveLink[] = [];
 
-  if (normalizedIsbn) {
+  if ( normalizedIsbn ) {
     annasArchiveLinks.push(
       {
         type: "search",
@@ -62,7 +62,7 @@ export function getBookExternalResources( book: ExternalBookFields ): BookExtern
     );
   }
 
-  if (openLibraryId) {
+  if ( openLibraryId ) {
     annasArchiveLinks.push( {
       type: "openLibrary",
       href: `${ ANNAS_ARCHIVE_BASE_URL }/ol/${ encodeURIComponent( openLibraryId ) }`

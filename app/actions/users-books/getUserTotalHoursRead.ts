@@ -14,19 +14,19 @@ export async function getUserTotalHoursRead( userId: string ): Promise<number> {
     .select( "start_time, end_time" )
     .eq( "uid", userId );
 
-  if (error) {
+  if ( error ) {
     console.error( "Error fetching reading sessions for time calculation:", error );
     return 0;
   }
 
-  if (!sessions) {
+  if ( !sessions ) {
     return 0;
   }
 
   const totalMilliseconds = sessions.reduce( ( acc, session ) => {
     const start = new Date( session.start_time );
     const end = new Date( session.end_time );
-    if (!isNaN( start.getTime() ) && !isNaN( end.getTime() )) {
+    if ( !isNaN( start.getTime() ) && !isNaN( end.getTime() ) ) {
       return acc + ( end.getTime() - start.getTime() );
     }
     return acc;

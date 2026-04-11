@@ -48,16 +48,16 @@ export default async function UserProfile( { params, searchParams }: UserProfile
   const resolvedParams = params ? await params : undefined;
   const decodedEmail = decodeURIComponent( resolvedParams?.email ?? "" );
 
-  const [visitedProfile, currentUser] = await Promise.all( [
+  const [ visitedProfile, currentUser ] = await Promise.all( [
     getUserProfile( decodedEmail ),
     getCurrentUser(),
-  ] ) as [Profile | null, User | null];
+  ] ) as [ Profile | null, User | null ];
 
-  if (!visitedProfile) {
+  if ( !visitedProfile ) {
     notFound();
   }
 
-  const [t, tShelf] = await Promise.all( [
+  const [ t, tShelf ] = await Promise.all( [
     getTranslations( "UserProfilePage" ),
     getTranslations( "UserBookshelf" ),
   ] );
@@ -69,7 +69,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     const tabParam: string = resolvedSearchParams?.tab ?? "";
 
     // Validate tab param or set default.
-    const validTabs: ProfileTab[] = ["shelves", "sessions", "stats"];
+    const validTabs: ProfileTab[] = [ "shelves", "sessions", "stats" ];
     const activeTab: ProfileTab = ( tabParam && validTabs.includes( tabParam as ProfileTab ) ? tabParam : "shelves" ) as ProfileTab;
 
     const isOwner: boolean = currentUser?.id === visitedProfile.id;
@@ -124,7 +124,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
     ] );
 
     const extractValidYear = ( dateValue?: string | null ): number | null => {
-      if (!dateValue) return null;
+      if ( !dateValue ) return null;
 
       const year = new Date( dateValue ).getUTCFullYear();
       return Number.isFinite( year ) ? year : null;
@@ -155,25 +155,25 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       ).sort( ( a, b ) => b - a )
       : [];
 
-    const allAvailableYears = Array.from( new Set( [...readingSessionYears, ...statsYears] ) )
+    const allAvailableYears = Array.from( new Set( [ ...readingSessionYears, ...statsYears ] ) )
       .sort( ( a, b ) => b - a );
 
     const availableYears = readingSessionYears.length > 0
       ? [
-        readingSessionYears[0],
-        ...allAvailableYears.filter( ( year ) => year !== readingSessionYears[0] )
+        readingSessionYears[ 0 ],
+        ...allAvailableYears.filter( ( year ) => year !== readingSessionYears[ 0 ] )
       ]
       : allAvailableYears;
 
     const yearParam = Number.parseInt( resolvedSearchParams?.year ?? "", 10 );
     const selectedYear = Number.isFinite( yearParam ) && availableYears.includes( yearParam )
       ? yearParam
-      : ( availableYears[0] || new Date().getUTCFullYear() );
+      : ( availableYears[ 0 ] || new Date().getUTCFullYear() );
 
     let initialSessions: ReadingSessionWithBook[] = [];
     let initialTotalCount = 0;
 
-    if (shouldLoadSessionsTab && availableYears.length > 0) {
+    if ( shouldLoadSessionsTab && availableYears.length > 0 ) {
       const paginatedSessions = await getPaginatedUserReadingSessions( {
         userId: visitedProfile.id,
         page: 1,
@@ -198,19 +198,19 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       ]
       : [];
 
-    if (shouldLoadShelves && currentUser && !isOwner) {
+    if ( shouldLoadShelves && currentUser && !isOwner ) {
       // If the viewer is the owner, their data is the same as the profile's data.
       // Otherwise, fetch their data separately.
 
       const uniqueBookIds = Array.from( new Set( allDisplayedBooks.map( ( b ) => b.book_id ) ) );
 
-      if (uniqueBookIds.length > 0) {
+      if ( uniqueBookIds.length > 0 ) {
         connectedUserDataWithBooks = await getConnectedUserBooksForDisplayedBooks(
           currentUser.id,
           uniqueBookIds
         );
       }
-    } else if (shouldLoadShelves && currentUser) {
+    } else if ( shouldLoadShelves && currentUser ) {
       connectedUserDataWithBooks = allDisplayedBooks;
     }
 
@@ -218,7 +218,12 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
 
     // Configuration for shelves to map over
-    const paginatedShelvesConfig: { state: BookState; title: string; data: UserBook[]; count: number }[] = shouldLoadShelves
+    const paginatedShelvesConfig: {
+      state: BookState;
+      title: string;
+      data: UserBook[];
+      count: number
+    }[] = shouldLoadShelves
       ? [
         { state: "read", title: tShelf( "read" ), data: readData.data, count: readData.count },
         { state: "later", title: tShelf( "later" ), data: laterData.data, count: laterData.count },
@@ -302,7 +307,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                   ) ) }
 
                   { !hasAnyBooks &&
-                    <EmptyShelves username={ visitedProfileUsername } query={ query } types={ types }/> }
+                      <EmptyShelves username={ visitedProfileUsername } query={ query } types={ types }/> }
                 </div> ) : null
               }
               sessionsTab={
@@ -320,7 +325,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         </YearSelectionProvider>
       </ViewTransition>
     );
-  } catch (error: unknown) {
+  } catch ( error: unknown ) {
     const errorMessage = error instanceof Error ? error.message : t( "unexpectedError" );
     return (
       <div className="container mx-auto p-4 text-center text-red-600">
