@@ -1,16 +1,17 @@
 "use client";
 
 import { useMemo } from "react";
-import { UserBook } from "@/app/types/user-book";
+import { UserBookStatsRecord } from "@/app/types/user-book";
 import { BooksByStatusCard } from "./stats/books-by-status-card";
 import { AverageCompletionCard } from "@/components/profile/stats/average-completion-card";
 import { BooksByTypesCard } from "@/components/profile/stats/books-by-types-card";
 import { MonthlyCountByStateCard } from "@/components/profile/stats/monthly-count-by-state-card";
 import { ReadingSpeedCard } from "@/components/profile/stats/reading-speed-card";
 import { useYearSelection } from "@/app/contexts/year-selection-context";
+import { useLocale } from "next-intl";
 
 interface UserStatsProps {
-  userBooks: UserBook[];
+  userBooks: UserBookStatsRecord[];
 }
 
 /**
@@ -20,12 +21,20 @@ interface UserStatsProps {
  */
 export function UserStats( { userBooks }: UserStatsProps ) {
   const { selectedYear } = useYearSelection();
+  const locale = useLocale();
+
+  const getReadCompletionDate = ( book: UserBookStatsRecord ): string | null => {
+    if (book.state !== "read") return null;
+    return book.end_reading_date ?? book.read_date ?? null;
+  };
 
   const stats = useMemo( () => {
-    // Filter books that have a valid end_reading_date and match the selected year.
+    // Filter books that are read and match the selected year based on completion date.
     const readBooksByYear = userBooks.filter( b => {
-      if (b.state !== "read" || !b.end_reading_date) return false;
-      const readYear = new Date( b.end_reading_date ).getFullYear();
+      const completionDate = getReadCompletionDate( b );
+      if (!completionDate) return false;
+
+      const readYear = new Date( completionDate ).getFullYear();
       return readYear === selectedYear;
     } );
 
@@ -39,7 +48,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
 
     const totalPagesRead = readBooksByYear.reduce( ( acc, book ) => acc + ( book.pages || 0 ), 0 );
     const firstReadDate = readBooksByYear.length > 0
-      ? new Date( Math.min( ...readBooksByYear.map( b => new Date( b.end_reading_date! ).getTime() ) ) )
+      ? new Date( Math.min( ...readBooksByYear.map( b => new Date( getReadCompletionDate( b )! ).getTime() ) ) )
       : new Date();
     const daysSinceFirstRead = Math.max( 1, ( new Date().getTime() - firstReadDate.getTime() ) / ( 1000 * 3600 * 24 ) );
     const pagesPerDay = totalPagesRead > 0 ? totalPagesRead / daysSinceFirstRead : 0;
@@ -54,9 +63,11 @@ export function UserStats( { userBooks }: UserStatsProps ) {
     // Used for average reading time stats (on all read books).
     const readingDurations = readBooksByYear
       .map( b => {
-        if (b.start_reading_date && b.end_reading_date) {
+        const completionDate = getReadCompletionDate( b );
+
+        if (b.start_reading_date && completionDate) {
           const start = new Date( b.start_reading_date ).getTime();
-          const end = new Date( b.end_reading_date ).getTime();
+          const end = new Date( completionDate ).getTime();
           return ( end - start ) / ( 1000 * 3600 * 24 );
         }
         return null;
@@ -68,23 +79,23 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       : 0;
 
     // Helper to get the correct date based on the book's state
-    const getRelevantDate = ( book: UserBook ): string | null | undefined => {
+    const getRelevantDate = ( book: UserBookStatsRecord ): string | null => {
       switch (book.state) {
         case "read":
-          return book.end_reading_date; // Considered "read" when finished
+          return getReadCompletionDate( book ); // Considered read on completion date.
         case "reading":
-          return book.start_reading_date; // "Reading" starts on this date
+          return book.start_reading_date ?? null; // "Reading" starts on this date
         case "later":
-          return book.start_later_date; // Added to "later" list
+          return book.start_later_date ?? null; // Added to "later" list
         case "wishlist":
-          return book.start_wishlist_date; // Added to "wishlist"
+          return book.start_wishlist_date ?? null; // Added to "wishlist"
         default:
           return null;
       }
     };
 
     const allMonths = Array.from( { length: 12 }, ( _, i ) => {
-      return new Date( 0, i ).toLocaleString( "default", { month: "short" } );
+      return new Intl.DateTimeFormat( locale, { month: "short" } ).format( new Date( Date.UTC( 2020, i, 1 ) ) );
     } );
 
     // Initialize a data structure to hold counts for all states for each month
@@ -118,7 +129,7 @@ export function UserStats( { userBooks }: UserStatsProps ) {
       monthlyActivityData,
       pagesPerDay
     };
-  }, [userBooks, selectedYear] );
+  }, [userBooks, selectedYear, locale] );
 
   return (
     <div className="flex flex-col space-y-2">

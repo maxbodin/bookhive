@@ -36,7 +36,7 @@ export function BooksByTypesCard( { data }: BookTypesCardProps ) {
 
   const totalBooks = React.useMemo( () => {
     return chartData.reduce( ( acc, curr ) => acc + curr.count, 0 );
-  }, [] );
+  }, [chartData] );
 
   return (
     <StatCard title={ t( "title" ) }>

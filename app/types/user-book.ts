@@ -38,3 +38,15 @@ export type UserBookStateRecord = Pick<
 export type UserBookWithNestedBook = UserBookStateRecord & {
   books: Partial<Book>[] | Partial<Book> | null;
 };
+
+export type UserBookStatsRecord = Pick<
+  UserBook,
+  | "state"
+  | "start_reading_date"
+  | "end_reading_date"
+  | "read_date"
+  | "start_wishlist_date"
+  | "start_later_date"
+  | "pages"
+  | "type"
+>;

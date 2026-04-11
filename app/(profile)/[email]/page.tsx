@@ -22,6 +22,7 @@ import { getPaginatedUserBooksByState } from "@/app/actions/users-books/getPagin
 import {
   getConnectedUserBooksForDisplayedBooks
 } from "@/app/actions/users-books/getConnectedUserBooksForDisplayedBooks";
+import { getUserBooksForStats } from "@/app/actions/users-books/getUserBooksForStats";
 import { ReadingSessionsTab } from "@/components/sessions/reading-sessions-tab";
 import { ProfileTabs } from "@/components/profile/profile-tabs";
 import { ProfileTab } from "@/app/types/profile-tab";
@@ -82,17 +83,52 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       readData,
       laterData,
       wishlistData,
+      statsUserBooks,
     ] = await Promise.all( [
       getPaginatedUserBooksByState( visitedProfile.id, "read", 1, query, types ),
       getPaginatedUserBooksByState( visitedProfile.id, "later", 1, query, types ),
       getPaginatedUserBooksByState( visitedProfile.id, "wishlist", 1, query, types ),
+      getUserBooksForStats( visitedProfile.id ),
     ] );
 
     // Fetch all reading sessions for the visited profile.
     const readingSessions: ReadingSessionWithBook[] = await getUserReadingSessions( visitedProfile.id );
 
     const readingSessionYears = await getReadingSessionYears( visitedProfile.id );
-    const selectedYear = readingSessionYears[0] || new Date().getFullYear();
+
+    const extractValidYear = ( dateValue?: string | null ): number | null => {
+      if (!dateValue) return null;
+
+      const year = new Date( dateValue ).getFullYear();
+      return Number.isFinite( year ) ? year : null;
+    };
+
+    const statsYears = Array.from(
+      new Set(
+        statsUserBooks
+          .flatMap( ( book ) => [
+            book.end_reading_date,
+            book.read_date,
+            book.start_reading_date,
+            book.start_later_date,
+            book.start_wishlist_date,
+          ] )
+          .map( extractValidYear )
+          .filter( ( year ): year is number => year !== null )
+      )
+    ).sort( ( a, b ) => b - a );
+
+    const allAvailableYears = Array.from( new Set( [...readingSessionYears, ...statsYears] ) )
+      .sort( ( a, b ) => b - a );
+
+    const availableYears = readingSessionYears.length > 0
+      ? [
+        readingSessionYears[0],
+        ...allAvailableYears.filter( ( year ) => year !== readingSessionYears[0] )
+      ]
+      : allAvailableYears;
+
+    const selectedYear = availableYears[0] || new Date().getFullYear();
 
     // Fetch the first page of sessions for the selected year/query to avoid a client-side loading flash.
     const { sessions: initialSessions, totalCount: initialTotalCount } =
@@ -143,7 +179,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
     return (
       <ViewTransition>
-        <YearSelectionProvider initialYears={ readingSessionYears }>
+        <YearSelectionProvider initialYears={ availableYears }>
           <div className="container mx-auto p-4 md:p-8">
             <div className="mb-12 flex flex-col items-center gap-6 md:flex-row">
               <UserAvatar profile={ visitedProfile } isOwner={ isOwner }/>
@@ -229,7 +265,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
                   query={ query }
                   types={ types }
                 /> }
-              statsTab={ <UserStats userBooks={ allDisplayedBooks }/> }
+              statsTab={ <UserStats userBooks={ statsUserBooks }/> }
             />
           </div>
         </YearSelectionProvider>
