@@ -4,6 +4,7 @@ import { UserBook } from "@/app/types/user-book";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
 import { getTranslations } from "next-intl/server";
 import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
+import { USER_BOOK_WITH_BOOK_LIST_COLUMNS } from "@/app/utils/supabase/selectColumns";
 
 /**
  * Fetches a user's favorite books.
@@ -23,7 +24,7 @@ export async function getUserFavoriteUsersBooks(
 
   let queryBuilder = supabase
     .from( "users_books" )
-    .select( `*, books!inner(*)` )
+    .select( USER_BOOK_WITH_BOOK_LIST_COLUMNS )
     .eq( "uid", userId )
     .eq( "is_favorite", true );
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useTransition } from "react";
-import { UserBook } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { BookState } from "@/app/types/book-state";
 import { getPaginatedUserBooksByState } from "@/app/actions/users-books/getPaginatedUserBooksByState";
 import {
@@ -10,7 +10,7 @@ interface UseShelfPaginationProps {
   userId: string;
   shelfState: BookState;
   initialData: UserBook[];
-  initialConnectedUserBooks: UserBook[];
+  initialConnectedUserBooks: UserBookStateRecord[];
   connectedUserId?: string;
   query: string;
   types?: string;
@@ -26,7 +26,7 @@ export function useShelfPagination( {
                                       types,
                                     }: UseShelfPaginationProps ) {
   const [books, setBooks] = useState<UserBook[]>( initialData );
-  const [connectedBooks, setConnectedBooks] = useState<UserBook[]>( initialConnectedUserBooks );
+  const [connectedBooks, setConnectedBooks] = useState<UserBookStateRecord[]>( initialConnectedUserBooks );
   const [currentPage, setCurrentPage] = useState<number>( 1 );
   const [isPending, startTransition] = useTransition();
 
@@ -58,9 +58,7 @@ export function useShelfPagination( {
         const newBookIds = newProfileBooks.map( ( b ) => b.book_id );
         const newConnectedData = await getConnectedUserBooksForDisplayedBooks(
           connectedUserId,
-          newBookIds,
-          query,
-          types
+          newBookIds
         );
 
         setConnectedBooks( ( prev ) => {

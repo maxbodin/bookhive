@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/app/utils/supabase/server";
 import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks";
 import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
+import { USER_BOOK_WITH_BOOK_LIST_COLUMNS } from "@/app/utils/supabase/selectColumns";
 
 /**
  * Fetches all of a user's books for a specific state without pagination.
@@ -26,7 +27,7 @@ export async function getUserBooksByState(
 
   let queryBuilder = supabase
     .from( "users_books" )
-    .select( `*, books!inner (*)` )
+    .select( USER_BOOK_WITH_BOOK_LIST_COLUMNS )
     .eq( "uid", userId )
     .eq( "state", state );
 

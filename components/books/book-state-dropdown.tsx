@@ -1,6 +1,7 @@
 "use client";
 
 import React, { forwardRef, useState, useTransition } from "react";
+import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -12,10 +13,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { BookCheck, Bookmark, BookOpen, BookPlus, Check, ChevronDown, Heart, Trash2 } from "lucide-react";
 import { BookState } from "@/app/types/book-state";
-import { UserBook } from "@/app/types/user-book";
-import { BookStateDateTimeDialog } from "@/components/books/book-state-date-time-dialog";
-import { upsertBookState } from "@/app/actions/users-books/upsertBookState";
+import { UserBookStateRecord } from "@/app/types/user-book";
+import { BookStateDateUpdates, upsertBookState } from "@/app/actions/users-books/upsertBookState";
 import { useTranslations } from "next-intl";
+
+const BookStateDateTimeDialog = dynamic(
+  () => import( "@/components/books/book-state-date-time-dialog" ).then( ( module ) => module.BookStateDateTimeDialog ),
+  { ssr: false }
+);
 
 const states: BookState[] = ["reading", "read", "later", "wishlist"];
 
@@ -28,7 +33,7 @@ const stateIcons: Record<BookState, React.ElementType> = {
 
 interface BookStateDropdownProps {
   bookId: number;
-  currentStateRecord?: UserBook;
+  currentStateRecord?: UserBookStateRecord;
 }
 
 export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDropdownProps ) {
@@ -86,28 +91,15 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
       } );
     }
 
-    // Determine if a dialog is needed.
-    let dialogKey: keyof typeof DIALOG_CONFIG | null;
-
-    const dialogMap = {
+    const dialogMap: Record<BookState, keyof typeof DIALOG_CONFIG> = {
       reading: "reading",
       read: optimisticState === "reading" ? "read_from_reading" : "read",
       wishlist: "wishlist",
       later: "later",
-    } as const;
+    };
 
-    dialogKey = dialogMap[newState];
-
-    if (dialogKey) {
-      setDialog( { config: DIALOG_CONFIG[dialogKey], newState } );
-    } else {
-      // No dialog needed, but we might need to set an 'end' date automatically.
-      const updates = {
-        end_wishlist_date: optimisticState === "wishlist" ? new Date().toISOString() : currentStateRecord?.end_wishlist_date,
-        end_later_date: optimisticState === "later" ? new Date().toISOString() : currentStateRecord?.end_later_date,
-      };
-      runUpsert( newState, updates );
-    }
+    const dialogKey = dialogMap[newState];
+    setDialog( { config: DIALOG_CONFIG[dialogKey], newState } );
   };
 
   /**
@@ -115,7 +107,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
    * @param newState
    * @param updates
    */
-  const runUpsert = ( newState: BookState | null, updates: Record<string, any> = {} ) => {
+  const runUpsert = ( newState: BookState | null, updates: BookStateDateUpdates = {} ) => {
     startTransition( async () => {
       const originalState = optimisticState;
       setOptimisticState( newState ?? undefined );
@@ -141,7 +133,7 @@ export function BookStateDropdown( { bookId, currentStateRecord }: BookStateDrop
     if (!dialog) return;
     const { config, newState } = dialog;
 
-    const updates = {
+    const updates: BookStateDateUpdates = {
       [config.column]: date,
       // When moving state, automatically close out the previous state's timeline.
       end_wishlist_date: optimisticState === "wishlist" ? new Date().toISOString() : currentStateRecord?.end_wishlist_date,

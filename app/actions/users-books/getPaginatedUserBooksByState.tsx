@@ -7,6 +7,7 @@ import { flattenUsersBooksData } from "@/app/utils/users-books/flattenUsersBooks
 import { sortNatural } from "@/lib/sortNatural";
 import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
 import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
+import { USER_BOOK_WITH_BOOK_LIST_COLUMNS } from "@/app/utils/supabase/selectColumns";
 
 /**
  * Fetches a paginated list of a user's books filtered by a specific state (e.g., 'read', 'later').
@@ -34,7 +35,7 @@ export async function getPaginatedUserBooksByState(
 
   let queryBuilder = supabase
     .from( "users_books" )
-    .select( "*, books!inner(*)", { count: "exact" } )
+    .select( USER_BOOK_WITH_BOOK_LIST_COLUMNS, { count: "exact" } )
     .eq( "uid", userId )
     .eq( "state", state );
 

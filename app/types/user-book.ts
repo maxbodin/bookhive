@@ -17,3 +17,24 @@ export interface UserBook extends Book {
   current_page: number;
   id: number;
 }
+
+export type UserBookStateRecord = Pick<
+  UserBook,
+  | "id"
+  | "uid"
+  | "book_id"
+  | "state"
+  | "current_page"
+  | "is_favorite"
+  | "start_reading_date"
+  | "end_reading_date"
+  | "read_date"
+  | "start_wishlist_date"
+  | "end_wishlist_date"
+  | "start_later_date"
+  | "end_later_date"
+>;
+
+export type UserBookWithNestedBook = UserBookStateRecord & {
+  books: Partial<Book>[] | Partial<Book> | null;
+};

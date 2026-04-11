@@ -1,4 +1,4 @@
-import { UserBook } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { BooksGrid } from "@/components/books/books-grid";
 import { BookState } from "@/app/types/book-state";
 import { ReadingSession } from "@/app/types/reading-session";
@@ -9,7 +9,7 @@ import { Suspense } from "react";
 interface UserBookshelfProps {
   userBooks: UserBook[];                // The profile owner's books.
   isOwner: boolean;
-  connectedUserBooks: UserBook[];       // The logged-in user's data with books.
+  connectedUserBooks: UserBookStateRecord[];       // The logged-in user's state records.
   readingSessions: ReadingSession[];    // The profile owner's reading sessions.
   isConnected?: boolean;
 }

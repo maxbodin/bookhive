@@ -6,11 +6,11 @@ import { Skeleton } from "@/components/ui/skeleton";
  */
 export function AuthButtonsSkeleton() {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-end gap-4 min-w-[132px] md:min-w-[240px]">
       {/* Skeleton for Username */ }
-      <Skeleton className="hidden h-9 w-24 md:block"/>
+      <Skeleton className="hidden h-9 w-28 md:block"/>
       {/* Skeleton for Sign out/Sign in button */ }
-      <Skeleton className="h-9 w-20"/>
+      <Skeleton className="h-9 w-24"/>
     </div>
   );
 }

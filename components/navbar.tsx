@@ -33,7 +33,7 @@ export default async function Navbar() {
           </Suspense>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-end gap-4 min-w-[132px] md:min-w-[240px]">
           <Suspense fallback={ <AuthButtonsSkeleton/> }>
             <AuthButtons/>
           </Suspense>

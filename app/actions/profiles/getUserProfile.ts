@@ -2,6 +2,7 @@
 
 import { createClient } from "@/app/utils/supabase/server";
 import { Profile } from "@/app/types/profile";
+import { PROFILE_BASIC_COLUMNS } from "@/app/utils/supabase/selectColumns";
 
 /**
  * Fetches a user's profile from the database.
@@ -17,7 +18,7 @@ export async function getUserProfile( email: string ): Promise<Profile | null> {
 
   const { data: profile, error } = await supabase
     .from( "profiles" )
-    .select( "*" )
+    .select( PROFILE_BASIC_COLUMNS )
     .eq( "email", email )
     .single();
 

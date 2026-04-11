@@ -11,7 +11,7 @@ import { getUserProfile } from "@/app/actions/profiles/getUserProfile";
 import { getUsername } from "@/lib/getUsername";
 import { getUserReadingSessions } from "@/app/actions/reading-sessions/getUserReadingSessions";
 import { BookState } from "@/app/types/book-state";
-import { UserBook } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { Profile } from "@/app/types/profile";
 import { User } from "@supabase/supabase-js";
 import { ReadingSessionWithBook } from "@/app/types/reading-session";
@@ -104,7 +104,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
         types
       } );
 
-    let connectedUserDataWithBooks: UserBook[] = [];
+    let connectedUserDataWithBooks: UserBookStateRecord[] = [];
 
     const allDisplayedBooks = [
       ...visitedProfileFavoriteBooks,
@@ -123,9 +123,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
       if (uniqueBookIds.length > 0) {
         connectedUserDataWithBooks = await getConnectedUserBooksForDisplayedBooks(
           currentUser.id,
-          uniqueBookIds,
-          query,
-          types
+          uniqueBookIds
         );
       }
     } else
@@ -137,7 +135,7 @@ export default async function UserProfile( { params, searchParams }: UserProfile
 
 
     // Configuration for shelves to map over
-    const paginatedShelvesConfig: { state: BookState; title: string; data: any[]; count: number }[] = [
+    const paginatedShelvesConfig: { state: BookState; title: string; data: UserBook[]; count: number }[] = [
       { state: "read", title: tShelf( "read" ), data: readData.data, count: readData.count },
       { state: "later", title: tShelf( "later" ), data: laterData.data, count: laterData.count },
       { state: "wishlist", title: tShelf( "wishlist" ), data: wishlistData.data, count: wishlistData.count },

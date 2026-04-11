@@ -4,6 +4,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { Book } from "@/app/types/book";
 import { BOOKS_PER_PAGE } from "@/app/utils/searchParams";
 import { applySharedBookFilters } from "@/app/utils/search/applySharedBookFilters";
+import { BOOK_LIST_COLUMNS } from "@/app/utils/supabase/selectColumns";
 
 /**
  * Fetches a paginated list of books based on a search query and optional type filters.
@@ -24,7 +25,7 @@ export async function searchBooks(
 
   const supabase = await createClient();
 
-  let request = supabase.from( "books" ).select( "*", { count: "exact" } );
+  let request = supabase.from( "books" ).select( BOOK_LIST_COLUMNS, { count: "exact" } );
 
   // Pass `null` for foreignTable because `books` is the top-level table here.
   request = applySharedBookFilters( request, null, query, types );

@@ -5,9 +5,8 @@ import dynamic from "next/dynamic";
 import { Book } from "@/app/types/book";
 import { BookCompactHorizontalCard, BookPosterCard } from "./book-poster-card";
 import { BookHorizontalCard } from "./book-horizontal-card";
-import { UserBook } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { ReadingSession } from "@/app/types/reading-session";
-import { MultiSelect } from "@/components/ui/multi-select";
 import { useBookFilter } from "@/hooks/use-book-filter";
 import { BookState } from "@/app/types/book-state";
 import { cn } from "@/lib/utils";
@@ -16,17 +15,22 @@ import { useTranslations } from "next-intl";
 interface BooksGridProps {
   books: Book[];
   profileUserBooks: UserBook[];         // The profile owner's books
-  connectedUserBooks?: UserBook[];      // The logged-in user's data with books
+  connectedUserBooks?: UserBookStateRecord[];      // The logged-in user's state records
   view: "poster" | "list";
   isOwner: boolean;
   readingSessions: ReadingSession[];    // The profile owner's reading sessions
   addFromOLButton: boolean;
   isConnected?: boolean;
+  prioritizeFirstImage?: boolean;
 }
 
 type BookStateFilterValue = BookState | "none";
 
 const NoResults = dynamic( () => import( "@/components/books/no-results" ).then( ( module ) => module.NoResults ), {
+  ssr: false,
+} );
+
+const MultiSelect = dynamic( () => import( "@/components/ui/multi-select" ).then( ( module ) => module.MultiSelect ), {
   ssr: false,
 } );
 
@@ -42,6 +46,7 @@ const NoResults = dynamic( () => import( "@/components/books/no-results" ).then(
  * @param readingSessions
  * @param addFromOLButton
  * @param isConnected
+ * @param prioritizeFirstImage
  * @constructor
  */
 export function BooksGrid( {
@@ -53,6 +58,7 @@ export function BooksGrid( {
                              readingSessions,
                              addFromOLButton,
                              isConnected = false,
+                             prioritizeFirstImage = false,
                            }: BooksGridProps ) {
   const tBookStateDropdown = useTranslations( "BookStateDropdown.states" );
   const t = useTranslations( "BooksGrid" );
@@ -75,7 +81,7 @@ export function BooksGrid( {
     const pMap = new Map<number, UserBook>();
     profileUserBooks.forEach( ( ub ) => pMap.set( ub.book_id, ub ) );
 
-    const cMap = new Map<number, UserBook>();
+    const cMap = new Map<number, UserBookStateRecord>();
     connectedUserBooks.forEach( ( ub ) => cMap.set( ub.book_id, ub ) );
 
     return { profileBooksMap: pMap, connectedBooksMap: cMap };
@@ -111,9 +117,10 @@ export function BooksGrid( {
         ) }
 
         <div className={ containerClasses }>
-          { books.map( ( book ) => {
+          { books.map( ( book, index ) => {
             const profileUserBook = profileBooksMap.get( book.id );
             const connectedUserBook = connectedBooksMap.get( book.id );
+            const shouldPrioritizeCover = prioritizeFirstImage && index === 0;
 
             // Treat missing state natively as "none".
             const bookStateForFilter = connectedUserBook?.state || "none";
@@ -149,6 +156,7 @@ export function BooksGrid( {
                         connectedUserBook={ connectedUserBook }
                         inFavoriteSection={ false }
                         addFromOLButton={ addFromOLButton }
+                        prioritizeCover={ shouldPrioritizeCover }
                       />
                     </div>
                   </>

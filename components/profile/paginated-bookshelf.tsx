@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { UserBook } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { BookState } from "@/app/types/book-state";
 import { BooksGrid } from "@/components/books/books-grid";
 import { Button } from "@/components/ui/button";
-import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PaginationBar } from "@/components/pagination/pagination-bar";
 import { useShelfPagination } from "@/hooks/use-shelf-pagination";
@@ -17,7 +17,7 @@ interface PaginatedBookshelfProps {
   shelfState: BookState;
   shelfTitle: string;
   isOwner: boolean;
-  initialConnectedUserBooks: UserBook[];
+  initialConnectedUserBooks: UserBookStateRecord[];
   connectedUserId?: string;
   query: string;
   types?: string;
@@ -86,7 +86,7 @@ export function PaginatedBookshelf( {
           onClick={ () => setIsFolded( !isFolded ) }
           aria-expanded={ !isFolded }
         >
-          { isFolded ? <ChevronDownIcon className="h-5 w-5"/> : <ChevronUpIcon className="h-5 w-5"/> }
+          { isFolded ? <ChevronDown className="h-5 w-5"/> : <ChevronUp className="h-5 w-5"/> }
           <span className="sr-only">{ isFolded ? "expand" : "collapse" }</span>
         </Button>
       </div>

@@ -52,6 +52,7 @@ export default function BookCover( {
           height={ BASE_HEIGHT }
           className={ cn( "w-full h-auto object-cover aspect-[2/3]", className ) }
           loading={ loading }
+          fetchPriority={ fetchPriority }
           preload={ fetchPriority === "high" }
           sizes={ sizes }
           quality={ 60 }

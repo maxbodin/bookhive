@@ -5,7 +5,7 @@ import React, { ViewTransition } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
-import ReadingLogger from "@/components/sessions/reading-logger";
+import ReadingLoggerLoader from "@/components/sessions/reading-logger-loader";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Footer } from "@/components/footer";
@@ -48,7 +48,7 @@ export default function RootLayout( { children }: Readonly<{ children: React.Rea
           { children }
         </ViewTransition>
 
-        <ReadingLogger/>
+        <ReadingLoggerLoader/>
 
         <ViewTransition name="footer" update="none">
           <Footer/>

@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 
 interface PaginationBarProps {
@@ -56,7 +56,7 @@ export function PaginationBar( {
 
   return (
     <div className="flex items-center justify-center gap-4 my-2">
-      { renderButton( t( "previousPage" ), currentPage - 1, !hasPrev, <ChevronLeftIcon className="h-4 w-4"/> ) }
+      { renderButton( t( "previousPage" ), currentPage - 1, !hasPrev, <ChevronLeft className="h-4 w-4"/> ) }
 
       <span className="text-sm font-medium">
         { t( "pageIndicator", {
@@ -65,7 +65,7 @@ export function PaginationBar( {
         } ) }
       </span>
 
-      { renderButton( t( "nextPage" ), currentPage + 1, !hasNext, <ChevronRightIcon className="h-4 w-4"/> ) }
+      { renderButton( t( "nextPage" ), currentPage + 1, !hasNext, <ChevronRight className="h-4 w-4"/> ) }
     </div>
   );
 }

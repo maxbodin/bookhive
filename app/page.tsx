@@ -4,10 +4,8 @@ import { BooksGrid } from "@/components/books/books-grid";
 import { UserBanner } from "@/components/profile/user-banner";
 import { Separator } from "@/components/ui/separator";
 import { UserBannerSkeleton } from "@/components/skeletons/user-banner-skeleton";
-import { BooksGridSkeleton } from "@/components/skeletons/books-grid-skeleton";
 import { searchBooks } from "@/app/actions/books/searchBooks";
-import { UserBook } from "@/app/types/user-book";
-import { User } from "@supabase/supabase-js";
+import { UserBookStateRecord } from "@/app/types/user-book";
 import { getCurrentUser } from "@/app/actions/getCurrentUser";
 import { PaginationControls } from "@/components/pagination-controls";
 import { redirect } from "next/navigation";
@@ -20,6 +18,7 @@ import { searchOpenLibrary } from "@/app/actions/open-library/searchOpenLibrary"
 import { Book } from "@/app/types/book";
 import { BOOKS_PER_PAGE, SearchParams } from "@/app/utils/searchParams";
 import { CreateBookDialog } from "@/components/books/create-book-dialog";
+import { BooksGridSkeleton } from "@/components/skeletons/books-grid-skeleton";
 
 interface HomePageProps {
   searchParams?: Promise<{
@@ -33,52 +32,62 @@ interface HomePageProps {
 
 export default async function Home( { searchParams }: HomePageProps ) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const query: string | undefined = resolvedSearchParams?.query;
-  const currentPage: number | undefined = Number( resolvedSearchParams?.page );
+  const query: string = resolvedSearchParams?.query?.trim() ?? "";
+  const hasQuery = query.length > 0;
+  const currentPage: number = Number( resolvedSearchParams?.page ?? "1" );
   const types: string | undefined = resolvedSearchParams?.types;
 
-  const { data: books, count: totalBooks } = await searchBooks( query, currentPage, types );
+  const [
+    { data: books, count: totalBooks },
+    currentUser,
+  ] = await Promise.all( [
+    searchBooks( query, currentPage, types ),
+    getCurrentUser(),
+  ] );
+
   const totalPages = Math.ceil( totalBooks / BOOKS_PER_PAGE ) || 1;
 
-  if (currentPage < 1 || isNaN( currentPage ) || ( currentPage > totalPages && totalPages <= 0 )) {
+  if (currentPage < 1 || Number.isNaN( currentPage ) || currentPage > totalPages) {
     const params = new URLSearchParams( resolvedSearchParams );
     params.set( SearchParams.PAGE, "1" );
     redirect( `/?${ params.toString() }` );
   }
 
-  // Fetch connected user.
-  let connectedUserDataWithBooks: UserBook[] = [];
-  const currentUser: User | null = await getCurrentUser();
+  const connectedUserDataPromise: Promise<UserBookStateRecord[]> = currentUser && books.length > 0
+    ? getConnectedUserBooksForDisplayedBooks( currentUser.id, books.map( ( book ) => book.id ) )
+    : Promise.resolve( [] );
+
+  const currentUserEmail = currentUser?.email;
+  const currentUserProfilePromise: Promise<Profile | null> = currentUserEmail && hasQuery
+    ? getUserProfile( currentUserEmail )
+    : Promise.resolve( null );
+
+  const [connectedUserDataWithBooks, currentUserProfile] = await Promise.all( [
+    connectedUserDataPromise,
+    currentUserProfilePromise,
+  ] );
+
   const isConnected = !!currentUser;
 
   // Fetch books from Open Library if admin.
   let OpenLibraryBooks: Book[] = [];
-  let currentUserProfile: Profile | null = null;
 
-  if (currentUser?.email) {
-    currentUserProfile = await getUserProfile( currentUser?.email );
-    if (query && query !== "" && currentUserProfile?.is_admin) {
-      OpenLibraryBooks = await searchOpenLibrary( query );
+  if (hasQuery && currentUserProfile?.is_admin) {
+    OpenLibraryBooks = await searchOpenLibrary( query );
 
-      // Filter out books that are already in our sovereign DB results.
-      const sovereignKeys = new Set( books.map( b => b.open_library_key ).filter( Boolean ) );
-      OpenLibraryBooks = OpenLibraryBooks.filter( b => !sovereignKeys.has( b.open_library_key ) );
-    }
-  }
-
-  // If connected fetch user's data related to books (usersbooks).
-  if (currentUser && books.length > 0) {
-    const booksIds = [...new Set( books.map( book => book.id ) )];
-    connectedUserDataWithBooks = await getConnectedUserBooksForDisplayedBooks( currentUser.id, booksIds );
+    // Filter out books that are already in our sovereign DB results.
+    const sovereignKeys = new Set( books.map( b => b.open_library_key ).filter( Boolean ) );
+    OpenLibraryBooks = OpenLibraryBooks.filter( b => !sovereignKeys.has( b.open_library_key ) );
   }
 
   const t = await getTranslations( "HomePage" );
 
   const showCreateButton =
     currentUserProfile?.is_admin &&
-    query &&
-    query.trim() !== "" &&
+    hasQuery &&
     totalBooks === 0;
+
+  const prioritizeFirstImage = currentPage === 1 && !hasQuery;
 
   return (
     <ViewTransition>
@@ -86,9 +95,11 @@ export default async function Home( { searchParams }: HomePageProps ) {
         <main className="flex flex-col gap-8 items-center">
           <div className="w-full max-w-7xl mx-auto px-4 py-6">
             <h2 className="text-xl font-bold mb-4">{ t( "users" ) }</h2>
-            <Suspense fallback={ <UserBannerSkeleton/> }>
-              <UserBanner/>
-            </Suspense>
+            <div className="min-h-32">
+              <Suspense fallback={ <UserBannerSkeleton/> }>
+                <UserBanner/>
+              </Suspense>
+            </div>
 
             <Separator className="w-full mx-auto my-6"/>
             <h2 className="text-xl font-bold mb-4">{ t( "allBooks", { count: totalBooks } ) }</h2>
@@ -108,7 +119,9 @@ export default async function Home( { searchParams }: HomePageProps ) {
                   connectedUserBooks={ connectedUserDataWithBooks }
                   readingSessions={ [] }
                   isConnected={ isConnected }
-                  addFromOLButton={ false }/>
+                  addFromOLButton={ false }
+                  prioritizeFirstImage={ prioritizeFirstImage }
+                />
               </Suspense>
 
               <PaginationControls
@@ -121,7 +134,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
               ) }
             </div>
 
-            { currentUserProfile?.is_admin && query && query !== "" && (
+            { currentUserProfile?.is_admin && hasQuery && (
               <>
                 <Separator className="w-full mx-auto my-8"/>
                 <h2
@@ -138,6 +151,7 @@ export default async function Home( { searchParams }: HomePageProps ) {
                       readingSessions={ [] }
                       addFromOLButton={ true }
                       isConnected={ isConnected }
+                      prioritizeFirstImage={ false }
                     />
                   </Suspense>
                 </div>

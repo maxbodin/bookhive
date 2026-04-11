@@ -5,6 +5,17 @@ import { BookState } from "@/app/types/book-state";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
+type BookStateDateUpdateColumn =
+  | "start_reading_date"
+  | "end_reading_date"
+  | "read_date"
+  | "start_wishlist_date"
+  | "end_wishlist_date"
+  | "start_later_date"
+  | "end_later_date";
+
+export type BookStateDateUpdates = Partial<Record<BookStateDateUpdateColumn, string | null>>;
+
 /**
  * Upsert the state of a book for the current user.
  * @param bookId
@@ -14,7 +25,7 @@ import { revalidatePath } from "next/cache";
 export async function upsertBookState(
   bookId: number,
   newState: BookState | null, // Allow null to remove the book from shelves.
-  updates: Record<string, any> = {}
+  updates: BookStateDateUpdates = {}
 ) {
   const t = await getTranslations( "UpsertBookStateAction" );
   const supabase = await createClient();

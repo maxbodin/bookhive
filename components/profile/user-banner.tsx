@@ -15,7 +15,8 @@ async function getAllProfiles() {
   const { data, error } = await supabase
     .from( "profiles" )
     .select( "email, picture, username" )
-    .order( "created_at", { ascending: false } );
+    .order( "created_at", { ascending: false } )
+    .limit( 24 );
 
   if (error) {
     console.error( "Erreur lors de la récupération des profils :", error );

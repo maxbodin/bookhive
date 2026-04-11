@@ -1,7 +1,8 @@
 "use server";
 
-import { UserBook } from "@/app/types/user-book";
+import { UserBookStateRecord } from "@/app/types/user-book";
 import { createClient } from "@/app/utils/supabase/server";
+import { USER_BOOK_STATE_COLUMNS } from "@/app/utils/supabase/selectColumns";
 
 /**
  *
@@ -11,11 +12,11 @@ import { createClient } from "@/app/utils/supabase/server";
 export async function getConnectedUserBookForBook(
   userId: string,
   bookId: number
-): Promise<UserBook | undefined> {
+): Promise<UserBookStateRecord | undefined> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from( "users_books" )
-    .select( "*" )
+    .select( USER_BOOK_STATE_COLUMNS )
     .eq( "uid", userId )
     .eq( "book_id", bookId )
     .single();

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Search as SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SearchParams } from "@/app/utils/searchParams";
 
@@ -32,7 +32,7 @@ export default function Search( { placeholder }: { placeholder: string } ) {
       onChange={ ( e ) => handleSearch( e.target.value ) }
       defaultValue={ searchParams.get( SearchParams.QUERY )?.toString() }
       startContent={
-        <MagnifyingGlassIcon className="pointer-events-none flex-shrink-0 text-2xl text-default-400"/>
+        <SearchIcon className="pointer-events-none flex-shrink-0 h-4 w-4 text-default-400"/>
       }
     />
   );

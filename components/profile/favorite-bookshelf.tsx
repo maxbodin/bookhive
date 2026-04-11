@@ -1,4 +1,4 @@
-import { UserBook } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { BookPosterCard } from "@/components/books/book-poster-card";
 import React from "react";
 import { getTranslations } from "next-intl/server";
@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 interface FavoriteBookshelfProps {
   favoriteUserBooks: UserBook[];  // The profile owner's favorite books
   isOwner: boolean;
-  connectedUserBooks: UserBook[]; // The logged-in user's data with books
+  connectedUserBooks: UserBookStateRecord[]; // The logged-in user's state records
 }
 
 export async function FavoriteBookshelf( { favoriteUserBooks, isOwner, connectedUserBooks }: FavoriteBookshelfProps ) {

@@ -1,7 +1,7 @@
 import { Book } from "@/app/types/book";
 import { BookStateDropdown } from "@/components/books/book-state-dropdown";
 import { Badge } from "@/components/ui/badge";
-import { UserBook } from "@/app/types/user-book";
+import { UserBook, UserBookStateRecord } from "@/app/types/user-book";
 import { FavoriteToggleButton } from "@/components/books/favorite-toggle-button";
 import { useTranslations } from "next-intl";
 import { AddBookButton } from "@/components/open-library/add-book-button";
@@ -13,8 +13,9 @@ import BookCover from "@/components/books/book-cover";
 interface BookCardSharedProps {
   book: Book;
   profileUserBook?: UserBook;   // Data from the user whose profile is being viewed
-  connectedUserBook?: UserBook; // Data from the logged-in user
+  connectedUserBook?: UserBookStateRecord; // Connected user's state record
   addFromOLButton: boolean;
+  prioritizeCover?: boolean;
 }
 
 // Props for the main exported component
@@ -57,9 +58,10 @@ function FavoriteBookCover( { book, connectedUserBook }: BookCardSharedProps ) {
  * @param book
  * @param connectedUserBook
  * @param addFromOLButton
+ * @param prioritizeCover
  * @constructor
  */
-function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCardSharedProps ) {
+function StandardBookCard( { book, connectedUserBook, addFromOLButton, prioritizeCover = false }: BookCardSharedProps ) {
   const tBookTypes = useTranslations( "BookTypes" );
 
   const isConnectedUserFavorite = connectedUserBook?.is_favorite || false;
@@ -74,7 +76,13 @@ function StandardBookCard( { book, connectedUserBook, addFromOLButton }: BookCar
             href={ `/${ ROUTES.BOOK }/${ book.id }?ref=std` }
             className="block rounded-t-lg"
           >
-            <BookCover book={ book } className="rounded-t-lg" transitionSuffix="std"/>
+            <BookCover
+              book={ book }
+              className="rounded-t-lg"
+              transitionSuffix="std"
+              fetchPriority={ prioritizeCover ? "high" : "low" }
+              loading={ prioritizeCover ? "eager" : "lazy" }
+            />
           </OptionalLink>
 
           { book.type && (
