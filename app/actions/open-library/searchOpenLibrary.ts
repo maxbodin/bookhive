@@ -3,11 +3,72 @@ import { Book } from "@/app/types/book";
 import { OpenLibraryEditionEntry, OpenLibrarySearchDoc, OpenLibraryWorkDetails } from "@/app/types/open-library";
 
 const SEARCH_LIMIT: number = 20;
+const FETCH_TIMEOUT_MS: number = 10000; // 10 seconds
+const MAX_RETRIES: number = 3;
+const INITIAL_RETRY_DELAY_MS: number = 1000; // 1 second
 
 /**
- * Searches the Open Library API for books.
+ * Exponential backoff retry logic for transient failures.
+ * @param attempt The current attempt number (0-based).
+ * @returns Delay in milliseconds.
+ */
+function getRetryDelay(attempt: number): number {
+  return INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt);
+}
+
+/**
+ * Performs a fetch with timeout and automatic retry on transient failures.
+ * @param url The URL to fetch.
+ * @param retryCount Current retry attempt (default 0).
+ * @returns The fetch response.
+ * @throws Error if all retries fail.
+ */
+async function fetchWithRetry(url: string, retryCount: number = 0): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "BookHive/1.0 (compatible; personal-project)",
+      },
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error: unknown) {
+    clearTimeout(timeoutId);
+
+    // Check if error is transient and we have retries remaining.
+    const isTransientError = 
+      (error instanceof TypeError && 
+        (error.message.includes("ECONNREFUSED") || 
+         error.message.includes("ECONNRESET") || 
+         error.message.includes("ETIMEDOUT") ||
+         error.message.includes("fetch failed"))) ||
+      (error instanceof Error && error.name === "AbortError");
+
+    const hasRetriesRemaining = retryCount < MAX_RETRIES;
+
+    if (isTransientError && hasRetriesRemaining) {
+      const delay = getRetryDelay(retryCount);
+      console.warn(
+        `Open Library API transient error (attempt ${retryCount + 1}/${MAX_RETRIES}). ` +
+        `Retrying in ${delay}ms. Error: ${error instanceof Error ? error.message : String(error)}`
+      );
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return fetchWithRetry(url, retryCount + 1);
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Searches the Open Library API for books with resilience mechanisms.
  * @param query The search query string.
  * @returns A promise that resolves to an array of partial books for display.
+ *          Returns empty array if API is unavailable (graceful degradation).
  */
 export async function searchOpenLibrary( query: string ): Promise<Book[]> {
   query = query.trim().toLowerCase();
@@ -22,10 +83,14 @@ export async function searchOpenLibrary( query: string ): Promise<Book[]> {
   searchUrl.searchParams.set( "limit", SEARCH_LIMIT.toString() );
 
   try {
-    const response = await fetch( searchUrl.toString() );
+    const response = await fetchWithRetry(searchUrl.toString());
 
     if (!response.ok) {
-      console.error( `Open Library API failed with status: ${ response.status }` );
+      console.error( 
+        `Open Library API failed with status: ${response.status} ${response.statusText}. ` +
+        `URL: ${searchUrl.toString()}`
+      );
+      // Gracefully return empty results instead of throwing.
       return [];
     }
 
@@ -35,7 +100,14 @@ export async function searchOpenLibrary( query: string ): Promise<Book[]> {
     return await Promise.all( bookPromises );
 
   } catch (error) {
-    console.error( "Error fetching from Open Library:", error );
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(
+      `Failed to fetch from Open Library after ${MAX_RETRIES + 1} attempts. ` +
+      `Query: "${query}". Error: ${errorMessage}`,
+      error
+    );
+    // Graceful degradation => return empty results so the app continues to function.
+    // The user will see locally stored books without Open Library suggestions.
     return [];
   }
 }
