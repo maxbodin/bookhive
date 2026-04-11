@@ -10,19 +10,25 @@ import {
 } from "@/components/ui/chart";
 import { StatCard } from "./stat-card";
 import React from "react";
+import { UserBookStatsRecord } from "@/app/types/user-book";
+import { getStrictReadBooks } from "@/app/utils/profiles/stats";
 
 interface BooksByStatusCardProps {
-  data: {
-    read: number;
-    reading: number;
-    later: number;
-    wishlist: number;
-  };
+  userBooks: UserBookStatsRecord[];
   className?: string;
 }
 
-export function BooksByStatusCard( { data, className }: BooksByStatusCardProps ) {
+export function BooksByStatusCard( { userBooks, className }: BooksByStatusCardProps ) {
   const t = useTranslations( "Stats.BooksByStatus" );
+
+  const data = React.useMemo( () => {
+    return {
+      read: getStrictReadBooks( userBooks ).length,
+      reading: userBooks.filter( ( book ) => book.state === "reading" ).length,
+      later: userBooks.filter( ( book ) => book.state === "later" ).length,
+      wishlist: userBooks.filter( ( book ) => book.state === "wishlist" ).length,
+    };
+  }, [userBooks] );
 
   const chartConfig = {
     read: { label: t( "read" ), color: "var(--chart-1)" },

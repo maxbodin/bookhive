@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
@@ -11,15 +12,34 @@ import {
 import { StatCard } from "@/components/profile/stats/stat-card";
 import { YearSelection } from "@/components/profile/stats/year-selection";
 import { useYearSelection } from "@/app/contexts/year-selection-context";
+import { UserBookStatsRecord } from "@/app/types/user-book";
+import { getMonthLabels, getStrictReadBooksByYear } from "@/app/utils/profiles/stats";
 
 interface MonthlyPagesReadCardProps {
-  data: Array<{ month: string; pages: number }>;
+  userBooks: UserBookStatsRecord[];
   className?: string;
 }
 
-export function MonthlyPagesReadCard( { data, className }: MonthlyPagesReadCardProps ) {
+export function MonthlyPagesReadCard( { userBooks, className }: MonthlyPagesReadCardProps ) {
   const t = useTranslations( "Stats.MonthlyPagesRead" );
   const { selectedYear } = useYearSelection();
+  const locale = useLocale();
+
+  const data = useMemo( () => {
+    const allMonths = getMonthLabels( locale );
+    const monthlyPagesRead = Array<number>( 12 ).fill( 0 );
+    const readBooksByYear = getStrictReadBooksByYear( userBooks, selectedYear );
+
+    readBooksByYear.forEach( ( book ) => {
+      const monthIndex = book.completionDate.getUTCMonth();
+      monthlyPagesRead[monthIndex] += book.pages || 0;
+    } );
+
+    return allMonths.map( ( month, index ) => ( {
+      month,
+      pages: monthlyPagesRead[index],
+    } ) );
+  }, [userBooks, selectedYear, locale] );
 
   const hasData = data.some( ( item ) => item.pages > 0 );
 

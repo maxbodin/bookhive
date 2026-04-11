@@ -12,14 +12,29 @@ import {
 } from "@/components/ui/chart";
 import { StatCard } from "./stat-card";
 import React from "react";
+import { UserBookStatsRecord } from "@/app/types/user-book";
+import { BookTypeBucket, toBookTypeBucket } from "@/app/utils/profiles/stats";
 
 interface BookTypesCardProps {
-  data: Record<string, number>;
+  userBooks: UserBookStatsRecord[];
   className?: string;
 }
 
-export function BooksByTypesCard( { data, className }: BookTypesCardProps ) {
+export function BooksByTypesCard( { userBooks, className }: BookTypesCardProps ) {
   const t = useTranslations( "Stats.BooksByTypes" );
+
+  const data = React.useMemo( () => {
+    return userBooks.reduce( ( acc, book ) => {
+      const type = toBookTypeBucket( book.type );
+      acc[type] += 1;
+      return acc;
+    }, {
+      bd: 0,
+      manga: 0,
+      roman: 0,
+      unknown: 0,
+    } as Record<BookTypeBucket, number> );
+  }, [userBooks] );
 
   const chartConfig = {
     bd: { label: t( "bd" ), color: "var(--chart-1)" },

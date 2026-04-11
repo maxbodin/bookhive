@@ -256,6 +256,47 @@
       "cumulative": "Cumulative completed",
       "noData": "No completed books in {year}."
     },
+    "ReadingDurationDistribution": {
+      "title": "Reading duration distribution",
+      "completedBooks": "Completed books",
+      "noData": "No completed books with full dates in {year}.",
+      "buckets": {
+        "upToWeek": "0-7d",
+        "upToMonth": "8-30d",
+        "upToThreeMonths": "31-90d",
+        "overThreeMonths": "90d+"
+      }
+    },
+    "ReadingLifecycle": {
+      "title": "Reading lifecycle",
+      "started": "Started",
+      "completed": "Completed",
+      "noData": "No reading lifecycle activity in {year}."
+    },
+    "PagesByTypeOverTime": {
+      "title": "Pages by type over time",
+      "bd": "Comic",
+      "manga": "Manga",
+      "roman": "Novel",
+      "unknown": "Unknown",
+      "noData": "No completed pages by type in {year}."
+    },
+    "ReadingWeekdayPattern": {
+      "title": "Completion pattern by weekday",
+      "completed": "Completed books",
+      "noData": "No weekday completion activity in {year}."
+    },
+    "ReadLengthDistribution": {
+      "title": "Read length distribution",
+      "books": "Books",
+      "noData": "No completed books with page counts in {year}.",
+      "buckets": {
+        "upTo150": "1-150p",
+        "from151To300": "151-300p",
+        "from301To500": "301-500p",
+        "over500": "500p+"
+      }
+    },
     "ReadingSpeed": {
       "title": "Average reading speed",
       "pagesPerDay": "Pages/Day",
