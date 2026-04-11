@@ -11,7 +11,6 @@ import {
 import { StatCard } from "./stat-card";
 import React from "react";
 import { UserBookStatsRecord } from "@/app/types/user-book";
-import { isReadForStatus } from "@/app/utils/profiles/stats";
 
 interface BooksByStatusCardProps {
   userBooks: UserBookStatsRecord[];
@@ -22,12 +21,15 @@ export function BooksByStatusCard( { userBooks, className }: BooksByStatusCardPr
   const t = useTranslations( "Stats.BooksByStatus" );
 
   const data = React.useMemo( () => {
-    return {
-      read: userBooks.filter( isReadForStatus ).length,
-      reading: userBooks.filter( ( book ) => book.state === "reading" ).length,
-      later: userBooks.filter( ( book ) => book.state === "later" ).length,
-      wishlist: userBooks.filter( ( book ) => book.state === "wishlist" ).length,
-    };
+    return userBooks.reduce( ( acc, book ) => {
+      acc[book.state] += 1;
+      return acc;
+    }, {
+      read: 0,
+      reading: 0,
+      later: 0,
+      wishlist: 0,
+    } );
   }, [userBooks] );
 
   const chartConfig = {
@@ -44,9 +46,7 @@ export function BooksByStatusCard( { userBooks, className }: BooksByStatusCardPr
     fill: chartConfig[status as keyof typeof chartConfig]?.color,
   } ) ).filter( item => item.count > 0 );
 
-  const totalBooks = React.useMemo( () => {
-    return chartData.reduce( ( acc, curr ) => acc + curr.count, 0 );
-  }, [chartData] );
+  const totalBooks = userBooks.length;
 
   return (
     <StatCard title={ t( "title" ) } className={ className }>
