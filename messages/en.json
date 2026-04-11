@@ -449,6 +449,13 @@
     "by": "by",
     "detailsTitle": "Details",
     "dimensions": "Dimensions",
+    "openLibraryId": "Open Library ID",
+    "annasArchive": "Anna's Archive",
+    "annasArchiveLinks": {
+      "search": "Search by ISBN",
+      "isbnDb": "Open ISBN entry",
+      "openLibrary": "Open Open Library entry"
+    },
     "edit": {
       "title": "Title",
       "coverUrl": "Cover URL",
@@ -461,6 +468,7 @@
       "pages": "Pages",
       "isbn10": "ISBN-10",
       "isbn13": "ISBN-13",
+      "openLibraryId": "Open Library ID",
       "categories": "Categories",
       "height": "Height (cm)",
       "length": "Length (cm)",

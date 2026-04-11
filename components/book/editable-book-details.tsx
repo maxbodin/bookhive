@@ -15,6 +15,7 @@ import { updateBook } from "@/app/actions/books/updateBook";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import { getBookExternalResources } from "@/app/utils/books/externalResources";
 
 interface EditableBookDetailsProps {
   book: Book;
@@ -45,6 +46,7 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
   };
 
   const undefinedFallback = t( "undefined" );
+  const { openLibraryId, annasArchiveLinks } = getBookExternalResources( book );
 
   if (isEditing) {
     return (
@@ -88,26 +90,32 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
 
         <Separator/>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="publisher">{ t( "edit.publisher" ) }</Label>
-            <Input id="publisher" name="publisher" defaultValue={ book.publisher ?? "" }/>
-          </div>
-          <div>
-            <Label htmlFor="publication_date">{ t( "edit.publicationDate" ) }</Label>
-            <Input id="publication_date" name="publication_date" defaultValue={ book.publication_date ?? "" }/>
-          </div>
-          <div>
-            <Label htmlFor="pages">{ t( "edit.pages" ) }</Label>
-            <Input id="pages" name="pages" type="number" defaultValue={ book.pages ?? "" }/>
-          </div>
-          <div>
-            <Label htmlFor="isbn_10">{ t( "edit.isbn10" ) }</Label>
-            <Input id="isbn_10" name="isbn_10" defaultValue={ book.isbn_10 ?? "" }/>
-          </div>
-          <div>
-            <Label htmlFor="isbn_13">{ t( "edit.isbn13" ) }</Label>
-            <Input id="isbn_13" name="isbn_13" defaultValue={ book.isbn_13 ?? "" }/>
+        <div className="grid gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="publisher">{ t( "edit.publisher" ) }</Label>
+              <Input id="publisher" name="publisher" defaultValue={ book.publisher ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="publication_date">{ t( "edit.publicationDate" ) }</Label>
+              <Input id="publication_date" name="publication_date" defaultValue={ book.publication_date ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="pages">{ t( "edit.pages" ) }</Label>
+              <Input id="pages" name="pages" type="number" defaultValue={ book.pages ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="isbn_10">{ t( "edit.isbn10" ) }</Label>
+              <Input id="isbn_10" name="isbn_10" defaultValue={ book.isbn_10 ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="isbn_13">{ t( "edit.isbn13" ) }</Label>
+              <Input id="isbn_13" name="isbn_13" defaultValue={ book.isbn_13 ?? "" }/>
+            </div>
+            <div>
+              <Label htmlFor="open_library_key">{ t( "edit.openLibraryId" ) }</Label>
+              <Input id="open_library_key" name="open_library_key" defaultValue={ book.open_library_key ?? "" }/>
+            </div>
           </div>
           <div>
             <Label htmlFor="categories">{ t( "edit.categories" ) }</Label>
@@ -188,6 +196,32 @@ export function EditableBookDetails( { book, isAdmin, transitionRef }: EditableB
               <BookDetailItem label={ t( "edit.pages" ) } value={ book.pages } fallbackText={ undefinedFallback }/>
               <BookDetailItem label={ t( "edit.isbn10" ) } value={ book.isbn_10 } fallbackText={ undefinedFallback }/>
               <BookDetailItem label={ t( "edit.isbn13" ) } value={ book.isbn_13 } fallbackText={ undefinedFallback }/>
+              <BookDetailItem
+                label={ t( "openLibraryId" ) }
+                value={ openLibraryId }
+                fallbackText={ undefinedFallback }
+              />
+              <BookDetailItem
+                label={ t( "annasArchive" ) }
+                value={ annasArchiveLinks.length > 0
+                  ? (
+                    <div className="flex flex-col gap-1">
+                      { annasArchiveLinks.map( ( link ) => (
+                        <a
+                          key={ link.href }
+                          href={ link.href }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline underline-offset-4 hover:opacity-80 break-all"
+                        >
+                          { t( `annasArchiveLinks.${ link.type }` ) }
+                        </a>
+                      ) ) }
+                    </div>
+                  )
+                  : null }
+                fallbackText={ undefinedFallback }
+              />
               <BookDetailItem
                 label={ t( "dimensions" ) }
                 value={ book.height && book.length && book.width && `${ book.height } x ${ book.length } x ${ book.width } cm` }

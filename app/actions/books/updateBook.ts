@@ -24,6 +24,11 @@ export async function updateBook( bookId: number, formData: FormData ) {
   const parseArray = ( val: FormDataEntryValue | null ) =>
     val ? val.toString().split( "," ).map( s => s.trim() ).filter( Boolean ) : null;
 
+  const normalizeOptionalField = ( val: FormDataEntryValue | null ) => {
+    const parsed = val?.toString().trim();
+    return parsed ? parsed : null;
+  };
+
   const dataToUpdate = {
     title: formData.get( "title" )?.toString() || null,
     description: formData.get( "description" )?.toString() || null,
@@ -31,6 +36,7 @@ export async function updateBook( bookId: number, formData: FormData ) {
     publication_date: formData.get( "publication_date" )?.toString() || null,
     isbn_10: formData.get( "isbn_10" )?.toString() || null,
     isbn_13: formData.get( "isbn_13" )?.toString() || null,
+    open_library_key: normalizeOptionalField( formData.get( "open_library_key" ) ),
     cover_url: formData.get( "cover_url" )?.toString() || null,
     type: ( formData.get( "type" )?.toString() as BookType ) || null,
     authors: parseArray( formData.get( "authors" ) ),

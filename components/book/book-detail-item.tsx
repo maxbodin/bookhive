@@ -2,7 +2,7 @@ import React from "react";
 
 interface BookDetailItemProps {
   label: string;
-  value: string | number | null | undefined;
+  value: React.ReactNode;
   fallbackText: string;
 }
 
@@ -14,10 +14,15 @@ interface BookDetailItemProps {
  * @constructor
  */
 export default function BookDetailItem( { label, value, fallbackText }: BookDetailItemProps ) {
+  const hasValue =
+    value !== null &&
+    value !== undefined &&
+    !(typeof value === "string" && value.trim().length === 0);
+
   return (
     <div>
       <dt className="text-sm font-medium text-muted-foreground">{ label }</dt>
-      <dd className="mt-1 text-md text-primary">{ value || fallbackText }</dd>
+      <dd className="mt-1 text-md text-primary">{ hasValue ? value : fallbackText }</dd>
     </div>
   );
 }
