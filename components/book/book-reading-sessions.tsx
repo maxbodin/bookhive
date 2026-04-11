@@ -27,6 +27,7 @@ export async function BookReadingSessions( { userId, bookId }: BookReadingSessio
               key={ session.id }
               session={ session }
               isOwner={ true }
+              coverTransitionNamespace="book-page-session"
             />
           ) ) }
         </div>

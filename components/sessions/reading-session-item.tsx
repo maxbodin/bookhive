@@ -28,6 +28,7 @@ import BookCover from "@/components/books/book-cover";
 interface ReadingSessionItemProps {
   session: ReadingSessionWithBook;
   isOwner: boolean;
+  coverTransitionNamespace?: string;
 }
 
 const formatSessionDate = ( startTime: string ) => {
@@ -38,7 +39,11 @@ const formatSessionDate = ( startTime: string ) => {
 const REVEAL_WIDTH = 90; // The width of the revealed delete button in pixels.
 const DRAG_THRESHOLD = 60; // How far the user must drag to snap it open.
 
-export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProps ) {
+export function ReadingSessionItem( {
+                                     session,
+                                     isOwner,
+                                     coverTransitionNamespace = "session",
+                                   }: ReadingSessionItemProps ) {
   const t = useTranslations( "ReadingSessions" );
   const tDialog = useTranslations( "ReadingSessions.deleteDialog" );
 
@@ -96,7 +101,7 @@ export function ReadingSessionItem( { session, isOwner }: ReadingSessionItemProp
 
   const coverContent = (
     <BookCover book={ { id: session.book_id, ...session.book } } className="rounded-lg"
-               transitionSuffix={ `session-${ session.id }` }/>
+               transitionSuffix={ `${ coverTransitionNamespace }-${ session.id }` }/>
   );
 
   const sessionContent = (
