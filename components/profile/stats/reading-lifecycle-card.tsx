@@ -30,7 +30,7 @@ export function ReadingLifecycleCard( { userBooks, className }: ReadingLifecycle
   const data = useMemo( () => {
     const allMonths = getMonthLabels( locale );
     const monthlyStartedCount = Array<number>( 12 ).fill( 0 );
-    const monthlyCompletedCount = Array<number>( 12 ).fill( 0 );
+    const monthlyReadCount = Array<number>( 12 ).fill( 0 );
 
     userBooks.forEach( ( book ) => {
       const startDate = toValidDate( book.start_reading_date );
@@ -44,22 +44,22 @@ export function ReadingLifecycleCard( { userBooks, className }: ReadingLifecycle
     const readBooksByYear = getStrictReadBooksByYear( userBooks, selectedYear );
 
     readBooksByYear.forEach( ( book ) => {
-      monthlyCompletedCount[book.completionDate.getUTCMonth()] += 1;
+      monthlyReadCount[book.completionDate.getUTCMonth()] += 1;
     } );
 
     return allMonths.map( ( month, index ) => ( {
       month,
       started: monthlyStartedCount[index],
-      completed: monthlyCompletedCount[index],
+      read: monthlyReadCount[index],
     } ) );
   }, [userBooks, selectedYear, locale] );
 
   const chartConfig = {
     started: { label: t( "started" ), color: "var(--chart-2)" },
-    completed: { label: t( "completed" ), color: "var(--chart-1)" },
+    read: { label: t( "read" ), color: "var(--chart-1)" },
   } satisfies ChartConfig;
 
-  const hasData = data.some( ( item ) => item.started > 0 || item.completed > 0 );
+  const hasData = data.some( ( item ) => item.started > 0 || item.read > 0 );
 
   return (
     <StatCard
@@ -85,8 +85,8 @@ export function ReadingLifecycleCard( { userBooks, className }: ReadingLifecycle
             />
             <Line
               type="monotone"
-              dataKey="completed"
-              stroke="var(--color-completed)"
+              dataKey="read"
+              stroke="var(--color-read)"
               strokeWidth={ 2.5 }
               dot={ { r: 2 } }
               activeDot={ { r: 4 } }

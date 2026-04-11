@@ -251,15 +251,15 @@
       "noPages": "No pages read in {year}."
     },
     "ReadCompletionTrend": {
-      "title": "Read completion trend",
-      "completed": "Completed books",
-      "cumulative": "Cumulative completed",
-      "noData": "No completed books in {year}."
+      "title": "Read trend",
+      "read": "Read books",
+      "cumulative": "Cumulative read",
+      "noData": "No read books in {year}."
     },
     "ReadingDurationDistribution": {
       "title": "Reading duration distribution",
-      "completedBooks": "Completed books",
-      "noData": "No completed books with full dates in {year}.",
+      "readBooks": "Read books",
+      "noData": "No read books with full dates in {year}.",
       "buckets": {
         "upToWeek": "0-7d",
         "upToMonth": "8-30d",
@@ -270,7 +270,7 @@
     "ReadingLifecycle": {
       "title": "Reading lifecycle",
       "started": "Started",
-      "completed": "Completed",
+      "read": "Read",
       "noData": "No reading lifecycle activity in {year}."
     },
     "PagesByTypeOverTime": {
@@ -279,17 +279,17 @@
       "manga": "Manga",
       "roman": "Novel",
       "unknown": "Unknown",
-      "noData": "No completed pages by type in {year}."
+      "noData": "No read pages by type in {year}."
     },
     "ReadingWeekdayPattern": {
-      "title": "Completion pattern by weekday",
-      "completed": "Completed books",
-      "noData": "No weekday completion activity in {year}."
+      "title": "Read pattern by weekday",
+      "read": "Read books",
+      "noData": "No weekday read activity in {year}."
     },
     "ReadLengthDistribution": {
       "title": "Read length distribution",
       "books": "Books",
-      "noData": "No completed books with page counts in {year}.",
+      "noData": "No read books with page counts in {year}.",
       "buckets": {
         "upTo150": "1-150p",
         "from151To300": "151-300p",

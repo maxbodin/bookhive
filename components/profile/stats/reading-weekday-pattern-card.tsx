@@ -30,25 +30,25 @@ export function ReadingWeekdayPatternCard( { userBooks, className }: ReadingWeek
 
   const data = useMemo( () => {
     const allWeekdays = getWeekdayLabels( locale );
-    const weekdayCompletedCount = Array<number>( 7 ).fill( 0 );
+    const weekdayReadCount = Array<number>( 7 ).fill( 0 );
     const readBooksByYear = getStrictReadBooksByYear( userBooks, selectedYear );
 
     readBooksByYear.forEach( ( book ) => {
       const weekdayIndex = ( book.completionDate.getUTCDay() + 6 ) % 7;
-      weekdayCompletedCount[weekdayIndex] += 1;
+      weekdayReadCount[weekdayIndex] += 1;
     } );
 
     return allWeekdays.map( ( weekday, index ) => ( {
       weekday,
-      completed: weekdayCompletedCount[index],
+      read: weekdayReadCount[index],
     } ) );
   }, [userBooks, selectedYear, locale] );
 
   const chartConfig = {
-    completed: { label: t( "completed" ), color: "var(--chart-2)" },
+    read: { label: t( "read" ), color: "var(--chart-2)" },
   } satisfies ChartConfig;
 
-  const hasData = data.some( ( item ) => item.completed > 0 );
+  const hasData = data.some( ( item ) => item.read > 0 );
 
   return (
     <StatCard title={ t( "title" ) } className={ className } headerChildren={ <YearSelection/> }>
@@ -60,10 +60,10 @@ export function ReadingWeekdayPatternCard( { userBooks, className }: ReadingWeek
             <PolarRadiusAxis allowDecimals={ false }/>
             <ChartTooltip content={ <ChartTooltipContent/> }/>
             <Radar
-              dataKey="completed"
-              fill="var(--color-completed)"
+              dataKey="read"
+              fill="var(--color-read)"
               fillOpacity={ 0.35 }
-              stroke="var(--color-completed)"
+              stroke="var(--color-read)"
               strokeWidth={ 2 }
             />
           </RadarChart>

@@ -29,31 +29,31 @@ export function ReadCompletionTrendCard( { userBooks, className }: ReadCompletio
 
   const data = useMemo( () => {
     const allMonths = getMonthLabels( locale );
-    const monthlyCompletedCount = Array<number>( 12 ).fill( 0 );
+    const monthlyReadCount = Array<number>( 12 ).fill( 0 );
     const readBooksByYear = getStrictReadBooksByYear( userBooks, selectedYear );
 
     readBooksByYear.forEach( ( book ) => {
       const monthIndex = book.completionDate.getUTCMonth();
-      monthlyCompletedCount[monthIndex] += 1;
+      monthlyReadCount[monthIndex] += 1;
     } );
 
     let cumulative = 0;
 
     return allMonths.map( ( month, index ) => {
-      cumulative += monthlyCompletedCount[index];
+      cumulative += monthlyReadCount[index];
 
       return {
         month,
-        completed: monthlyCompletedCount[index],
+        read: monthlyReadCount[index],
         cumulative,
       };
     } );
   }, [userBooks, selectedYear, locale] );
 
-  const hasData = data.some( ( item ) => item.completed > 0 );
+  const hasData = data.some( ( item ) => item.read > 0 );
 
   const chartConfig = {
-    completed: { label: t( "completed" ), color: "var(--chart-1)" },
+    read: { label: t( "read" ), color: "var(--chart-1)" },
     cumulative: { label: t( "cumulative" ), color: "var(--chart-5)" },
   } satisfies ChartConfig;
 
@@ -79,7 +79,7 @@ export function ReadCompletionTrendCard( { userBooks, className }: ReadCompletio
             />
             <ChartTooltip content={ <ChartTooltipContent indicator="line"/> }/>
             <ChartLegend content={ <ChartLegendContent/> }/>
-            <Bar yAxisId="left" dataKey="completed" fill="var(--color-completed)" radius={ [5, 5, 0, 0] }/>
+            <Bar yAxisId="left" dataKey="read" fill="var(--color-read)" radius={ [5, 5, 0, 0] }/>
             <Line
               yAxisId="right"
               type="monotone"

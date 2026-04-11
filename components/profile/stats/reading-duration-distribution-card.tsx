@@ -58,7 +58,7 @@ export function ReadingDurationDistributionCard( { userBooks, className }: Readi
   }, [userBooks, selectedYear] );
 
   const chartConfig = {
-    count: { label: t( "completedBooks" ), color: "var(--chart-4)" },
+    count: { label: t( "readBooks" ), color: "var(--chart-4)" },
   } satisfies ChartConfig;
 
   const chartData = data.map( ( item ) => ( {

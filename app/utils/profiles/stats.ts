@@ -81,6 +81,12 @@ export const getStrictReadBooksByYear = ( userBooks: UserBookStatsRecord[], year
   return getStrictReadBooks( userBooks ).filter( ( book ) => book.completionDate.getUTCFullYear() === year );
 };
 
+export const isReadForStatus = ( book: UserBookStatsRecord ): boolean => {
+  if (book.state !== "read") return false;
+
+  return toStrictReadBook( book ) !== null || toValidDate( book.read_date ) !== null;
+};
+
 export const getRelevantStateDate = ( book: UserBookStatsRecord ): Date | null => {
   switch (book.state) {
     case "read": {

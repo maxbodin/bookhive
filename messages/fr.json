@@ -239,7 +239,7 @@
     },
     "MonthlyActivity": {
       "title": "Activité mensuelle",
-      "read": "Terminés",
+      "read": "Lus",
       "startedReading": "Commencés",
       "addedToLater": "Ajoutés à 'À Lire'",
       "addedToWishlist": "Ajoutés à la liste d'envies",
@@ -251,15 +251,15 @@
       "noPages": "Aucune page lue en {year}."
     },
     "ReadCompletionTrend": {
-      "title": "Tendance des lectures terminées",
-      "completed": "Livres terminés",
-      "cumulative": "Cumul terminé",
-      "noData": "Aucun livre terminé en {year}."
+      "title": "Tendance de lecture",
+      "read": "Livres lus",
+      "cumulative": "Cumul lus",
+      "noData": "Aucun livre lu en {year}."
     },
     "ReadingDurationDistribution": {
       "title": "Répartition de la durée de lecture",
-      "completedBooks": "Livres terminés",
-      "noData": "Aucun livre terminé avec des dates complètes en {year}.",
+      "readBooks": "Livres lus",
+      "noData": "Aucun livre lu avec des dates complètes en {year}.",
       "buckets": {
         "upToWeek": "0-7j",
         "upToMonth": "8-30j",
@@ -270,7 +270,7 @@
     "ReadingLifecycle": {
       "title": "Cycle de lecture",
       "started": "Commencés",
-      "completed": "Terminés",
+      "read": "Lus",
       "noData": "Aucune activité du cycle de lecture en {year}."
     },
     "PagesByTypeOverTime": {
@@ -279,17 +279,17 @@
       "manga": "Manga",
       "roman": "Roman",
       "unknown": "Inconnu",
-      "noData": "Aucune page terminée par type en {year}."
+      "noData": "Aucune page lue par type en {year}."
     },
     "ReadingWeekdayPattern": {
-      "title": "Rythme des livres terminés par jour",
-      "completed": "Livres terminés",
-      "noData": "Aucune activité de livres terminés par jour en {year}."
+      "title": "Rythme des livres lus par jour",
+      "read": "Livres lus",
+      "noData": "Aucune activité de livres lus par jour en {year}."
     },
     "ReadLengthDistribution": {
       "title": "Répartition de la longueur des lectures",
       "books": "Livres",
-      "noData": "Aucun livre terminé avec un nombre de pages en {year}.",
+      "noData": "Aucun livre lu avec un nombre de pages en {year}.",
       "buckets": {
         "upTo150": "1-150p",
         "from151To300": "151-300p",
