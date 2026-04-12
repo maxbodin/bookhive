@@ -1,33 +1,76 @@
 import { ImageResponse } from "next/og";
-import { getBookById } from "@/app/actions/books/getBookById";
-import { getTranslations } from "next-intl/server";
 
 export const runtime = "edge";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+type BookForOgImage = {
+  title?: string | null;
+  authors?: string[] | string | null;
+  cover_url?: string | null;
+};
+
+const FALLBACK_TITLE = "Book";
+const FALLBACK_AUTHOR = "Unknown author";
+const FALLBACK_COVER_ALT = "Book cover";
+
+function toAuthorLabel( authors: BookForOgImage["authors"] ): string {
+  if ( Array.isArray( authors ) ) {
+    const cleaned = authors.filter( ( author ) => Boolean( author ) );
+    return cleaned.length > 0 ? cleaned.join( ", " ) : FALLBACK_AUTHOR;
+  }
+
+  if ( typeof authors === "string" && authors.trim().length > 0 ) {
+    return authors;
+  }
+
+  return FALLBACK_AUTHOR;
+}
+
 /**
- * Helper to fetch fonts from the /public directory.
- * @param url
+ * Lightweight read for OG rendering.
+ * Avoids importing server actions/i18n in Edge bundle.
  */
-async function getFontData( url: string | URL ) {
-  const response = await fetch( url );
-  return response.arrayBuffer();
+async function getBookForOgImage( id: number ): Promise<BookForOgImage | null> {
+  if ( !Number.isFinite( id ) ) {
+    return null;
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if ( !supabaseUrl || !supabaseAnonKey ) {
+    return null;
+  }
+
+  const query = new URLSearchParams( {
+    select: "title,authors,cover_url",
+    id: `eq.${ id }`,
+    limit: "1",
+  } );
+
+  const response = await fetch( `${ supabaseUrl }/rest/v1/books?${ query.toString() }`, {
+    headers: {
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${ supabaseAnonKey }`,
+    },
+    next: { revalidate: 3600 },
+  } );
+
+  if ( !response.ok ) {
+    return null;
+  }
+
+  const rows = ( await response.json() ) as BookForOgImage[];
+  return rows[0] ?? null;
 }
 
 export default async function Image( { params }: { params: Promise<{ id: string }> } ) {
-  const t = await getTranslations( "BookOpengraphImage" );
   const resolvedParams = await params;
-  const book = await getBookById( Number( resolvedParams.id ) );
+  const book = await getBookForOgImage( Number( resolvedParams.id ) );
 
-  // Fetch fonts in parallel for performance.
-  const [ geistRegular, geistBold ] = await Promise.all( [
-    getFontData( new URL( "../../../public/fonts/Geist-Regular.otf", import.meta.url ) ),
-    getFontData( new URL( "../../../public/fonts/Geist-Bold.otf", import.meta.url ) ),
-  ] );
-
-  const title = book?.title || t( "fallbackTitle" );
-  const author = book?.authors?.join( ", " ) || t( "fallbackAuthor" );
+  const title = book?.title || FALLBACK_TITLE;
+  const author = toAuthorLabel( book?.authors );
 
   return new ImageResponse(
     (
@@ -40,7 +83,7 @@ export default async function Image( { params }: { params: Promise<{ id: string 
           alignItems: "center",
           justifyContent: "space-between",
           padding: "80px",
-          fontFamily: "\"Geist Sans\"",
+          fontFamily: "ui-sans-serif, system-ui, sans-serif",
           color: "#fafafa",
         } }
       >
@@ -90,7 +133,7 @@ export default async function Image( { params }: { params: Promise<{ id: string 
                 marginTop: 24,
               } }
             >
-              { t( "by", { author } ) }
+              { `By ${ author }` }
             </div>
           </div>
           <div
@@ -120,7 +163,7 @@ export default async function Image( { params }: { params: Promise<{ id: string 
           { book?.cover_url ? (
             <img
               src={ book.cover_url }
-              alt={ t( "coverAlt" ) }
+              alt={ FALLBACK_COVER_ALT }
               style={ { width: "100%", height: "100%", objectFit: "cover" } }
             />
           ) : (
@@ -145,20 +188,6 @@ export default async function Image( { params }: { params: Promise<{ id: string 
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Geist Sans",
-          data: geistRegular,
-          weight: 400,
-          style: "normal",
-        },
-        {
-          name: "Geist Sans",
-          data: geistBold,
-          weight: 800,
-          style: "normal",
-        },
-      ],
     }
   );
 }
